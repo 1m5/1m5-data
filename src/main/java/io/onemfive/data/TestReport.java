@@ -1,4 +1,4 @@
-package io.onemfive.data.health;
+package io.onemfive.data;
 
 import java.io.Serializable;
 import java.util.Date;
