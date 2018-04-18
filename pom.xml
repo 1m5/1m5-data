@@ -22,6 +22,14 @@
 		<name>1M5</name>
 		<url>https://1M5.io</url>
 	</organization>
+	<developers>
+		<developer>
+			<name>objectorange</name>
+			<organization>Resolving Architecture</organization>
+			<url>http://resolvingarchitecture.com</url>
+			<email>objectorange@protonmail.com</email>
+		</developer>
+	</developers>
 
 
 	<dependencyManagement>
