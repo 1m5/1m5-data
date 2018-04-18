@@ -1,4 +1,6 @@
-package io.onemfive.data;
+package io.onemfive.data.health;
+
+import io.onemfive.data.LID;
 
 /**
  * TODO: Add Description
