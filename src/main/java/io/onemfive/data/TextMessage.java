@@ -7,32 +7,32 @@ package io.onemfive.data;
  */
 public class TextMessage implements Message {
 
-    private LID to;
-    private LID from;
+    private DID to;
+    private DID from;
     private String text;
 
     public TextMessage() {
     }
 
-    public TextMessage(LID to, LID from, String text) {
+    public TextMessage(DID to, DID from, String text) {
         this.to = to;
         this.from = from;
         this.text = text;
     }
 
-    public LID getTo() {
+    public DID getTo() {
         return to;
     }
 
-    public void setTo(LID to) {
+    public void setTo(DID to) {
         this.to = to;
     }
 
-    public LID getFrom() {
+    public DID getFrom() {
         return from;
     }
 
-    public void setFrom(LID from) {
+    public void setFrom(DID from) {
         this.from = from;
     }
 

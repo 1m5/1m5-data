@@ -5,5 +5,5 @@ import java.io.Serializable;
 /**
  * Created by Brian on 3/27/18.
  */
-public class Amino implements Serializable {
+public class Prana implements Serializable {
 }

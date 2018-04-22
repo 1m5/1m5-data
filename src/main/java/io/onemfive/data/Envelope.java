@@ -15,6 +15,7 @@ public class Envelope implements Serializable {
     public static final String SERVICE = "SERVICE";
     public static final String OPERATION = "OPERATION";
     public static final String ROUTE = "ROUTE";
+    public static final String DID = "DID";
 
     public static final String REPLY = "REPLY";
     public static final String NONE = "NONE";
@@ -22,7 +23,7 @@ public class Envelope implements Serializable {
     public static final String CLIENT = "CLIENT";
     public static final String REPLY_ACTION = "REPLY_ACTION";
 
-    public enum MessageType {DOCUMENT, TEXT, EVENT, COMMAND}
+    public enum MessageType {DOCUMENT, TEXT, EVENT, COMMAND, NONE}
 
     private long id;
     private Map<String, Object> headers;
@@ -43,9 +44,10 @@ public class Envelope implements Serializable {
     public static Envelope messageFactory(Long id, MessageType type) {
         switch (type) {
             case COMMAND: return new Envelope(id, new CommandMessage());
+            case DOCUMENT: return new Envelope(id, new DocumentMessage());
             case TEXT: return new Envelope(id, new TextMessage());
             case EVENT: return new Envelope(id, new EventMessage());
-            default: return new Envelope(id, new DocumentMessage());
+            default: return new Envelope(id, null);
         }
     }
 

@@ -9,34 +9,34 @@ import java.io.Serializable;
  */
 public class Email implements Serializable {
 
-    private LID to;
-    private LID from;
+    private DID to;
+    private DID from;
     private String subject;
     private String message;
 
     public Email() {
     }
 
-    public Email(LID to, LID from, String subject, String message) {
+    public Email(DID to, DID from, String subject, String message) {
         this.to = to;
         this.from = from;
         this.subject = subject;
         this.message = message;
     }
 
-    public LID getTo() {
+    public DID getTo() {
         return to;
     }
 
-    public void setTo(LID to) {
+    public void setTo(DID to) {
         this.to = to;
     }
 
-    public LID getFrom() {
+    public DID getFrom() {
         return from;
     }
 
-    public void setFrom(LID from) {
+    public void setFrom(DID from) {
         this.from = from;
     }
 

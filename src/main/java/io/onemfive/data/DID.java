@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author objectorange
  */
-public class LID implements Serializable {
+public class DID implements Serializable {
 
     public enum Status {UNREGISTERED, ACTIVE, SUSPENDED}
 
