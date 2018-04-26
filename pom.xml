@@ -22,6 +22,12 @@
 		<name>1M5</name>
 		<url>https://1M5.io</url>
 	</organization>
+	<licenses>
+		<license>
+			<name>Unlicense</name>
+			<url>https://unlicense.org/</url>
+		</license>
+	</licenses>
 	<developers>
 		<developer>
 			<name>objectorange</name>
@@ -30,7 +36,6 @@
 			<email>objectorange@protonmail.com</email>
 		</developer>
 	</developers>
-
 
 	<dependencyManagement>
 		<dependencies>
