@@ -12,8 +12,6 @@ import java.util.Random;
  */
 public class Envelope implements Serializable {
 
-    public static final String SERVICE = "SERVICE";
-    public static final String OPERATION = "OPERATION";
     public static final String ROUTE = "ROUTE";
     public static final String DID = "DID";
 
@@ -71,6 +69,10 @@ public class Envelope implements Serializable {
 
     public boolean headerExists(String name) {
         return headers.containsKey(name);
+    }
+
+    public void removeHeader(String name) {
+        headers.remove(name);
     }
 
     public Object getHeader(String name) {
