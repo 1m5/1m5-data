@@ -10,7 +10,7 @@ import java.util.Random;
  *
  * @author objectorange
  */
-public class Envelope implements Serializable {
+public class Envelope implements Persistable, Serializable {
 
     public static final String ROUTE = "ROUTE";
     public static final String DID = "DID";
@@ -19,7 +19,11 @@ public class Envelope implements Serializable {
     public static final String NONE = "NONE";
 
     public static final String CLIENT = "CLIENT";
-    public static final String REPLY_ACTION = "REPLY_ACTION";
+    public static final String CLIENT_REPLY = "CLIENT_REPLY";
+    public static final String CLIENT_REPLY_ACTION = "CLIENT_REPLY_ACTION";
+
+    public static final String DATA_TYPE = "DATA_TYPE";
+    public static final String DATA_IS_LIST = "DATA_IS_LIST";
 
     public enum MessageType {DOCUMENT, TEXT, EVENT, COMMAND, NONE}
 

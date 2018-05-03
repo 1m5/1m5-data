@@ -5,7 +5,7 @@ package io.onemfive.data;
  *
  * @author objectorange
  */
-public class TextMessage implements Message {
+public class TextMessage implements Persistable, Message {
 
     private DID to;
     private DID from;

@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author objectorange
  */
-public class Email implements Serializable {
+public class Email implements Persistable, Serializable {
 
     private DID to;
     private DID from;

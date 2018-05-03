@@ -1,6 +1,8 @@
 package io.onemfive.data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,6 +10,12 @@ import java.util.Map;
  *
  * @author objectorange
  */
-public class DocumentMessage implements Message {
-    public Map<String,Object> data = new HashMap<>();
+public class DocumentMessage implements Message, Persistable {
+
+    public List<Map<String,Object>> data;
+
+    public DocumentMessage() {
+        data = new ArrayList<>();
+        data.add(new HashMap<String, Object>());
+    }
 }

@@ -48,7 +48,12 @@
 	</dependencyManagement>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>org.dizitart</groupId>
+			<artifactId>nitrite</artifactId>
+			<version>3.0.0</version>
+			<!--<license>Apache 2.0</license>-->
+		</dependency>
 	</dependencies>
 
 	<build>
