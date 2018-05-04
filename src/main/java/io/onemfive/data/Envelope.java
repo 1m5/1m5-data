@@ -53,6 +53,12 @@ public class Envelope implements Persistable, Serializable {
         }
     }
 
+    public static Envelope envelopeFactory(Envelope envelope){
+        Envelope newEnvelope = new Envelope(envelope.getId(), envelope.getMessage());
+        newEnvelope.setHeaders(envelope.getHeaders());
+        return newEnvelope;
+    }
+
     public Envelope(long id, Message message) {
         this(id, message, new HashMap<String, Object>());
     }
@@ -85,6 +91,10 @@ public class Envelope implements Persistable, Serializable {
 
     public Map<String, Object> getHeaders() {
         return headers;
+    }
+
+    public void setHeaders(Map<String, Object> headers) {
+        this.headers = headers;
     }
 
     public Message getMessage() {
