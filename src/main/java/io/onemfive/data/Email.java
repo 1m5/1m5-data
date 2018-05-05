@@ -9,35 +9,44 @@ import java.io.Serializable;
  */
 public class Email implements Persistable, Serializable {
 
-    private DID to;
-    private DID from;
+    private Long id;
+    private Long toDID;
+    private Long fromDID;
     private String subject;
     private String message;
 
     public Email() {
     }
 
-    public Email(DID to, DID from, String subject, String message) {
-        this.to = to;
-        this.from = from;
+    public Email(Long toDID, Long fromDID, String subject, String message) {
+        this.toDID = toDID;
+        this.fromDID = fromDID;
         this.subject = subject;
         this.message = message;
     }
 
-    public DID getTo() {
-        return to;
+    public Long getId() {
+        return id;
     }
 
-    public void setTo(DID to) {
-        this.to = to;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public DID getFrom() {
-        return from;
+    public Long getToDID() {
+        return toDID;
     }
 
-    public void setFrom(DID from) {
-        this.from = from;
+    public void setToDID(Long toDID) {
+        this.toDID = toDID;
+    }
+
+    public Long getFromDID() {
+        return fromDID;
+    }
+
+    public void setFromDID(Long fromDID) {
+        this.fromDID = fromDID;
     }
 
     public String getSubject() {

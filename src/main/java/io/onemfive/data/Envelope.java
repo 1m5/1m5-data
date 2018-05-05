@@ -22,7 +22,6 @@ public class Envelope implements Persistable, Serializable {
     public static final String CLIENT_REPLY = "CLIENT_REPLY";
     public static final String CLIENT_REPLY_ACTION = "CLIENT_REPLY_ACTION";
 
-    public static final String DATA_TYPE = "DATA_TYPE";
     public static final String DATA_IS_LIST = "DATA_IS_LIST";
 
     public enum MessageType {DOCUMENT, TEXT, EVENT, COMMAND, NONE}

@@ -7,33 +7,33 @@ package io.onemfive.data;
  */
 public class TextMessage implements Persistable, Message {
 
-    private DID to;
-    private DID from;
+    private Long toDID;
+    private Long fromDID;
     private String text;
 
     public TextMessage() {
     }
 
-    public TextMessage(DID to, DID from, String text) {
-        this.to = to;
-        this.from = from;
+    public TextMessage(Long toDID, Long fromDID, String text) {
+        this.toDID = toDID;
+        this.fromDID = fromDID;
         this.text = text;
     }
 
-    public DID getTo() {
-        return to;
+    public Long getToDID() {
+        return toDID;
     }
 
-    public void setTo(DID to) {
-        this.to = to;
+    public void setToDID(Long toDID) {
+        this.toDID = toDID;
     }
 
-    public DID getFrom() {
-        return from;
+    public Long getFromDID() {
+        return fromDID;
     }
 
-    public void setFrom(DID from) {
-        this.from = from;
+    public void setFromDID(Long fromDID) {
+        this.fromDID = fromDID;
     }
 
     public String getText() {

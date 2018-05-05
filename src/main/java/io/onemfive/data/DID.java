@@ -24,6 +24,7 @@ public class DID implements Persistable, Serializable {
     private String alias;
     private String passphrase;
     private Status status = Status.UNREGISTERED;
+    private boolean verified = false;
     private boolean authenticated = false;
 
     public Long getId() {
@@ -56,6 +57,14 @@ public class DID implements Persistable, Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public boolean getAuthenticated() {
