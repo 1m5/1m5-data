@@ -5,6 +5,8 @@ import org.dizitart.no2.objects.Id;
 import org.dizitart.no2.objects.Index;
 import org.dizitart.no2.objects.Indices;
 
+import java.io.Serializable;
+
 /**
  * TODO: Add Description
  *
@@ -13,11 +15,14 @@ import org.dizitart.no2.objects.Indices;
 @Indices({
         @Index(value = "did", type = IndexType.NonUnique)
 })
-public class HealthRecord {
+public class HealthRecord implements Serializable {
+
+    public enum HealthStatus {Unknown, Poor, Good, Excellent}
 
     @Id
     private Long id;
     private Long did;
+    private HealthStatus healthStatus = HealthStatus.Unknown;
 
     public Long getId() {
         return id;
@@ -33,5 +38,13 @@ public class HealthRecord {
 
     public void setDid(Long did) {
         this.did = did;
+    }
+
+    public HealthStatus getHealthStatus() {
+        return healthStatus;
+    }
+
+    public void setHealthStatus(HealthStatus healthStatus) {
+        this.healthStatus = healthStatus;
     }
 }
