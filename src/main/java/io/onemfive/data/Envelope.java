@@ -18,6 +18,8 @@ public class Envelope implements Persistable, Serializable {
     public static final String REPLY = "REPLY";
     public static final String NONE = "NONE";
 
+    public static final String URL = "URL";
+
     public static final String CLIENT = "CLIENT";
     public static final String CLIENT_REPLY = "CLIENT_REPLY";
     public static final String CLIENT_REPLY_ACTION = "CLIENT_REPLY_ACTION";
