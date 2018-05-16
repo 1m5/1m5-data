@@ -8,8 +8,8 @@ import java.io.Serializable;
  * @author objectorange
  */
 public interface Route extends Serializable {
-    void setCorrelationId(Long id);
-    Long correlationId();
+    void setId(Long id);
+    Long getId();
     String getService();
     String getOperation();
     void setEnvelope(Envelope envelope);
