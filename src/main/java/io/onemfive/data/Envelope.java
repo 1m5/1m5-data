@@ -1,6 +1,7 @@
 package io.onemfive.data;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -12,6 +13,7 @@ import java.util.Random;
  */
 public class Envelope implements Persistable, Serializable {
 
+    public static final String DRG = "DirectedRouteGraph";
     public static final String ROUTE = "ROUTE";
     public static final String DID = "DID";
 
@@ -24,11 +26,9 @@ public class Envelope implements Persistable, Serializable {
     public static final String CLIENT_REPLY = "CLIENT_REPLY";
     public static final String CLIENT_REPLY_ACTION = "CLIENT_REPLY_ACTION";
 
-    public static final String DATA_IS_LIST = "DATA_IS_LIST";
-
     public enum MessageType {DOCUMENT, TEXT, EVENT, COMMAND, NONE}
 
-    private long id;
+    private Long id;
     private Map<String, Object> headers;
     private Message message;
 
@@ -55,22 +55,23 @@ public class Envelope implements Persistable, Serializable {
     }
 
     public static Envelope envelopeFactory(Envelope envelope){
-        Envelope newEnvelope = new Envelope(envelope.getId(), envelope.getMessage());
-        newEnvelope.setHeaders(envelope.getHeaders());
-        return newEnvelope;
+        Envelope e = new Envelope(envelope.getId(), envelope.getMessage());
+        e.setHeaders(envelope.getHeaders());
+        return e;
     }
 
-    public Envelope(long id, Message message) {
+    public Envelope(Long id, Message message) {
         this(id, message, new HashMap<String, Object>());
     }
 
-    public Envelope(long id, Message message, Map<String,Object> headers) {
+    public Envelope(Long id, Message message, Map<String,Object> headers) {
         this.id = id;
         this.message = message;
         this.headers = headers;
+        this.headers.put(Envelope.DRG, new DynamicDirectedRouteGraph());
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -100,5 +101,50 @@ public class Envelope implements Persistable, Serializable {
 
     public Message getMessage() {
         return message;
+    }
+
+    // Helpers
+    public DirectedRouteGraph getDRG() {
+        return (DirectedRouteGraph)headers.get(Envelope.DRG);
+    }
+
+    public Route getRoute() {
+        return (Route)headers.get(ROUTE);
+    }
+
+    public void setRoute(Route route) {
+        headers.put(ROUTE, route);
+    }
+
+    public DID getDID() {
+        return (DID)headers.get(DID);
+    }
+
+    public void setDID(DID did) {
+        headers.put(DID, did);
+    }
+
+    public Long getClient() {
+        return (Long)headers.get(CLIENT);
+    }
+
+    public void setClient(Long client) {
+        headers.put(CLIENT,client);
+    }
+
+    public Boolean replyToClient() {
+        return headers.get(CLIENT_REPLY) != null;
+    }
+
+    public void setReplyToClient(Boolean replyToClient) {
+        headers.put(CLIENT_REPLY, replyToClient);
+    }
+
+    public URL getURL() {
+        return (URL)headers.get(URL);
+    }
+
+    public void setURL(URL url) {
+        headers.put(URL,url);
     }
 }

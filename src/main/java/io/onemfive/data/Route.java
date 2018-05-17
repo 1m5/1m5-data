@@ -13,6 +13,6 @@ public interface Route extends Serializable {
     String getService();
     String getOperation();
     void setEnvelope(Envelope envelope);
-    void setRouted(Boolean routed);
+    void setRouted(boolean routed);
     Boolean routed();
 }
