@@ -13,22 +13,16 @@ import java.util.Random;
  */
 public class Envelope implements Persistable, Serializable {
 
-    public static final String DRG = "DirectedRouteGraph";
-    public static final String ROUTE = "ROUTE";
-    public static final String DID = "DID";
-
-    public static final String REPLY = "REPLY";
-    public static final String NONE = "NONE";
-
-    public static final String URL = "URL";
-
-    public static final String CLIENT = "CLIENT";
-    public static final String CLIENT_REPLY = "CLIENT_REPLY";
-    public static final String CLIENT_REPLY_ACTION = "CLIENT_REPLY_ACTION";
-
     public enum MessageType {DOCUMENT, TEXT, EVENT, COMMAND, NONE}
 
     private Long id;
+    private DynamicDirectedRouteGraph graph;
+    private Route route = null;
+    private DID did = null;
+    private Long client = 0L;
+    private Boolean replyToClient = false;
+    private String clientReplyAction = null;
+    private URL url = null;
     private Map<String, Object> headers;
     private Message message;
 
@@ -55,8 +49,13 @@ public class Envelope implements Persistable, Serializable {
     }
 
     public static Envelope envelopeFactory(Envelope envelope){
-        Envelope e = new Envelope(envelope.getId(), envelope.getMessage());
-        e.setHeaders(envelope.getHeaders());
+        Envelope e = new Envelope(envelope.getId(), envelope.getHeaders(), envelope.getMessage(), envelope.getDRG());
+        e.setClient(envelope.getClient());
+        e.setClientReplyAction(envelope.getClientReplyAction());
+        e.setDID(envelope.getDID());
+        e.setReplyToClient(envelope.replyToClient());
+        e.setRoute(envelope.getRoute());
+        e.setURL(envelope.getURL());
         return e;
     }
 
@@ -68,7 +67,12 @@ public class Envelope implements Persistable, Serializable {
         this.id = id;
         this.message = message;
         this.headers = headers;
-        this.headers.put(Envelope.DRG, new DynamicDirectedRouteGraph());
+        this.graph = new DynamicDirectedRouteGraph();
+    }
+
+    private Envelope(Long id, Map<String,Object> headers, Message message, DirectedRouteGraph graph) {
+        this(id, message, headers);
+        this.graph = (DynamicDirectedRouteGraph)graph;
     }
 
     public Long getId() {
@@ -103,48 +107,55 @@ public class Envelope implements Persistable, Serializable {
         return message;
     }
 
-    // Helpers
     public DirectedRouteGraph getDRG() {
-        return (DirectedRouteGraph)headers.get(Envelope.DRG);
+        return graph;
     }
 
     public Route getRoute() {
-        return (Route)headers.get(ROUTE);
+        return route;
     }
 
     public void setRoute(Route route) {
-        headers.put(ROUTE, route);
+        this.route = route;
     }
 
     public DID getDID() {
-        return (DID)headers.get(DID);
+        return did;
     }
 
     public void setDID(DID did) {
-        headers.put(DID, did);
+        this.did = did;
     }
 
     public Long getClient() {
-        return (Long)headers.get(CLIENT);
+        return client;
     }
 
     public void setClient(Long client) {
-        headers.put(CLIENT,client);
+        this.client = client;
     }
 
     public Boolean replyToClient() {
-        return headers.get(CLIENT_REPLY) != null;
+        return replyToClient;
     }
 
     public void setReplyToClient(Boolean replyToClient) {
-        headers.put(CLIENT_REPLY, replyToClient);
+        this.replyToClient = replyToClient;
+    }
+
+    public String getClientReplyAction() {
+        return clientReplyAction;
+    }
+
+    public void setClientReplyAction(String clientReplyAction) {
+        this.clientReplyAction = clientReplyAction;
     }
 
     public URL getURL() {
-        return (URL)headers.get(URL);
+        return url;
     }
 
     public void setURL(URL url) {
-        headers.put(URL,url);
+        this.url = url;
     }
 }
