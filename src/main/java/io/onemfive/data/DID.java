@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author objectorange
  */
 @Indices({
-        @Index(value = "alias", type = IndexType.Unique)
+        @Index(value = "alias", type = IndexType.Fulltext)
 })
 public class DID implements Persistable, Serializable {
 
