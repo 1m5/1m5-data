@@ -23,6 +23,9 @@ public class Envelope implements Persistable, Serializable {
     private Boolean replyToClient = false;
     private String clientReplyAction = null;
     private URL url = null;
+    private String action = null;
+    private String contentType = null;
+
     private Map<String, Object> headers;
     private Message message;
 
@@ -56,6 +59,8 @@ public class Envelope implements Persistable, Serializable {
         e.setReplyToClient(envelope.replyToClient());
         e.setRoute(envelope.getRoute());
         e.setURL(envelope.getURL());
+        e.setAction(envelope.getAction());
+        e.setContentType(envelope.getContentType());
         return e;
     }
 
@@ -157,5 +162,21 @@ public class Envelope implements Persistable, Serializable {
 
     public void setURL(URL url) {
         this.url = url;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }
