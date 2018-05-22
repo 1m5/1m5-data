@@ -11,7 +11,12 @@ import java.util.Random;
  *
  * @author objectorange
  */
-public class Envelope implements Persistable, Serializable {
+public final class Envelope implements Persistable, Serializable {
+
+    public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
+    public static final String HEADER_CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_USER_AGENT = "User-Agent";
 
     public enum MessageType {DOCUMENT, TEXT, EVENT, COMMAND, NONE}
 
