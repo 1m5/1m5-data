@@ -6,7 +6,7 @@ package io.onemfive.data;
  *
  * @author objectorange
  */
-public class CommandMessage implements Message, Persistable {
+public final class CommandMessage implements Message, Persistable {
 
     public enum Command {
         Start,

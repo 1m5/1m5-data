@@ -5,7 +5,7 @@ package io.onemfive.data;
  *
  * @author objectorange
  */
-public class DynamicDirectedRouteGraph extends BaseRoute implements DirectedRouteGraph {
+public final class DynamicDirectedRouteGraph extends BaseRoute implements DirectedRouteGraph {
 
     protected Stack<Route> routes = new DequeStack<>();
     private boolean inProgress = false;

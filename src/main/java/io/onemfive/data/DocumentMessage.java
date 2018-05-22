@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author objectorange
  */
-public class DocumentMessage implements Message, Persistable {
+public final class DocumentMessage implements Message, Persistable {
 
     public List<Map<String,Object>> data;
 
