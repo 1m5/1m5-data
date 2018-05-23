@@ -9,7 +9,47 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Multihash {
+
+    public enum Type {
+        sha1(17, 20),
+        sha2_256(18, 32),
+        sha2_512(19, 64),
+        sha3(20, 64),
+        blake2b(64, 64),
+        blake2s(65, 32);
+
+        public int index;
+        public int length;
+        private static Map<Integer, Multihash.Type> lookup;
+
+        Type(int index, int length) {
+            this.index = index;
+            this.length = length;
+        }
+
+        public static Multihash.Type lookup(int t) {
+            if(!lookup.containsKey(t)) {
+                throw new IllegalStateException("Unknown Multihash type: " + t);
+            } else {
+                return lookup.get(t);
+            }
+        }
+
+        static {
+            lookup = new TreeMap<>();
+            Multihash.Type[] var0 = values();
+            int var1 = var0.length;
+
+            for(int var2 = 0; var2 < var1; ++var2) {
+                Multihash.Type t = var0[var2];
+                lookup.put(t.index, t);
+            }
+
+        }
+    }
+
     public final Multihash.Type type;
+
     private final byte[] hash;
 
     public Multihash(Multihash.Type type, byte[] hash) {
@@ -95,42 +135,5 @@ public class Multihash {
         return new Multihash(Base58.decode(base58));
     }
 
-    public enum Type {
-        sha1(17, 20),
-        sha2_256(18, 32),
-        sha2_512(19, 64),
-        sha3(20, 64),
-        blake2b(64, 64),
-        blake2s(65, 32);
-
-        public int index;
-        public int length;
-        private static Map<Integer, Multihash.Type> lookup;
-
-        Type(int index, int length) {
-            this.index = index;
-            this.length = length;
-        }
-
-        public static Multihash.Type lookup(int t) {
-            if(!lookup.containsKey(t)) {
-                throw new IllegalStateException("Unknown Multihash type: " + t);
-            } else {
-                return lookup.get(t);
-            }
-        }
-
-        static {
-            lookup = new TreeMap<>();
-            Multihash.Type[] var0 = values();
-            int var1 = var0.length;
-
-            for(int var2 = 0; var2 < var1; ++var2) {
-                Multihash.Type t = var0[var2];
-                lookup.put(t.index, t);
-            }
-
-        }
-    }
 }
 
