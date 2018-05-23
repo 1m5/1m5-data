@@ -1,5 +1,7 @@
 package io.onemfive.data;
 
+import io.onemfive.data.util.Multipart;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.HashMap;
@@ -19,6 +21,7 @@ public final class Envelope implements Persistable, Serializable {
     public static final String HEADER_USER_AGENT = "User-Agent";
 
     public enum MessageType {DOCUMENT, TEXT, EVENT, COMMAND, NONE}
+    public enum Action{ADD,UPDATE,REMOVE,VIEW}
 
     private Long id;
     private DynamicDirectedRouteGraph graph;
@@ -28,7 +31,9 @@ public final class Envelope implements Persistable, Serializable {
     private Boolean replyToClient = false;
     private String clientReplyAction = null;
     private URL url = null;
-    private String action = null;
+    private Multipart multipart = null;
+
+    private Action action = null;
     private String contentType = null;
 
     private Map<String, Object> headers;
@@ -66,6 +71,7 @@ public final class Envelope implements Persistable, Serializable {
         e.setURL(envelope.getURL());
         e.setAction(envelope.getAction());
         e.setContentType(envelope.getContentType());
+        e.setMultipart(envelope.getMultipart());
         return e;
     }
 
@@ -169,11 +175,19 @@ public final class Envelope implements Persistable, Serializable {
         this.url = url;
     }
 
-    public String getAction() {
+    public Multipart getMultipart() {
+        return multipart;
+    }
+
+    public void setMultipart(Multipart multipart) {
+        this.multipart = multipart;
+    }
+
+    public Action getAction() {
         return action;
     }
 
-    public void setAction(String action) {
+    public void setAction(Action action) {
         this.action = action;
     }
 
