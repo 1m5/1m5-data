@@ -20,6 +20,11 @@ public final class DLC {
     public static final String SNAPSHOT = "SNAPSHOT";
     public static final String EXCEPTIONS = "EXCEPTIONS";
 
+    public static boolean addRoute(Class service, String operation, Envelope envelope) {
+        envelope.getDRG().addRoute(new SimpleRoute(service.getName(),operation));
+        return true;
+    }
+
     public static boolean addContent(Object content, Envelope envelope) {
         Message m = envelope.getMessage();
         if(!(m instanceof DocumentMessage)) {
