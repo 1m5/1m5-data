@@ -23,7 +23,7 @@ import java.util.Random;
 })
 public class MemoryTest implements Serializable {
 
-    public enum Impairment {None, Borderline, Impaired, Gross}
+    public enum Impairment {Unimpaired, Borderline, Impaired, Gross}
 
     @Id
     private Long id;
@@ -31,7 +31,7 @@ public class MemoryTest implements Serializable {
     private String name;
     private Date timeStarted;
     private Date timeEnded;
-    private Impairment impairment = Impairment.None;
+    private Impairment impairment = Impairment.Unimpaired;
 
     private int difficulty = 1;
 
@@ -280,7 +280,7 @@ public class MemoryTest implements Serializable {
         if((bloodAlcoholContent >= 0.050 && bloodAlcoholContent < 0.080) || (borderlineImpairedScore > 0 && score >= borderlineImpairedScore && score < impairedScore)) impairment = Impairment.Borderline;
         if((bloodAlcoholContent >= 0.080 && bloodAlcoholContent <= 0.1) || (impairedScore > 0 && score >= impairedScore && score < grosslyImpairedScore)) impairment = Impairment.Impaired;
         if(bloodAlcoholContent > 0.1 || (grosslyImpairedScore > 0 && score >= grosslyImpairedScore)) impairment = Impairment.Gross;
-        else impairment = Impairment.None;
+        else impairment = Impairment.Unimpaired;
     }
 
 }
