@@ -105,7 +105,6 @@ public final class DLC {
     public static boolean addData(Class clazz, Object object, Envelope envelope) {
         Message m = envelope.getMessage();
         if(!(m instanceof DocumentMessage)) {
-            System.out.println(DLC.class.getSimpleName()+".addData: Not a Document Message.");
             return false;
         }
         DocumentMessage dm = (DocumentMessage)m;
@@ -116,7 +115,6 @@ public final class DLC {
     public static Object getData(Class clazz, Envelope envelope) {
         Message m = envelope.getMessage();
         if(!(m instanceof DocumentMessage)) {
-            System.out.println(DLC.class.getSimpleName()+".getData: Not a Document Message.");
             return null;
         }
         return ((DocumentMessage)m).data.get(0).get(clazz.getName());
