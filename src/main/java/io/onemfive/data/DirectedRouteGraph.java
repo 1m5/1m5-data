@@ -16,6 +16,4 @@ public interface DirectedRouteGraph extends Route {
     Route nextRoute();
 
     Route peekAtNextRoute();
-
-    boolean addRoute(Route route);
 }

@@ -72,6 +72,7 @@ public final class Envelope implements Persistable, Serializable {
         e.setAction(envelope.getAction());
         e.setContentType(envelope.getContentType());
         e.setMultipart(envelope.getMultipart());
+        e.setMessage(envelope.getMessage());
         return e;
     }
 
@@ -119,11 +120,15 @@ public final class Envelope implements Persistable, Serializable {
         this.headers = headers;
     }
 
+    private void setMessage(Message message) {
+        this.message = message;
+    }
+
     public Message getMessage() {
         return message;
     }
 
-    public DirectedRouteGraph getDRG() {
+    public DynamicDirectedRouteGraph getDRG() {
         return graph;
     }
 
