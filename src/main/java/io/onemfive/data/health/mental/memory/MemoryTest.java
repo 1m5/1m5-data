@@ -76,9 +76,9 @@ public class MemoryTest implements Serializable {
     private double bloodAlcoholContent = 0.0D;
     private double score = 0.0D;
 
-    private double borderlineImpairedScore = 0.0D;
-    private double impairedScore = 0.0D;
-    private double grosslyImpairedScore = 0.0D;
+    private MemortyTestPopScores popScores;
+
+    public MemoryTest() {}
 
     public static MemoryTest newInstance(String name, Long did) {
         return new MemoryTest(new Random(984732498374923L).nextLong(), did, name);
@@ -254,22 +254,12 @@ public class MemoryTest implements Serializable {
         return score;
     }
 
-    public void setImpairmentScores(double borderlineImpairedScore, double impairedScore, double grosslyImpairedScore) {
-        this.borderlineImpairedScore = borderlineImpairedScore;
-        this.impairedScore = impairedScore;
-        this.grosslyImpairedScore = grosslyImpairedScore;
+    public MemortyTestPopScores getPopScores() {
+        return popScores;
     }
 
-    public double getBorderlineImpairedScore() {
-        return borderlineImpairedScore;
-    }
-
-    public double getImpairedScore() {
-        return impairedScore;
-    }
-
-    public double getGrosslyImpairedScore() {
-        return grosslyImpairedScore;
+    public void setPopScores(MemortyTestPopScores popScores) {
+        this.popScores = popScores;
     }
 
     public Impairment getImpairment() {
@@ -277,9 +267,9 @@ public class MemoryTest implements Serializable {
     }
 
     private void determineImpairment() {
-        if((bloodAlcoholContent >= 0.050 && bloodAlcoholContent < 0.080) || (borderlineImpairedScore > 0 && score >= borderlineImpairedScore && score < impairedScore)) impairment = Impairment.Borderline;
-        if((bloodAlcoholContent >= 0.080 && bloodAlcoholContent <= 0.1) || (impairedScore > 0 && score >= impairedScore && score < grosslyImpairedScore)) impairment = Impairment.Impaired;
-        if(bloodAlcoholContent > 0.1 || (grosslyImpairedScore > 0 && score >= grosslyImpairedScore)) impairment = Impairment.Gross;
+        if((bloodAlcoholContent >= 0.050 && bloodAlcoholContent < 0.080) || (popScores.getBorderlineImpairedScore() > 0 && score >= popScores.getBorderlineImpairedScore() && score < popScores.getImpairedScore())) impairment = Impairment.Borderline;
+        if((bloodAlcoholContent >= 0.080 && bloodAlcoholContent <= 0.1) || (popScores.getImpairedScore() > 0 && score >= popScores.getImpairedScore() && score < popScores.getGrosslyImpairedScore())) impairment = Impairment.Impaired;
+        if(bloodAlcoholContent > 0.1 || (popScores.getGrosslyImpairedScore() > 0 && score >= popScores.getGrosslyImpairedScore())) impairment = Impairment.Gross;
         else impairment = Impairment.Unimpaired;
     }
 
