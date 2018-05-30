@@ -1,16 +1,18 @@
 package io.onemfive.data.health.mental.memory;
 
+import java.io.Serializable;
+
 /**
  * TODO: Add Description
  *
  * @author objectorange
  */
-public class MemortyTestPopScores {
+public class MemoryTestPopScores implements Serializable {
     private double borderlineImpairedScore = 0.0D;
     private double impairedScore = 0.0D;
     private double grosslyImpairedScore = 0.0D;
 
-    public MemortyTestPopScores(double borderlineImpairedScore, double impairedScore, double grosslyImpairedScore) {
+    public MemoryTestPopScores(double borderlineImpairedScore, double impairedScore, double grosslyImpairedScore) {
         this.borderlineImpairedScore = borderlineImpairedScore;
         this.impairedScore = impairedScore;
         this.grosslyImpairedScore = grosslyImpairedScore;

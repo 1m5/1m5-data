@@ -76,7 +76,7 @@ public class MemoryTest implements Serializable {
     private double bloodAlcoholContent = 0.0D;
     private double score = 0.0D;
 
-    private MemortyTestPopScores popScores;
+    private MemoryTestPopScores popScores = new MemoryTestPopScores(50, 200, 500);
 
     public MemoryTest() {}
 
@@ -254,11 +254,11 @@ public class MemoryTest implements Serializable {
         return score;
     }
 
-    public MemortyTestPopScores getPopScores() {
+    public MemoryTestPopScores getPopScores() {
         return popScores;
     }
 
-    public void setPopScores(MemortyTestPopScores popScores) {
+    public void setPopScores(MemoryTestPopScores popScores) {
         this.popScores = popScores;
     }
 
