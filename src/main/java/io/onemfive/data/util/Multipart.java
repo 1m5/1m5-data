@@ -45,8 +45,7 @@ public class Multipart {
         b.append("--" + boundary).append(LINE_FEED);
         b.append("Content-Disposition: form-data; name=\"" + name + "\"")
                 .append(LINE_FEED);
-        b.append("Content-Type: text/plain; charset=" + charset).append(
-                LINE_FEED);
+        b.append("Content-Type: text/plain; charset=" + charset).append(LINE_FEED);
         b.append(LINE_FEED);
         b.append(value).append(LINE_FEED);
 //        b.flush();
@@ -137,4 +136,5 @@ public class Multipart {
 
         return b.toString();
     }
+
 }

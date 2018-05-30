@@ -49,4 +49,5 @@ public class ByteArrayWrapper implements NamedStreamable {
     public String getName() {
         return name;
     }
+
 }
