@@ -36,20 +36,36 @@ public class MemoryTest implements Serializable {
     private int difficulty = 1;
 
     private int successes = 0; // Clicked when should have
-    private double successWeight = 1.0D;
+    private double successWeight = 1.0D; // TODO: Weights need to come from population
 
     private int misses = 0; // Should have clicked but did not
-    private double missWeight = -2.5D;
+    private double missWeight = -2.5D; // TODO: Weights need to come from population
 
     private int negative = 0; // Clickable but should not have clicked
-    private double negativeWeight = -5.0D;
+    private double negativeWeight = -5.0D; // TODO: Weights need to come from population
 
     private int inappropriate = 0; // Not clickable but clicked
-    private double inappropriateWeight = -10.0D;
+    private double inappropriateWeight = -10.0D; // TODO: Weights need to come from population
 
-    private long avgResponseTimeMs = 0L;
-    private long minReponseTimeMs = 0L;
-    private long maxResponseTimeMs = 0L;
+    private long avgResponseTimeOverallMs = 0L;
+    private long minReponseTimeOverallMs = 0L;
+    private long maxResponseTimeOverallMs = 0L;
+
+    private long avgResponseTimeSuccessMs = 0L;
+    private long minResponseTimeSuccessMs = 0L;
+    private long maxResponseTimeSuccessMs = 0L;
+
+    private long missTimeMs = 0L;
+
+    private long avgResponseTimeNegativeMs = 0L;
+    private long minResponseTimeNegativeMs = 0L;
+    private long maxResponseTimeNegativeMs = 0L;
+
+    private long avgResponseTimeInappropriateMs = 0L;
+    private long minResponseTimeInappropriateMs = 0L;
+    private long maxResponseTimeInappropriateMs = 0L;
+
+
 
     private List<Integer> cardsUsed = new ArrayList<>();
 
@@ -210,28 +226,108 @@ public class MemoryTest implements Serializable {
         this.inappropriateWeight = inappropriateWeight;
     }
 
-    public long getAvgResponseTimeMs() {
-        return avgResponseTimeMs;
+    public long getAvgResponseTimeOverallMs() {
+        return avgResponseTimeOverallMs;
     }
 
-    public void setAvgResponseTimeMs(long avgResponseTimeMs) {
-        this.avgResponseTimeMs = avgResponseTimeMs;
+    public void setAvgResponseTimeOverallMs(long avgResponseTimeOverallMs) {
+        this.avgResponseTimeOverallMs = avgResponseTimeOverallMs;
     }
 
-    public long getMinReponseTimeMs() {
-        return minReponseTimeMs;
+    public long getMinReponseTimeOverallMs() {
+        return minReponseTimeOverallMs;
     }
 
-    public void setMinReponseTimeMs(long minReponseTimeMs) {
-        this.minReponseTimeMs = minReponseTimeMs;
+    public void setMinReponseTimeOverallMs(long minReponseTimeOverallMs) {
+        this.minReponseTimeOverallMs = minReponseTimeOverallMs;
     }
 
-    public long getMaxResponseTimeMs() {
-        return maxResponseTimeMs;
+    public long getMaxResponseTimeOverallMs() {
+        return maxResponseTimeOverallMs;
     }
 
-    public void setMaxResponseTimeMs(long maxResponseTimeMs) {
-        this.maxResponseTimeMs = maxResponseTimeMs;
+    public void setMaxResponseTimeOverallMs(long maxResponseTimeOverallMs) {
+        this.maxResponseTimeOverallMs = maxResponseTimeOverallMs;
+    }
+
+    public long getAvgResponseTimeSuccessMs() {
+        return avgResponseTimeSuccessMs;
+    }
+
+    public void setAvgResponseTimeSuccessMs(long avgResponseTimeSuccessMs) {
+        this.avgResponseTimeSuccessMs = avgResponseTimeSuccessMs;
+    }
+
+    public long getMinResponseTimeSuccessMs() {
+        return minResponseTimeSuccessMs;
+    }
+
+    public void setMinResponseTimeSuccessMs(long minResponseTimeSuccessMs) {
+        this.minResponseTimeSuccessMs = minResponseTimeSuccessMs;
+    }
+
+    public long getMaxResponseTimeSuccessMs() {
+        return maxResponseTimeSuccessMs;
+    }
+
+    public void setMaxResponseTimeSuccessMs(long maxResponseTimeSuccessMs) {
+        this.maxResponseTimeSuccessMs = maxResponseTimeSuccessMs;
+    }
+
+    public long getMissTimeMs() {
+        return missTimeMs;
+    }
+
+    public void setMissTimeMs(long missTimeMs) {
+        this.missTimeMs = missTimeMs;
+    }
+
+    public long getAvgResponseTimeNegativeMs() {
+        return avgResponseTimeNegativeMs;
+    }
+
+    public void setAvgResponseTimeNegativeMs(long avgResponseTimeNegativeMs) {
+        this.avgResponseTimeNegativeMs = avgResponseTimeNegativeMs;
+    }
+
+    public long getMinResponseTimeNegativeMs() {
+        return minResponseTimeNegativeMs;
+    }
+
+    public void setMinResponseTimeNegativeMs(long minResponseTimeNegativeMs) {
+        this.minResponseTimeNegativeMs = minResponseTimeNegativeMs;
+    }
+
+    public long getMaxResponseTimeNegativeMs() {
+        return maxResponseTimeNegativeMs;
+    }
+
+    public void setMaxResponseTimeNegativeMs(long maxResponseTimeNegativeMs) {
+        this.maxResponseTimeNegativeMs = maxResponseTimeNegativeMs;
+    }
+
+    public long getAvgResponseTimeInappropriateMs() {
+        return avgResponseTimeInappropriateMs;
+    }
+
+    public void setAvgResponseTimeInappropriateMs(long avgResponseTimeInappropriateMs) {
+        this.avgResponseTimeInappropriateMs = avgResponseTimeInappropriateMs;
+    }
+
+    public long getMinResponseTimeInappropriateMs() {
+        return minResponseTimeInappropriateMs;
+    }
+
+    public void setMinResponseTimeInappropriateMs(long minResponseTimeInappropriateMs) {
+        this.minResponseTimeInappropriateMs = minResponseTimeInappropriateMs;
+    }
+
+    public long getMaxResponseTimeInappropriateMs() {
+        return maxResponseTimeInappropriateMs;
+    }
+
+    public void setMaxResponseTimeInappropriateMs(long maxResponseTimeInappropriateMs) {
+        this.maxResponseTimeInappropriateMs = maxResponseTimeInappropriateMs;
     }
 
     public List<Integer> cardsUsed() {
