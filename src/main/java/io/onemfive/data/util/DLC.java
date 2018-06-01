@@ -102,6 +102,15 @@ public final class DLC {
         }
         return exceptions;
     }
+
+    public static void addErrorMessage(String errorMessage, Envelope envelope) {
+        envelope.getMessage().addErrorMessage(errorMessage);
+    }
+
+    public static List<String> getErrorMessages(Envelope envelope) {
+        return envelope.getMessage().getErrorMessages();
+    }
+
     public static boolean addData(Class clazz, Object object, Envelope envelope) {
         Message m = envelope.getMessage();
         if(!(m instanceof DocumentMessage)) {

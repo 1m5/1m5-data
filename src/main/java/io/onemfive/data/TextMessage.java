@@ -5,7 +5,7 @@ package io.onemfive.data;
  *
  * @author objectorange
  */
-public final class TextMessage implements Persistable, Message {
+public final class TextMessage extends BaseMessage {
 
     private Long toDID;
     private Long fromDID;
