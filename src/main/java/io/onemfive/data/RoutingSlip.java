@@ -5,7 +5,7 @@ package io.onemfive.data;
  *
  * @author objectorange
  */
-public interface DirectedRouteGraph extends Route {
+public interface RoutingSlip extends Route {
 
     int numberRemainingRoutes();
 

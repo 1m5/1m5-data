@@ -5,12 +5,12 @@ package io.onemfive.data;
  *
  * @author objectorange
  */
-public final class DynamicDirectedRouteGraph extends BaseRoute implements DirectedRouteGraph {
+public final class DynamicRoutingSlip extends BaseRoute implements RoutingSlip {
 
     protected Stack<Route> routes = new DequeStack<>();
     private boolean inProgress = false;
 
-    public DynamicDirectedRouteGraph() {}
+    public DynamicRoutingSlip() {}
 
     @Override
     public int numberRemainingRoutes() {

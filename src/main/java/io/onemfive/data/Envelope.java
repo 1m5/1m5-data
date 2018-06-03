@@ -24,7 +24,7 @@ public final class Envelope implements Persistable, Serializable {
     public enum Action{ADD,UPDATE,REMOVE,VIEW}
 
     private Long id;
-    private DynamicDirectedRouteGraph graph;
+    private DynamicRoutingSlip dynamicRoutingSlip;
     private Route route = null;
     private DID did = null;
     private Long client = 0L;
@@ -62,7 +62,7 @@ public final class Envelope implements Persistable, Serializable {
     }
 
     public static Envelope envelopeFactory(Envelope envelope){
-        Envelope e = new Envelope(envelope.getId(), envelope.getHeaders(), envelope.getMessage(), envelope.getDRG());
+        Envelope e = new Envelope(envelope.getId(), envelope.getHeaders(), envelope.getMessage(), envelope.getDynamicRoutingSlip());
         e.setClient(envelope.getClient());
         e.setClientReplyAction(envelope.getClientReplyAction());
         e.setDID(envelope.getDID());
@@ -84,12 +84,12 @@ public final class Envelope implements Persistable, Serializable {
         this.id = id;
         this.message = message;
         this.headers = headers;
-        this.graph = new DynamicDirectedRouteGraph();
+        this.dynamicRoutingSlip = new DynamicRoutingSlip();
     }
 
-    private Envelope(Long id, Map<String,Object> headers, Message message, DirectedRouteGraph graph) {
+    private Envelope(Long id, Map<String,Object> headers, Message message, DynamicRoutingSlip dynamicRoutingSlip) {
         this(id, message, headers);
-        this.graph = (DynamicDirectedRouteGraph)graph;
+        this.dynamicRoutingSlip = dynamicRoutingSlip;
     }
 
     public Long getId() {
@@ -128,8 +128,8 @@ public final class Envelope implements Persistable, Serializable {
         return message;
     }
 
-    public DynamicDirectedRouteGraph getDRG() {
-        return graph;
+    public DynamicRoutingSlip getDynamicRoutingSlip() {
+        return dynamicRoutingSlip;
     }
 
     public Route getRoute() {

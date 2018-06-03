@@ -21,7 +21,7 @@ public final class DLC {
     public static final String EXCEPTIONS = "EXCEPTIONS";
 
     public static boolean addRoute(Class service, String operation, Envelope envelope) {
-        envelope.getDRG().addRoute(new SimpleRoute(service.getName(),operation));
+        envelope.getDynamicRoutingSlip().addRoute(new SimpleRoute(service.getName(),operation));
         return true;
     }
 
