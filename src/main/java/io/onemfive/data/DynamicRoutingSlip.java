@@ -38,15 +38,9 @@ public final class DynamicRoutingSlip extends BaseRoute implements RoutingSlip {
     }
 
     public boolean addRoute(Route route) {
-        Route topRoute = routes.peek();
-        // Prevent two of the same service.operation calls (routes) back-to-back (maintain immediate acyclic)
-        if(topRoute != null && topRoute.getService().equals(route.getService()) && topRoute.getOperation().equals(route.getOperation())) {
-            return false;
-        } else {
-            route.setId(getId());
-            this.routes.push(route);
-            return true;
-        }
+        route.setId(getId());
+        this.routes.push(route);
+        return true;
     }
 
 }
