@@ -39,7 +39,7 @@ public final class DynamicDirectedRouteGraph extends BaseRoute implements Direct
 
     public boolean addRoute(Route route) {
         Route topRoute = routes.peek();
-        // Prevent two of the same service.operation calls (routes) back-to-back (maintain acyclic)
+        // Prevent two of the same service.operation calls (routes) back-to-back (maintain immediate acyclic)
         if(topRoute != null && topRoute.getService().equals(route.getService()) && topRoute.getOperation().equals(route.getOperation())) {
             return false;
         } else {
