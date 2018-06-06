@@ -24,6 +24,7 @@ public final class Envelope implements Persistable, Serializable {
     public enum Action{ADD,UPDATE,REMOVE,VIEW}
 
     private Long id;
+    private Boolean external = false;
     private DynamicRoutingSlip dynamicRoutingSlip;
     private Route route = null;
     private DID did = null;
@@ -63,6 +64,7 @@ public final class Envelope implements Persistable, Serializable {
 
     public static Envelope envelopeFactory(Envelope envelope){
         Envelope e = new Envelope(envelope.getId(), envelope.getHeaders(), envelope.getMessage(), envelope.getDynamicRoutingSlip());
+        e.setExternal(envelope.getExternal());
         e.setClient(envelope.getClient());
         e.setClientReplyAction(envelope.getClientReplyAction());
         e.setDID(envelope.getDID());
@@ -94,6 +96,14 @@ public final class Envelope implements Persistable, Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public Boolean getExternal() {
+        return external;
+    }
+
+    public void setExternal(Boolean external) {
+        this.external = external;
     }
 
     public void setHeader(String name, Object value) {
