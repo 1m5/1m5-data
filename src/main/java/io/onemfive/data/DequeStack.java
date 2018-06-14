@@ -33,7 +33,8 @@ public class DequeStack<T> implements Stack<T> {
     }
 
     @Override
-    public int numberRemainingRoutes() {
+    public Integer numberRemainingRoutes() {
         return deque.size();
     }
+
 }

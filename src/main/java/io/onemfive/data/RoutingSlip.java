@@ -7,9 +7,9 @@ package io.onemfive.data;
  */
 public interface RoutingSlip extends Route {
 
-    int numberRemainingRoutes();
+    Integer numberRemainingRoutes();
 
-    boolean inProgress();
+    Boolean inProgress();
 
     void start();
 

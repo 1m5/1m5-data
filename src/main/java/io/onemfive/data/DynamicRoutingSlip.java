@@ -8,18 +8,22 @@ package io.onemfive.data;
 public final class DynamicRoutingSlip extends BaseRoute implements RoutingSlip {
 
     protected Stack<Route> routes = new DequeStack<>();
-    private boolean inProgress = false;
+    private Boolean inProgress = false;
 
     public DynamicRoutingSlip() {}
 
     @Override
-    public int numberRemainingRoutes() {
+    public Integer numberRemainingRoutes() {
         return routes.numberRemainingRoutes();
     }
 
     @Override
-    public boolean inProgress() {
+    public Boolean inProgress() {
         return inProgress;
+    }
+
+    public void setInProgress(Boolean inProgress) {
+        this.inProgress = inProgress;
     }
 
     @Override
@@ -42,5 +46,4 @@ public final class DynamicRoutingSlip extends BaseRoute implements RoutingSlip {
         this.routes.push(route);
         return true;
     }
-
 }

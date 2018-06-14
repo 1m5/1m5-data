@@ -4,9 +4,7 @@ import io.onemfive.data.util.Multipart;
 
 import java.io.Serializable;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Wraps all data passed around in application to ensure a space for header type information.
@@ -16,8 +14,12 @@ import java.util.Random;
 public final class Envelope implements Persistable, Serializable {
 
     public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
+
     public static final String HEADER_CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";
+
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_CONTENT_TYPE_JSON = "application/json";
+
     public static final String HEADER_USER_AGENT = "User-Agent";
 
     public enum MessageType {DOCUMENT, TEXT, EVENT, COMMAND, NONE}
@@ -35,7 +37,6 @@ public final class Envelope implements Persistable, Serializable {
     private Multipart multipart = null;
 
     private Action action = null;
-    private String contentType = null;
 
     private Map<String, Object> headers;
     private Message message;
@@ -207,10 +208,11 @@ public final class Envelope implements Persistable, Serializable {
     }
 
     public String getContentType() {
-        return contentType;
+        return (String)headers.get(HEADER_CONTENT_TYPE);
     }
 
     public void setContentType(String contentType) {
-        this.contentType = contentType;
+        headers.put(HEADER_CONTENT_TYPE, contentType);
     }
+
 }

@@ -11,5 +11,5 @@ public interface Stack<T> extends Serializable {
     void push(T object);
     T pop();
     T peek();
-    int numberRemainingRoutes();
+    Integer numberRemainingRoutes();
 }

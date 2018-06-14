@@ -7,33 +7,33 @@ package io.onemfive.data;
  */
 public final class TextMessage extends BaseMessage {
 
-    private Long toDID;
-    private Long fromDID;
+    private DID to;
+    private DID from;
     private String text;
 
     public TextMessage() {
     }
 
-    public TextMessage(Long toDID, Long fromDID, String text) {
-        this.toDID = toDID;
-        this.fromDID = fromDID;
+    public TextMessage(DID to, DID from, String text) {
+        this.to = to;
+        this.from = from;
         this.text = text;
     }
 
-    public Long getToDID() {
-        return toDID;
+    public DID getTo() {
+        return to;
     }
 
-    public void setToDID(Long toDID) {
-        this.toDID = toDID;
+    public void setTo(DID to) {
+        this.to = to;
     }
 
-    public Long getFromDID() {
-        return fromDID;
+    public DID getFrom() {
+        return from;
     }
 
-    public void setFromDID(Long fromDID) {
-        this.fromDID = fromDID;
+    public void setFrom(DID from) {
+        this.from = from;
     }
 
     public String getText() {
