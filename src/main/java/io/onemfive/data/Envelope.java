@@ -37,6 +37,7 @@ public final class Envelope implements Persistable, Serializable {
     private Multipart multipart = null;
 
     private Action action = null;
+    private String commandPath = null;
 
     private Map<String, Object> headers;
     private Message message;
@@ -73,6 +74,7 @@ public final class Envelope implements Persistable, Serializable {
         e.setRoute(envelope.getRoute());
         e.setURL(envelope.getURL());
         e.setAction(envelope.getAction());
+        e.setCommandPath(envelope.getCommandPath());
         e.setContentType(envelope.getContentType());
         e.setMultipart(envelope.getMultipart());
         e.setMessage(envelope.getMessage());
@@ -205,6 +207,14 @@ public final class Envelope implements Persistable, Serializable {
 
     public void setAction(Action action) {
         this.action = action;
+    }
+
+    public String getCommandPath() {
+        return commandPath;
+    }
+
+    public void setCommandPath(String commandPath) {
+        this.commandPath = commandPath;
     }
 
     public String getContentType() {
