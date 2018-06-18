@@ -41,6 +41,16 @@ public final class Envelope implements Persistable, Serializable {
 
     private Map<String, Object> headers;
     private Message message;
+    private Sensitivity sensitivity = Sensitivity.VERYHIGH;
+
+    public enum Sensitivity { // with default sensors chosen
+        NONE, // HTTP
+        LOW, // HTTPS
+        MEDIUM, // Tor
+        HIGH, // I2P
+        VERYHIGH, // I2P Bote
+        EXTREME // Mesh
+    }
 
     public static Envelope documentFactory() {
         return new Envelope(new Random(9743129723981731L).nextLong(), new DocumentMessage());
@@ -225,4 +235,11 @@ public final class Envelope implements Persistable, Serializable {
         headers.put(HEADER_CONTENT_TYPE, contentType);
     }
 
+    public Sensitivity getSensitivity() {
+        return sensitivity;
+    }
+
+    public void setSensitivity(Sensitivity sensitivity) {
+        this.sensitivity = sensitivity;
+    }
 }
