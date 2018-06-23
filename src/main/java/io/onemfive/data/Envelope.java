@@ -41,7 +41,7 @@ public final class Envelope implements Persistable, Serializable {
 
     private Map<String, Object> headers;
     private Message message;
-    private Sensitivity sensitivity = Sensitivity.VERYHIGH;
+    private Sensitivity sensitivity = Sensitivity.VERYHIGH; // Default to I2P
 
     public enum Sensitivity { // with default sensors chosen
         NONE, // HTTP
