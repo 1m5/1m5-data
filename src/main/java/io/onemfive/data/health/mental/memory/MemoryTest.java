@@ -23,7 +23,7 @@ import java.util.Random;
 })
 public class MemoryTest implements Serializable {
 
-    public enum Impairment {Unimpaired, Borderline, Impaired, Gross}
+//    public enum Impairment {Unimpaired, Borderline, Impaired, Gross}
 
     @Id
     private Long id;
@@ -31,41 +31,29 @@ public class MemoryTest implements Serializable {
     private String name;
     private Date timeStarted;
     private Date timeEnded;
-    private Impairment impairment = Impairment.Unimpaired;
+//    private Impairment impairment = Impairment.Unimpaired;
 
     private int difficulty = 1;
 
-    private int successes = 0; // Clicked when should have
-    private double successWeight = 1.0D; // TODO: Weights need to come from population
+    protected int successes = 0; // Clicked when should have
+    protected List<Long> successResponseTimes = new ArrayList<>();
+    protected long cumulativeSuccessResponseTimeMs = 0L;
+//    protected double successWeight = 0D; // TODO: Weights need to come from population
 
-    private int misses = 0; // Should have clicked but did not
-    private double missWeight = -2.5D; // TODO: Weights need to come from population
+    protected int misses = 0; // Should have clicked but did not
+    protected long cumulativeMissesResponseTimeMs = 0L;
+    protected List<Long> missesResponseTimes = new ArrayList<>();
+//    protected double missWeight = 0D; // TODO: Weights need to come from population
 
-    private int negative = 0; // Clickable but should not have clicked
-    private double negativeWeight = -5.0D; // TODO: Weights need to come from population
+    protected int negative = 0; // Clickable but should not have clicked
+    protected long cumulativeNegativeResponseTimeMs = 0L;
+    protected List<Long> negativeResponseTimes = new ArrayList<>();
+//    protected double negativeWeight = 0D; // TODO: Weights need to come from population
 
-    private int inappropriate = 0; // Not clickable but clicked
-    private double inappropriateWeight = -10.0D; // TODO: Weights need to come from population
-
-    private long avgResponseTimeOverallMs = 0L;
-    private long minReponseTimeOverallMs = 0L;
-    private long maxResponseTimeOverallMs = 0L;
-
-    private long avgResponseTimeSuccessMs = 0L;
-    private long minResponseTimeSuccessMs = 0L;
-    private long maxResponseTimeSuccessMs = 0L;
-
-    private long missTimeMs = 0L;
-
-    private long avgResponseTimeNegativeMs = 0L;
-    private long minResponseTimeNegativeMs = 0L;
-    private long maxResponseTimeNegativeMs = 0L;
-
-    private long avgResponseTimeInappropriateMs = 0L;
-    private long minResponseTimeInappropriateMs = 0L;
-    private long maxResponseTimeInappropriateMs = 0L;
-
-
+    protected int inappropriate = 0; // Not clickable but clicked
+    protected long cumulativeInappropriateResponseTimeMs = 0L;
+    protected List<Long> inappropriateResponseTimes = new ArrayList<>();
+//    protected double inappropriateWeight = 0D; // TODO: Weights need to come from population
 
     private List<Integer> cardsUsed = new ArrayList<>();
 
@@ -92,7 +80,7 @@ public class MemoryTest implements Serializable {
     private double bloodAlcoholContent = 0.0D;
     private double score = 0.0D;
 
-    private MemoryTestPopScores popScores = new MemoryTestPopScores(50, 200, 500);
+    private MemoryTestPopScores popScores = null;
 
     public MemoryTest() {}
 
@@ -100,10 +88,21 @@ public class MemoryTest implements Serializable {
         return new MemoryTest(new Random(984732498374923L).nextLong(), did, name);
     }
 
+    public static MemoryTest newInstance(String name, Long did, MemoryTestPopScores popScores) {
+        return new MemoryTest(new Random(984732498374923L).nextLong(), did, name, popScores);
+    }
+
     private MemoryTest(Long id, Long did, String name) {
         this.id = id;
         this.did = did;
         this.name = name;
+    }
+
+    private MemoryTest(Long id, Long did, String name, MemoryTestPopScores popScores) {
+        this.id = id;
+        this.did = did;
+        this.name = name;
+        this.popScores = popScores;
     }
 
     public Long getId() {
@@ -146,190 +145,6 @@ public class MemoryTest implements Serializable {
         this.timeEnded = timeEnded;
     }
 
-    public int getDifficulty() {
-        return difficulty;
-    }
-
-    public void setDifficulty(int difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public int getSuccesses() {
-        return successes;
-    }
-
-    public void addSuccess() {
-        successes += 1;
-        score += successWeight * difficulty;
-        determineImpairment();
-    }
-
-    public double getSuccessWeight() {
-        return successWeight;
-    }
-
-    public void setSuccessWeight(double successWeight) {
-        this.successWeight = successWeight;
-    }
-
-    public int getMisses() {
-        return misses;
-    }
-
-    public void addMiss() {
-        misses += 1;
-        score += missWeight * difficulty;
-        determineImpairment();
-    }
-
-    public double getMissWeight() {
-        return missWeight;
-    }
-
-    public void setMissWeight(double missWeight) {
-        this.missWeight = missWeight;
-    }
-
-    public int getNegative() {
-        return negative;
-    }
-
-    public void addNegative() {
-        negative += 1;
-        score += negativeWeight * difficulty;
-        determineImpairment();
-    }
-
-    public double getNegativeWeight() {
-        return negativeWeight;
-    }
-
-    public void setNegativeWeight(double negativeWeight) {
-        this.negativeWeight = negativeWeight;
-    }
-
-    public int getInappropriate() {
-        return inappropriate;
-    }
-
-    public void addInappropriate() {
-        inappropriate += 1;
-        score += inappropriateWeight * difficulty;
-        determineImpairment();
-    }
-
-    public double getInappropriateWeight() {
-        return inappropriateWeight;
-    }
-
-    public void setInappropriateWeight(double inappropriateWeight) {
-        this.inappropriateWeight = inappropriateWeight;
-    }
-
-    public long getAvgResponseTimeOverallMs() {
-        return avgResponseTimeOverallMs;
-    }
-
-    public void setAvgResponseTimeOverallMs(long avgResponseTimeOverallMs) {
-        this.avgResponseTimeOverallMs = avgResponseTimeOverallMs;
-    }
-
-    public long getMinReponseTimeOverallMs() {
-        return minReponseTimeOverallMs;
-    }
-
-    public void setMinReponseTimeOverallMs(long minReponseTimeOverallMs) {
-        this.minReponseTimeOverallMs = minReponseTimeOverallMs;
-    }
-
-    public long getMaxResponseTimeOverallMs() {
-        return maxResponseTimeOverallMs;
-    }
-
-    public void setMaxResponseTimeOverallMs(long maxResponseTimeOverallMs) {
-        this.maxResponseTimeOverallMs = maxResponseTimeOverallMs;
-    }
-
-    public long getAvgResponseTimeSuccessMs() {
-        return avgResponseTimeSuccessMs;
-    }
-
-    public void setAvgResponseTimeSuccessMs(long avgResponseTimeSuccessMs) {
-        this.avgResponseTimeSuccessMs = avgResponseTimeSuccessMs;
-    }
-
-    public long getMinResponseTimeSuccessMs() {
-        return minResponseTimeSuccessMs;
-    }
-
-    public void setMinResponseTimeSuccessMs(long minResponseTimeSuccessMs) {
-        this.minResponseTimeSuccessMs = minResponseTimeSuccessMs;
-    }
-
-    public long getMaxResponseTimeSuccessMs() {
-        return maxResponseTimeSuccessMs;
-    }
-
-    public void setMaxResponseTimeSuccessMs(long maxResponseTimeSuccessMs) {
-        this.maxResponseTimeSuccessMs = maxResponseTimeSuccessMs;
-    }
-
-    public long getMissTimeMs() {
-        return missTimeMs;
-    }
-
-    public void setMissTimeMs(long missTimeMs) {
-        this.missTimeMs = missTimeMs;
-    }
-
-    public long getAvgResponseTimeNegativeMs() {
-        return avgResponseTimeNegativeMs;
-    }
-
-    public void setAvgResponseTimeNegativeMs(long avgResponseTimeNegativeMs) {
-        this.avgResponseTimeNegativeMs = avgResponseTimeNegativeMs;
-    }
-
-    public long getMinResponseTimeNegativeMs() {
-        return minResponseTimeNegativeMs;
-    }
-
-    public void setMinResponseTimeNegativeMs(long minResponseTimeNegativeMs) {
-        this.minResponseTimeNegativeMs = minResponseTimeNegativeMs;
-    }
-
-    public long getMaxResponseTimeNegativeMs() {
-        return maxResponseTimeNegativeMs;
-    }
-
-    public void setMaxResponseTimeNegativeMs(long maxResponseTimeNegativeMs) {
-        this.maxResponseTimeNegativeMs = maxResponseTimeNegativeMs;
-    }
-
-    public long getAvgResponseTimeInappropriateMs() {
-        return avgResponseTimeInappropriateMs;
-    }
-
-    public void setAvgResponseTimeInappropriateMs(long avgResponseTimeInappropriateMs) {
-        this.avgResponseTimeInappropriateMs = avgResponseTimeInappropriateMs;
-    }
-
-    public long getMinResponseTimeInappropriateMs() {
-        return minResponseTimeInappropriateMs;
-    }
-
-    public void setMinResponseTimeInappropriateMs(long minResponseTimeInappropriateMs) {
-        this.minResponseTimeInappropriateMs = minResponseTimeInappropriateMs;
-    }
-
-    public long getMaxResponseTimeInappropriateMs() {
-        return maxResponseTimeInappropriateMs;
-    }
-
-    public void setMaxResponseTimeInappropriateMs(long maxResponseTimeInappropriateMs) {
-        this.maxResponseTimeInappropriateMs = maxResponseTimeInappropriateMs;
-    }
-
     public List<Integer> cardsUsed() {
         return cardsUsed;
     }
@@ -346,27 +161,208 @@ public class MemoryTest implements Serializable {
         this.bloodAlcoholContent = bloodAlcoholContent;
     }
 
-    public double getScore() {
-        return score;
+    public int getDifficulty() {
+        return difficulty;
     }
 
-    public MemoryTestPopScores getPopScores() {
-        return popScores;
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
     }
 
-    public void setPopScores(MemoryTestPopScores popScores) {
-        this.popScores = popScores;
+    public int getSuccesses() {
+        return successes;
     }
 
-    public Impairment getImpairment() {
-        return impairment;
+    public void addSuccess(long responseTimeMs) {
+        successes += 1;
+        successResponseTimes.add(responseTimeMs);
+        cumulativeSuccessResponseTimeMs += responseTimeMs;
     }
 
-    private void determineImpairment() {
-        if((bloodAlcoholContent >= 0.050 && bloodAlcoholContent < 0.080) || (popScores.getBorderlineImpairedScore() > 0 && score >= popScores.getBorderlineImpairedScore() && score < popScores.getImpairedScore())) impairment = Impairment.Borderline;
-        if((bloodAlcoholContent >= 0.080 && bloodAlcoholContent <= 0.1) || (popScores.getImpairedScore() > 0 && score >= popScores.getImpairedScore() && score < popScores.getGrosslyImpairedScore())) impairment = Impairment.Impaired;
-        if(bloodAlcoholContent > 0.1 || (popScores.getGrosslyImpairedScore() > 0 && score >= popScores.getGrosslyImpairedScore())) impairment = Impairment.Gross;
-        else impairment = Impairment.Unimpaired;
+//    public double getSuccessWeight() {
+//        return successWeight;
+//    }
+//
+//    public void setSuccessWeight(double successWeight) {
+//        this.successWeight = successWeight;
+//    }
+
+    public int getMisses() {
+        return misses;
     }
+
+    public void addMiss(long responseTimeMs) {
+        misses += 1;
+        missesResponseTimes.add(responseTimeMs);
+        cumulativeMissesResponseTimeMs += responseTimeMs;
+    }
+
+//    public double getMissWeight() {
+//        return missWeight;
+//    }
+//
+//    public void setMissWeight(double missWeight) {
+//        this.missWeight = missWeight;
+//    }
+
+    public int getNegative() {
+        return negative;
+    }
+
+    public void addNegative(long responseTimeMs) {
+        negative += 1;
+        negativeResponseTimes.add(responseTimeMs);
+        cumulativeNegativeResponseTimeMs += responseTimeMs;
+    }
+
+//    public double getNegativeWeight() {
+//        return negativeWeight;
+//    }
+//
+//    public void setNegativeWeight(double negativeWeight) {
+//        this.negativeWeight = negativeWeight;
+//    }
+
+    public int getInappropriate() {
+        return inappropriate;
+    }
+
+    public void addInappropriate(long responseTimeMs) {
+        inappropriate += 1;
+        inappropriateResponseTimes.add(responseTimeMs);
+        cumulativeInappropriateResponseTimeMs += responseTimeMs;
+    }
+
+//    public double getInappropriateWeight() {
+//        return inappropriateWeight;
+//    }
+//
+//    public void setInappropriateWeight(double inappropriateWeight) {
+//        this.inappropriateWeight = inappropriateWeight;
+//    }
+
+    public long getMaxResponseTimeSuccessMs() {
+        if(successResponseTimes == null || successResponseTimes.size() == 0)
+            return 0L;
+        long maxResponseTimeSuccessMs = 0L;
+        for(long responseTime : successResponseTimes) {
+            if(responseTime > maxResponseTimeSuccessMs)
+                maxResponseTimeSuccessMs = responseTime;
+        }
+        return maxResponseTimeSuccessMs;
+    }
+
+    public long getAvgResponseTimeSuccessMs() {
+        if(successes == 0) return 0L;
+        return cumulativeSuccessResponseTimeMs / successes;
+    }
+
+    public long getMinResponseTimeSuccessMs() {
+        if(successResponseTimes == null || successResponseTimes.size() == 0)
+            return 0L;
+        long minResponseTimeSuccessMs = 999999999999999999L;
+        for(long responseTime : successResponseTimes) {
+            if(responseTime < minResponseTimeSuccessMs)
+                minResponseTimeSuccessMs = responseTime;
+        }
+        return minResponseTimeSuccessMs;
+    }
+
+    public long getMaxResponseTimeMissTimeMs() {
+        if(missesResponseTimes == null || missesResponseTimes.size() == 0)
+            return 0L;
+        long maxResponseTimeMissMs = 0L;
+        for(long responseTime : missesResponseTimes) {
+            if(responseTime > maxResponseTimeMissMs)
+                maxResponseTimeMissMs = responseTime;
+        }
+        return maxResponseTimeMissMs;
+    }
+
+    public long getAvgResponseTimeMissMs() {
+        if(misses == 0) return 0L;
+        return cumulativeMissesResponseTimeMs / misses;
+    }
+
+    public long getMinResponseTimeMissMs() {
+        if(missesResponseTimes == null || missesResponseTimes.size() == 0)
+            return 0L;
+        long minResponseTimeMissesMs = 999999999999999999L;
+        for(long responseTime : missesResponseTimes) {
+            if(responseTime < minResponseTimeMissesMs)
+                minResponseTimeMissesMs = responseTime;
+        }
+        return minResponseTimeMissesMs;
+    }
+
+    public long getMaxResponseTimeNegativeMs() {
+        if(negativeResponseTimes == null || negativeResponseTimes.size() == 0)
+            return 0L;
+        long maxResponseTimeNegativeMs = 0L;
+        for(long responseTime : negativeResponseTimes) {
+            if(responseTime > maxResponseTimeNegativeMs)
+                maxResponseTimeNegativeMs = responseTime;
+        }
+        return maxResponseTimeNegativeMs;
+    }
+
+    public long getAvgResponseTimeNegativeMs() {
+        if(negative == 0) return 0L;
+        return cumulativeNegativeResponseTimeMs / negative;
+    }
+
+    public long getMinResponseTimeNegativeMs() {
+        if(negativeResponseTimes == null || negativeResponseTimes.size() == 0)
+            return 0L;
+        long minResponseTimeNegativeMs = 999999999999999999L;
+        for(long responseTime : negativeResponseTimes) {
+            if(responseTime < minResponseTimeNegativeMs)
+                minResponseTimeNegativeMs = responseTime;
+        }
+        return minResponseTimeNegativeMs;
+    }
+
+    public long getMaxResponseTimeInappropriateMs() {
+        if(inappropriateResponseTimes == null || inappropriateResponseTimes.size() == 0)
+            return 0L;
+        long maxResponseTimeInappropritaeMs = 0L;
+        for(long responseTime : inappropriateResponseTimes) {
+            if(responseTime > maxResponseTimeInappropritaeMs)
+                maxResponseTimeInappropritaeMs = responseTime;
+        }
+        return maxResponseTimeInappropritaeMs;
+    }
+
+    public long getAvgResponseTimeInappropriateMs() {
+        if(inappropriate == 0) return 0L;
+        return cumulativeInappropriateResponseTimeMs / inappropriate;
+    }
+
+    public long getMinResponseTimeInappropriateMs() {
+        if(inappropriateResponseTimes == null || inappropriateResponseTimes.size() == 0)
+            return 0L;
+        long maxResponseTimeInappropriateMs = 0L;
+        for(long responseTime : inappropriateResponseTimes) {
+            if(responseTime > maxResponseTimeInappropriateMs)
+                maxResponseTimeInappropriateMs = responseTime;
+        }
+        return maxResponseTimeInappropriateMs;
+    }
+
+//    public double getScore() {
+//        return score;
+//    }
+//
+//    public MemoryTestPopScores getPopScores() {
+//        return popScores;
+//    }
+//
+//    public void setPopScores(MemoryTestPopScores popScores) {
+//        this.popScores = popScores;
+//    }
+//
+//    public Impairment getImpairment() {
+//        return impairment;
+//    }
 
 }
