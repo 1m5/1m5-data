@@ -88,6 +88,7 @@ public final class Envelope implements Persistable, Serializable {
         e.setContentType(envelope.getContentType());
         e.setMultipart(envelope.getMultipart());
         e.setMessage(envelope.getMessage());
+        e.setSensitivity(envelope.getSensitivity());
         return e;
     }
 
