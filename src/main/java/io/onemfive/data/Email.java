@@ -10,15 +10,22 @@ import java.io.Serializable;
 public class Email implements Persistable, Serializable {
 
     private Long id;
-    private Long toDID;
-    private Long fromDID;
+    private DID toDID;
+    private DID fromDID;
     private String subject;
     private String message;
 
     public Email() {
     }
 
-    public Email(Long toDID, Long fromDID, String subject, String message) {
+    public Email(DID toDID, String subject, String message) {
+        // Anonymous Message
+        this.toDID = toDID;
+        this.subject = subject;
+        this.message = message;
+    }
+
+    public Email(DID toDID, DID fromDID, String subject, String message) {
         this.toDID = toDID;
         this.fromDID = fromDID;
         this.subject = subject;
@@ -33,19 +40,19 @@ public class Email implements Persistable, Serializable {
         this.id = id;
     }
 
-    public Long getToDID() {
+    public DID getToDID() {
         return toDID;
     }
 
-    public void setToDID(Long toDID) {
+    public void setToDID(DID toDID) {
         this.toDID = toDID;
     }
 
-    public Long getFromDID() {
+    public DID getFromDID() {
         return fromDID;
     }
 
-    public void setFromDID(Long fromDID) {
+    public void setFromDID(DID fromDID) {
         this.fromDID = fromDID;
     }
 
