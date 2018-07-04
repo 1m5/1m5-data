@@ -14,6 +14,7 @@ public class Email implements Persistable, Serializable {
     private DID fromDID;
     private String subject;
     private String message;
+    private int flag = 0;
 
     public Email() {
     }
@@ -70,5 +71,13 @@ public class Email implements Persistable, Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
     }
 }
