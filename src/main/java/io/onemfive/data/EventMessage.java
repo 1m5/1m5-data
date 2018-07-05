@@ -1,8 +1,53 @@
 package io.onemfive.data;
 
+import java.util.Random;
+
 /**
- * Created by Brian on 3/27/18.
+ * Events
+ *
+ * @author objectorange
  */
 public final class EventMessage extends BaseMessage {
+
+    public enum Type {
+        EMAIL,
+        EXCEPTION,
+        ERROR,
+        STATUS_SENSOR,
+        STATUS_SERVICE,
+        STATUS_BUS,
+        STATUS_CLIENT
+    }
+
+    private Long id = new Random(4763128720251739L).nextLong();
+    private Type type;
+    private String name;
+    private Object message;
+
+    public EventMessage(Type type){}
+
+    public Long getId() {
+        return id;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMessage(Object message) {
+        this.message = message;
+    }
+
+    public Object getMessage() {
+        return message;
+    }
 
 }
