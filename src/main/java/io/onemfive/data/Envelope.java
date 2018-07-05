@@ -52,6 +52,10 @@ public final class Envelope implements Persistable, Serializable {
         EXTREME // Mesh
     }
 
+    public static Envelope commandFactory() {
+        return new Envelope(new Random(9743129723981731L).nextLong(), new CommandMessage());
+    }
+
     public static Envelope documentFactory() {
         return new Envelope(new Random(9743129723981731L).nextLong(), new DocumentMessage());
     }
@@ -60,18 +64,16 @@ public final class Envelope implements Persistable, Serializable {
         return new Envelope(id, new DocumentMessage());
     }
 
-    public static Envelope messageFactory(MessageType type) {
-        return messageFactory(new Random(94878279281414L).nextLong(), type);
+    public static Envelope headersOnlyFactory() {
+        return new Envelope(new Random(9743129723981731L).nextLong(), null);
     }
 
-    public static Envelope messageFactory(Long id, MessageType type) {
-        switch (type) {
-            case COMMAND: return new Envelope(id, new CommandMessage());
-            case DOCUMENT: return new Envelope(id, new DocumentMessage());
-            case TEXT: return new Envelope(id, new TextMessage());
-            case EVENT: return new Envelope(id, new EventMessage());
-            default: return new Envelope(id, null);
-        }
+    public static Envelope eventFactory(EventMessage.Type type) {
+        return new Envelope(new Random(9743129723981731L).nextLong(), new EventMessage(type));
+    }
+
+    public static Envelope textFactory() {
+        return new Envelope(new Random(9743129723981731L).nextLong(), new TextMessage());
     }
 
     public static Envelope envelopeFactory(Envelope envelope){
