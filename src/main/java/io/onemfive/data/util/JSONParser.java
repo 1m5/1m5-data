@@ -4,8 +4,114 @@ import java.util.*;
 
 import java.lang.reflect.*;
 
-public class JSONParser
-{
+public class JSONParser {
+
+    public static Object parse(Object json)
+    {
+        if (json == null)
+            return null;
+        return parse(json.toString());
+    }
+
+    public static Object parse(String json)
+    {
+        if (json == null)
+            return null;
+        return parse(json, new int[1]);
+    }
+
+    public static List<Object> parseStream(String json)
+    {
+        if (json == null)
+            return null;
+        int[] pos = new int[1];
+        List<Object> res = new ArrayList<>();
+        json = json.trim();
+        while (pos[0] < json.length())
+            res.add(parse(json, pos));
+        return res;
+    }
+
+    public static String toString(Object obj)
+    {
+        StringBuffer buf = new StringBuffer();
+        toString(obj, buf);
+        return buf.toString();
+    }
+
+    public static String stripWhitespace(String src)
+    {
+        boolean inQuote = false, isEscaped = false;
+        StringBuffer buf = new StringBuffer();
+
+        for (int i=0; i<src.length(); i++)
+        {
+            char ch = src.charAt(i);
+
+            if (!inQuote)
+            {
+                if (ch == '"')
+                {
+                    inQuote = true;
+                    isEscaped = false;
+                }
+                else if (Character.isWhitespace(ch))
+                    continue;
+            }
+            else if (inQuote)
+            {
+                if (ch == '\\')
+                    isEscaped = !isEscaped;
+                else if ((ch == '"') && !isEscaped)
+                    inQuote = false;
+            }
+
+            buf.append(ch);
+        }
+
+        return buf.toString();
+    }
+
+    public static Object getValue(Object json, String path)
+    {
+        String[] parts = path.split("\\.");
+
+        for (int i=0; i<parts.length; i++)
+        {
+            int index = -1;
+            String key = parts[i];
+
+            if (key.endsWith("]"))
+            {
+                int b = key.indexOf("[");
+                try
+                {
+                    index = Integer.parseInt(key.substring(b+1, key.length()-1));
+                    key = key.substring(0, b);
+                }
+                catch (Exception e)
+                {
+                    throw new IllegalStateException("Path syntax error - invalid index");
+                }
+            }
+
+            if ((json != null) && (json instanceof Map))
+                json = ((Map) json).get(key);
+            else
+                return null;
+
+            if (index >= 0)
+            {
+                if ((json != null) && (json instanceof List))
+                    json = ((List) json).get(index);
+                else
+                    return null;
+            }
+        }
+
+        return json;
+    }
+
     private static char skipSpaces(String json, int[] pos)
     {
         while (true)
@@ -254,32 +360,6 @@ public class JSONParser
         throw new IllegalStateException("json object at at "+startPos+"  '"+json+"'");
     }
 
-    public static Object parse(Object json)
-    {
-        if (json == null)
-            return null;
-        return parse(json.toString());
-    }
-
-    public static Object parse(String json)
-    {
-        if (json == null)
-            return null;
-        return parse(json, new int[1]);
-    }
-
-    public static List<Object> parseStream(String json)
-    {
-        if (json == null)
-            return null;
-        int[] pos = new int[1];
-        List<Object> res = new ArrayList<>();
-        json = json.trim();
-        while (pos[0] < json.length())
-            res.add(parse(json, pos));
-        return res;
-    }
-
     private static void escapeString(String s, StringBuffer buf)
     {
         buf.append('"');
@@ -370,85 +450,5 @@ public class JSONParser
                 escapeString(obj.toString(), buf);
             }
         }
-    }
-
-    public static String toString(Object obj)
-    {
-        StringBuffer buf = new StringBuffer();
-        toString(obj, buf);
-        return buf.toString();
-    }
-
-    public static String stripWhitespace(String src)
-    {
-        boolean inQuote = false, isEscaped = false;
-        StringBuffer buf = new StringBuffer();
-
-        for (int i=0; i<src.length(); i++)
-        {
-            char ch = src.charAt(i);
-
-            if (!inQuote)
-            {
-                if (ch == '"')
-                {
-                    inQuote = true;
-                    isEscaped = false;
-                }
-                else if (Character.isWhitespace(ch))
-                    continue;
-            }
-            else if (inQuote)
-            {
-                if (ch == '\\')
-                    isEscaped = !isEscaped;
-                else if ((ch == '"') && !isEscaped)
-                    inQuote = false;
-            }
-
-            buf.append(ch);
-        }
-
-        return buf.toString();
-    }
-
-    public static Object getValue(Object json, String path)
-    {
-        String[] parts = path.split("\\.");
-
-        for (int i=0; i<parts.length; i++)
-        {
-            int index = -1;
-            String key = parts[i];
-
-            if (key.endsWith("]"))
-            {
-                int b = key.indexOf("[");
-                try
-                {
-                    index = Integer.parseInt(key.substring(b+1, key.length()-1));
-                    key = key.substring(0, b);
-                }
-                catch (Exception e)
-                {
-                    throw new IllegalStateException("Path syntax error - invalid index");
-                }
-            }
-
-            if ((json != null) && (json instanceof Map))
-                json = ((Map) json).get(key);
-            else
-                return null;
-
-            if (index >= 0)
-            {
-                if ((json != null) && (json instanceof List))
-                    json = ((List) json).get(index);
-                else
-                    return null;
-            }
-        }
-
-        return json;
     }
 }
