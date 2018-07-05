@@ -128,4 +128,11 @@ public final class DLC {
         }
         return ((DocumentMessage)m).data.get(0).get(clazz.getName());
     }
+
+    public static EventMessage getEventMessage(Envelope e) {
+        Message m = e.getMessage();
+        if(!(m instanceof EventMessage))
+            return null;
+        return (EventMessage)m;
+    }
 }
