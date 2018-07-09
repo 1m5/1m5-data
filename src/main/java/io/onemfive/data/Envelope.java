@@ -49,7 +49,8 @@ public final class Envelope implements Persistable, Serializable {
         MEDIUM, // Tor
         HIGH, // I2P
         VERYHIGH, // I2P Bote
-        EXTREME // Mesh
+        EXTREME, // Mesh
+        NEO // Intelligent Combination of Tor, I2P, I2P Bote, and Mesh
     }
 
     public static Envelope commandFactory() {
