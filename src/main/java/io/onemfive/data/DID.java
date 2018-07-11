@@ -35,6 +35,7 @@ public class DID implements Persistable, Serializable {
      */
     private String alias;
     private String passphrase;
+    private String description = "";
     private Status status = Status.UNREGISTERED;
     private Provider provider = Provider.I2P; // Default
     private boolean verified = false;
@@ -70,6 +71,14 @@ public class DID implements Persistable, Serializable {
 
     public void setPassphrase(String passphrase) {
         this.passphrase = passphrase;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Status getStatus() {
