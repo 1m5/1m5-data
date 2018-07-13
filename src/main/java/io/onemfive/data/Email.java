@@ -9,11 +9,14 @@ import java.io.Serializable;
  */
 public class Email implements Persistable, Serializable {
 
+    public enum Type {PlainText,JSON}
+
     private Long id;
     private DID toDID;
     private DID fromDID;
     private String subject;
     private String message;
+    private Type messageType = Type.PlainText;
     private int flag = 0;
 
     public Email() {
@@ -71,6 +74,14 @@ public class Email implements Persistable, Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Type getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(Type messageType) {
+        this.messageType = messageType;
     }
 
     public int getFlag() {
