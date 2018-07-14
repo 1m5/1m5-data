@@ -9,14 +9,15 @@ import java.io.Serializable;
  */
 public class Email implements Persistable, Serializable {
 
-    public enum Type {PlainText,JSON}
+    public static String MIMETYPE_JSON = "application/json";
+    public static String MIMETYPE_TEXT_PLAIN = "text/plain";
 
     private Long id;
     private DID toDID;
     private DID fromDID;
     private String subject;
     private String message;
-    private Type messageType = Type.PlainText;
+    private String messageType = MIMETYPE_TEXT_PLAIN;
     private int flag = 0;
 
     public Email() {
@@ -76,11 +77,11 @@ public class Email implements Persistable, Serializable {
         this.message = message;
     }
 
-    public Type getMessageType() {
+    public String getMessageType() {
         return messageType;
     }
 
-    public void setMessageType(Type messageType) {
+    public void setMessageType(String messageType) {
         this.messageType = messageType;
     }
 
