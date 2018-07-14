@@ -9,7 +9,6 @@ import java.io.Serializable;
  */
 public class Email implements Persistable, Serializable {
 
-    public static String MIMETYPE_JSON = "application/json";
     public static String MIMETYPE_TEXT_PLAIN = "text/plain";
 
     private Long id;
