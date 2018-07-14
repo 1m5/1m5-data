@@ -20,17 +20,17 @@ public final class EventMessage extends BaseMessage {
     }
 
     private Long id = new Random(4763128720251739L).nextLong();
-    private Type type;
+    private String type;
     private String name;
     private Object message;
 
-    public EventMessage(Type type){}
+    public EventMessage(String type){this.type = type;}
 
     public Long getId() {
         return id;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 

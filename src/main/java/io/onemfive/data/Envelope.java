@@ -70,7 +70,7 @@ public final class Envelope implements Persistable, Serializable {
     }
 
     public static Envelope eventFactory(EventMessage.Type type) {
-        return new Envelope(new Random(9743129723981731L).nextLong(), new EventMessage(type));
+        return new Envelope(new Random(9743129723981731L).nextLong(), new EventMessage(type.name()));
     }
 
     public static Envelope textFactory() {
