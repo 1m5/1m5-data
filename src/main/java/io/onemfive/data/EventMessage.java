@@ -11,12 +11,13 @@ public final class EventMessage extends BaseMessage {
 
     public enum Type {
         EMAIL,
-        EXCEPTION,
         ERROR,
+        EXCEPTION,
+        STATUS_BUS,
+        STATUS_CLIENT,
         STATUS_SENSOR,
         STATUS_SERVICE,
-        STATUS_BUS,
-        STATUS_CLIENT
+        TEXT
     }
 
     private Long id = new Random(4763128720251739L).nextLong();
