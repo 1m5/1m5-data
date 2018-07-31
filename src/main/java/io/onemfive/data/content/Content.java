@@ -134,7 +134,7 @@ public class Content implements Addressable, Serializable {
         if(hash != null && hashAlgorithm != null) {
             if(body != null) m.append("&");
             m.append("xt=urn:");
-            m.append(hashAlgorithm);
+            m.append(hashAlgorithm.toLowerCase());
             m.append(":");
             m.append(hash);
         }
