@@ -26,7 +26,7 @@ import java.util.Map;
 public class DID implements Persistable, Serializable {
 
     public enum Status {UNREGISTERED, ACTIVE, SUSPENDED}
-    public enum Provider {I2P}
+    public enum Provider {PGP,I2P}
 
     @Id
     private Long id;
@@ -37,7 +37,7 @@ public class DID implements Persistable, Serializable {
     private String passphrase;
     private String description = "";
     private Status status = Status.UNREGISTERED;
-    private Provider provider = Provider.I2P; // Default
+    private Provider provider = Provider.PGP; // Default
     private boolean verified = false;
     private boolean authenticated = false;
     private KeyPair masterKeys;
