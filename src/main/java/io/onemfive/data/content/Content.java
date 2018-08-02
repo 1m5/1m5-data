@@ -4,6 +4,8 @@ import io.onemfive.data.Addressable;
 import io.onemfive.data.DID;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,13 +19,14 @@ import java.util.Map;
 public class Content implements Addressable, Serializable {
 
     // Required if not root
-    private String parentHash;
+    private Content parent;
     // Required
     private String type;
     private Integer version = 0;
-    private DID author;
+    protected DID author;
     private byte[] body;
     private String bodyEncoding;
+    protected List<Content> fragments = new ArrayList<>();
     private Long createdAt;
     private String hash;
     private String hashAlgorithm;
@@ -31,21 +34,17 @@ public class Content implements Addressable, Serializable {
 
     public Content() {}
 
-    public Content(String hash) {
-        this.hash = hash;
-    }
-
     @Override
     public String getAddress() {
         return hash;
     }
 
-    public String getParentHash() {
-        return parentHash;
+    public Content getParent() {
+        return parent;
     }
 
-    public void setParentHash(String parentHash) {
-        this.parentHash = parentHash;
+    public void setParent(Content parent) {
+        this.parent = parent;
     }
 
     public String getType() {
@@ -73,11 +72,24 @@ public class Content implements Addressable, Serializable {
     }
 
     public byte[] getBody() {
-        return body;
+        if(fragments.size() > 0) {
+            StringBuilder b = new StringBuilder();
+            if (body != null) {
+                b.append(new String(body));
+            }
+            for (Content f : fragments) {
+                b.append(new String(f.getBody()));
+            }
+            return b.toString().getBytes();
+        } else {
+            return body;
+        }
     }
 
     public void setBody(byte[] body) {
         this.body = body;
+        hash = null; // will get rebuilt on next getHash()
+        incrementVersion();
     }
 
     public String getBodyEncoding() {
@@ -86,6 +98,20 @@ public class Content implements Addressable, Serializable {
 
     public void setBodyEncoding(String bodyEncoding) {
         this.bodyEncoding = bodyEncoding;
+    }
+
+    public void addFragment(Content content) {
+        fragments.add(content);
+        content.setParent(this);
+        hash = null; // will get rebuilt on next getHash()
+        incrementVersion();
+    }
+
+    private void incrementVersion() {
+        version++;
+        if(parent != null) {
+            parent.incrementVersion();
+        }
     }
 
     public Long getCreatedAt() {
@@ -97,10 +123,24 @@ public class Content implements Addressable, Serializable {
     }
 
     public String getHash() {
+        if(hash == null) {
+            if(hashAlgorithm == null) hashAlgorithm = DID.MESSAGE_DIGEST_SHA512;
+            MessageDigest md = null;
+            try {
+                md = MessageDigest.getInstance(hashAlgorithm);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+                return null;
+            }
+            byte[] b = getBody();
+            if(b != null) {
+                hash = new String(md.digest(b));
+            }
+        }
         return hash;
     }
 
-    public void setHash(String hash) {
+    private void setHash(String hash) {
         this.hash = hash;
     }
 
@@ -123,23 +163,23 @@ public class Content implements Addressable, Serializable {
     /**
      * Follows https://en.wikipedia.org/wiki/Magnet_URI_scheme
      *
-     * @return
+     * @return Magnet URI
      */
     public String getMagnetLink() {
         StringBuilder m = new StringBuilder();
-        if(body != null) {
+        if(getBody() != null) {
             m.append("xl=");
-            m.append(body.length);
+            m.append(getBody().length);
         }
-        if(hash != null && hashAlgorithm != null) {
+        if(getHash() != null && getHashAlgorithm() != null) {
             if(body != null) m.append("&");
             m.append("xt=urn:");
-            m.append(hashAlgorithm.toLowerCase());
+            m.append(getHashAlgorithm().toLowerCase());
             m.append(":");
-            m.append(hash);
+            m.append(getHash());
         }
         if(keywords != null && keywords.size() > 0) {
-            if(hash != null && hashAlgorithm != null) m.append("&");
+            if(getHash() != null && getHashAlgorithm() != null) m.append("&");
             m.append("kt=");
             boolean first = true;
             for(String k : keywords) {
@@ -157,13 +197,28 @@ public class Content implements Addressable, Serializable {
 
     public Map<String,Object> toMap() {
         Map<String,Object> m = new HashMap<>();
+        if(parent!=null) {
+            m.put("parentHash",parent.getHash());
+            m.put("parentHashAlgorithm",parent.getHashAlgorithm());
+        }
+        if(type!=null) m.put("type",type);
         if(body != null) m.put("body", new String(body));
         if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
         if(hash != null) m.put("hash", hash);
+        if(hashAlgorithm != null) m.put("hashAlgorithm",hashAlgorithm);
+        if(fragments != null && fragments.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            List<Map<String,Object>> fM = new ArrayList<>();
+            for(Content f : fragments) {
+                fM.add(f.toMap());
+            }
+            m.put("fragments",fM);
+        }
         if(author != null) {
             m.put("author.alias", author.getAlias());
-            m.put("author.encodedKey", author.getEncodedKey());
+            m.put("author.hash", new String(author.getHash()));
+            m.put("author.hashAlgorithm", author.getHashAlgorithm());
         }
         return m;
     }
@@ -178,15 +233,25 @@ public class Content implements Addressable, Serializable {
         } catch (Exception e) {
             return null;
         }
-        if(m.containsKey("parentHash")) c.setParentHash((String)m.get("parentHash"));
+        if(m.containsKey("parentHash")) {
+            Content cp = new Content();
+            cp.setHash((String)m.get("parentHash"));
+            cp.setHashAlgorithm((String)m.get("parentHashAlgorithm"));
+            c.setParent(cp);
+        }
         if(m.containsKey("body")) c.setBody(((String)m.get("body")).getBytes());
         if(m.containsKey("bodyEncoding")) c.setBodyEncoding((String)m.get("bodyEncoding"));
         if(m.containsKey("createdAt")) c.setCreatedAt(Long.parseLong((String)m.get("createdAt")));
         if(m.containsKey("hash")) c.setHash((String)m.get("hash"));
+        if(m.containsKey("hashAlgorithm")) c.setHashAlgorithm((String)m.get("hashAlgorithm"));
+        if(m.containsKey("fragments")){
+            List<Content> fragments = new ArrayList<>();
+
+        }
         if(m.containsKey("author.alias")) {
             DID did = new DID();
             did.setAlias((String)m.get("author.alias"));
-            did.addEncodedKey((String)m.get("author.encodedKey"));
+            did.setHashAndAlgorithm(((String)m.get("author.hash")).getBytes(),(String)m.get("author.hashAlgorithm"));
             c.setAuthor(did);
         }
         return c;

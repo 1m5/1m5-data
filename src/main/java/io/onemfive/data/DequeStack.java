@@ -5,7 +5,7 @@ import java.util.Deque;
 import java.util.NoSuchElementException;
 
 /**
- * TODO: Add Description
+ * Stack implementation using a Deque.
  *
  * @author objectorange
  */
