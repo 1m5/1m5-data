@@ -2,6 +2,7 @@ package io.onemfive.data.content;
 
 import io.onemfive.data.Addressable;
 import io.onemfive.data.DID;
+import io.onemfive.data.JSONSerializable;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
@@ -16,7 +17,7 @@ import java.util.Map;
  *
  * @author objectorange
  */
-public class Content implements Addressable, Serializable {
+public class Content implements Addressable, JSONSerializable, Serializable {
 
     // Required if not root
     private Content parent;
@@ -223,37 +224,43 @@ public class Content implements Addressable, Serializable {
         return m;
     }
 
-    public static Content fromMap(Map<String,Object> m) {
-        if(!m.containsKey("type"))
-            return null;
-        Content c = null;
-        try {
-            c = (Content)Class.forName((String)m.get("type")).newInstance();
-            c.setType((String)m.get("type"));
-        } catch (Exception e) {
-            return null;
-        }
+    public void fromMap(Map<String,Object> m) {
         if(m.containsKey("parentHash")) {
             Content cp = new Content();
             cp.setHash((String)m.get("parentHash"));
             cp.setHashAlgorithm((String)m.get("parentHashAlgorithm"));
-            c.setParent(cp);
+            setParent(cp);
         }
-        if(m.containsKey("body")) c.setBody(((String)m.get("body")).getBytes());
-        if(m.containsKey("bodyEncoding")) c.setBodyEncoding((String)m.get("bodyEncoding"));
-        if(m.containsKey("createdAt")) c.setCreatedAt(Long.parseLong((String)m.get("createdAt")));
-        if(m.containsKey("hash")) c.setHash((String)m.get("hash"));
-        if(m.containsKey("hashAlgorithm")) c.setHashAlgorithm((String)m.get("hashAlgorithm"));
+        if(m.containsKey("body")) setBody(((String)m.get("body")).getBytes());
+        if(m.containsKey("bodyEncoding")) setBodyEncoding((String)m.get("bodyEncoding"));
+        if(m.containsKey("createdAt")) setCreatedAt(Long.parseLong((String)m.get("createdAt")));
+        if(m.containsKey("hash")) setHash((String)m.get("hash"));
+        if(m.containsKey("hashAlgorithm")) setHashAlgorithm((String)m.get("hashAlgorithm"));
         if(m.containsKey("fragments")){
-            List<Content> fragments = new ArrayList<>();
-
+            List<Map<String,Object>> fragments = (List<Map<String,Object>>)m.get("fragments");
+            for(Map<String,Object> m2 : fragments){
+                String type = (String)m2.get("type");
+                if(type!=null){
+                    try {
+                        Object obj = Class.forName(type).newInstance();
+                        Content c = (Content)obj;
+                        c.fromMap(m2);
+                        addFragment(c);
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
         if(m.containsKey("author.alias")) {
             DID did = new DID();
             did.setAlias((String)m.get("author.alias"));
             did.setHashAndAlgorithm(((String)m.get("author.hash")).getBytes(),(String)m.get("author.hashAlgorithm"));
-            c.setAuthor(did);
+            setAuthor(did);
         }
-        return c;
     }
 }
