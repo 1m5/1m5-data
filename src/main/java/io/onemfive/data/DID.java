@@ -15,7 +15,7 @@ import java.util.*;
  * @author objectorange
  */
 @Indices({
-        @Index(value = "alias", type = IndexType.Fulltext)
+        @Index(value = "hashString", type = IndexType.Fulltext)
 })
 public class DID implements Persistable, Serializable {
 
@@ -124,6 +124,10 @@ public class DID implements Persistable, Serializable {
 
     public void setAuthenticated(boolean authenticated) {
         this.authenticated = authenticated;
+    }
+
+    public String getHashString() {
+        return new String(identityHash);
     }
 
     public byte[] getHash() {
