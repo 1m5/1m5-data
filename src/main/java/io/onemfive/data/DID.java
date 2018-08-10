@@ -14,9 +14,6 @@ import java.util.*;
  *
  * @author objectorange
  */
-@Indices({
-        @Index(value = "hashString", type = IndexType.Fulltext)
-})
 public class DID implements Persistable, Serializable {
 
     public static final String MESSAGE_DIGEST_SHA1 = "sha1";
@@ -39,6 +36,7 @@ public class DID implements Persistable, Serializable {
     private boolean authenticated = false;
     private String hashAlgorithm;
     private byte[] identityHash;
+    private Map<String,PublicKey> identities = new HashMap<>();
     private Map<String,Peer> peers = new HashMap<>();
 
     public static DID create(String alias, String passphrase) throws NoSuchAlgorithmException {
@@ -141,6 +139,10 @@ public class DID implements Persistable, Serializable {
     public void setHashAndAlgorithm(byte[] hash, String hashAlgorithm) {
         this.identityHash = hash;
         this.hashAlgorithm = hashAlgorithm;
+    }
+
+    public PublicKey getPublicKey(String alias) {
+        return identities.get(alias);
     }
 
     @Override
