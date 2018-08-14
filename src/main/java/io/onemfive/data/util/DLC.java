@@ -129,6 +129,24 @@ public final class DLC {
         return ((DocumentMessage)m).data.get(0).get(clazz.getName());
     }
 
+    public static boolean addNVP(String name, Object object, Envelope envelope){
+        Message m = envelope.getMessage();
+        if(!(m instanceof DocumentMessage)) {
+            return false;
+        }
+        DocumentMessage dm = (DocumentMessage)m;
+        dm.data.get(0).put(name, object);
+        return true;
+    }
+
+    public static Object getValue(String name, Envelope envelope) {
+        Message m = envelope.getMessage();
+        if(!(m instanceof DocumentMessage)) {
+            return null;
+        }
+        return ((DocumentMessage)m).data.get(0).get(name);
+    }
+
     public static EventMessage getEventMessage(Envelope e) {
         Message m = e.getMessage();
         if(!(m instanceof EventMessage))
