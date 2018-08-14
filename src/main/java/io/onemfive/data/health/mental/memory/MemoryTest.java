@@ -29,6 +29,7 @@ public class MemoryTest implements Serializable {
     private Long id;
     private Long did;
     private String name;
+    private Boolean baseline;
     private Date timeStarted;
     private Date timeEnded;
 //    private Impairment impairment = Impairment.Unimpaired;
@@ -127,6 +128,14 @@ public class MemoryTest implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getBaseline() {
+        return baseline;
+    }
+
+    public void setBaseline(Boolean baseline) {
+        this.baseline = baseline;
     }
 
     public Date getTimeStarted() {
