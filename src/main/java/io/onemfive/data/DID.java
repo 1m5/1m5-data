@@ -1,27 +1,17 @@
 package io.onemfive.data;
 
-import org.dizitart.no2.IndexType;
 import org.dizitart.no2.objects.Id;
-import org.dizitart.no2.objects.Index;
-import org.dizitart.no2.objects.Indices;
 
 import java.io.Serializable;
 import java.security.*;
 import java.util.*;
 
 /**
- * TODO: Add Description
+ * Decentralized IDentification
  *
  * @author objectorange
  */
 public class DID implements Persistable, Serializable {
-
-    public static final String MESSAGE_DIGEST_SHA1 = "sha1";
-    public static final String MESSAGE_DIGEST_SHA256 = "sha256";
-    public static final String MESSAGE_DIGEST_SHA384 = "sha384";
-    public static final String MESSAGE_DIGEST_SHA512 = "sha512";
-
-    public static final String ENCODING_BASE64 = "base64";
 
     public enum Status {INACTIVE, ACTIVE, SUSPENDED}
 
@@ -30,31 +20,15 @@ public class DID implements Persistable, Serializable {
     private String alias;
     private volatile String passphrase;
     private byte[] passphraseHash;
+    private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1";
     private String description = "";
     private Status status = Status.INACTIVE;
     private boolean verified = false;
     private boolean authenticated = false;
-    private String hashAlgorithm;
     private byte[] identityHash;
+    private String identityHashAlgorithm;
     private Map<String,PublicKey> identities = new HashMap<>();
     private Map<String,Peer> peers = new HashMap<>();
-
-    public static DID create(String alias, String passphrase) throws NoSuchAlgorithmException {
-        return create(alias, passphrase, MESSAGE_DIGEST_SHA512);
-    }
-
-    public static DID create(String alias, String passphrase, String hashAlgorithm) throws NoSuchAlgorithmException {
-        DID did = new DID();
-        did.setId(new SecureRandom(new byte[32]).nextLong());
-        did.setAlias(alias);
-        did.setPassphrase(passphrase, hashAlgorithm);
-        long nonce = new SecureRandom(new byte[64]).nextLong();
-        String key = alias+"|"+passphrase+"|"+nonce;
-        MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
-        did.setHashAndAlgorithm(md.digest(key.getBytes()), hashAlgorithm);
-        did.setStatus(Status.ACTIVE);
-        return did;
-    }
 
     public DID() {}
 
@@ -78,10 +52,8 @@ public class DID implements Persistable, Serializable {
         return passphrase;
     }
 
-    public void setPassphrase(String passphrase, String hashAlgorithm) throws NoSuchAlgorithmException {
+    public void setPassphrase(String passphrase) throws NoSuchAlgorithmException {
         this.passphrase = passphrase;
-        MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
-        this.passphraseHash = md.digest(passphrase.getBytes());
     }
 
     public void addPeer(Peer peer) {
@@ -124,21 +96,36 @@ public class DID implements Persistable, Serializable {
         this.authenticated = authenticated;
     }
 
-    public String getHashString() {
-        return new String(identityHash);
+    public byte[] getPassphraseHash() {
+        return passphraseHash;
     }
 
-    public byte[] getHash() {
+    public void setPassphraseHash(byte[] passphraseHash) {
+        this.passphraseHash = passphraseHash;
+    }
+
+    public String getPassphraseHashAlgorithm() {
+        return passphraseHashAlgorithm;
+    }
+
+    public void setPassphraseHashAlgorithm(String passphraseHashAlgorithm) {
+        this.passphraseHashAlgorithm = passphraseHashAlgorithm;
+    }
+
+    public byte[] getIdentityHash() {
         return identityHash;
     }
 
-    public String getHashAlgorithm() {
-        return hashAlgorithm;
+    public void setIdentityHash(byte[] identityHash) {
+        this.identityHash = identityHash;
     }
 
-    public void setHashAndAlgorithm(byte[] hash, String hashAlgorithm) {
-        this.identityHash = hash;
-        this.hashAlgorithm = hashAlgorithm;
+    public String getIdentityHashAlgorithm() {
+        return identityHashAlgorithm;
+    }
+
+    public void setIdentityHashAlgorithm(String identityHashAlgorithm) {
+        this.identityHashAlgorithm = identityHashAlgorithm;
     }
 
     public PublicKey getPublicKey(String alias) {
@@ -154,14 +141,14 @@ public class DID implements Persistable, Serializable {
     public boolean equals(Object o) {
         if(o instanceof DID) {
             DID did2 = (DID)o;
-            if(getHash() != null && did2.getHash() != null)
-                return Arrays.equals(getHash(), did2.getHash());
+            if(getIdentityHash() != null && did2.getIdentityHash() != null)
+                return Arrays.equals(getIdentityHash(), did2.getIdentityHash());
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return new String(getHash());
+        return new String(getIdentityHash());
     }
 }

@@ -125,7 +125,7 @@ public class Content implements Addressable, JSONSerializable, Serializable {
 
     public String getHash() {
         if(hash == null) {
-            if(hashAlgorithm == null) hashAlgorithm = DID.MESSAGE_DIGEST_SHA512;
+            if(hashAlgorithm == null) hashAlgorithm = "sha512";
             MessageDigest md = null;
             try {
                 md = MessageDigest.getInstance(hashAlgorithm);
@@ -218,8 +218,8 @@ public class Content implements Addressable, JSONSerializable, Serializable {
         }
         if(author != null) {
             m.put("author.alias", author.getAlias());
-            m.put("author.hash", new String(author.getHash()));
-            m.put("author.hashAlgorithm", author.getHashAlgorithm());
+            m.put("author.identityHash", new String(author.getIdentityHash()));
+            m.put("author.identityHashAlgorithm", author.getIdentityHashAlgorithm());
         }
         return m;
     }
@@ -259,7 +259,8 @@ public class Content implements Addressable, JSONSerializable, Serializable {
         if(m.containsKey("author.alias")) {
             DID did = new DID();
             did.setAlias((String)m.get("author.alias"));
-            did.setHashAndAlgorithm(((String)m.get("author.hash")).getBytes(),(String)m.get("author.hashAlgorithm"));
+            did.setIdentityHash(((String)m.get("author.identityHash")).getBytes());
+            did.setIdentityHashAlgorithm((String)m.get("author.identityHashAlgorithm"));
             setAuthor(did);
         }
     }
