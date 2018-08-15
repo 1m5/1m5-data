@@ -22,9 +22,9 @@ public class DID implements Persistable, Serializable {
     private byte[] passphraseHash;
     private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1";
     private String description = "";
-    private Status status = Status.INACTIVE;
-    private boolean verified = false;
-    private boolean authenticated = false;
+    private Status status = Status.ACTIVE;
+    private volatile boolean verified = false;
+    private volatile boolean authenticated = false;
     private byte[] identityHash;
     private String identityHashAlgorithm;
     private Map<String,PublicKey> identities = new HashMap<>();
