@@ -39,7 +39,7 @@ public class DID implements Persistable, JSONSerializable {
         return passphrase;
     }
 
-    public void setPassphrase(String passphrase) throws NoSuchAlgorithmException {
+    public void setPassphrase(String passphrase) {
         this.passphrase = passphrase;
     }
 
