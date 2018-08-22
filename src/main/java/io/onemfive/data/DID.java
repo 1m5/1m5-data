@@ -1,8 +1,5 @@
 package io.onemfive.data;
 
-import org.dizitart.no2.objects.Id;
-
-import java.io.Serializable;
 import java.security.*;
 import java.util.*;
 
@@ -11,34 +8,24 @@ import java.util.*;
  *
  * @author objectorange
  */
-public class DID implements Persistable, Serializable {
+public class DID implements Persistable, JSONSerializable {
 
     public enum Status {INACTIVE, ACTIVE, SUSPENDED}
 
-    @Id
-    private Long id;
     private String alias;
     private volatile String passphrase;
     private byte[] passphraseHash;
     private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1";
     private String description = "";
     private Status status = Status.ACTIVE;
-    private volatile boolean verified = false;
-    private volatile boolean authenticated = false;
+    private volatile Boolean verified = false;
+    private volatile Boolean authenticated = false;
     private byte[] identityHash;
     private String identityHashAlgorithm;
     private Map<String,PublicKey> identities = new HashMap<>();
     private Map<String,Peer> peers = new HashMap<>();
 
     public DID() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getAlias() {
         return alias;
@@ -133,6 +120,36 @@ public class DID implements Persistable, Serializable {
     }
 
     @Override
+    public Map<String, Object> toMap() {
+        Map<String,Object> m = new HashMap<>();
+        if(alias!=null) m.put("alias",alias);
+        if(passphrase!=null) m.put("passphrase",passphrase);
+        if(passphraseHash!=null) m.put("passphraseHash",new String(passphraseHash));
+        if(passphraseHashAlgorithm!=null) m.put("passphraseHashAlgorithm",passphraseHashAlgorithm);
+        if(description!=null) m.put("description",description);
+        if(status!=null) m.put("status",status.name());
+        if(verified!=null) m.put("verified",verified.toString());
+        if(authenticated!=null) m.put("authenticated",authenticated.toString());
+        if(identityHash!=null) m.put("identityHash",new String(identityHash));
+        if(identityHashAlgorithm!=null) m.put("identityHashAlgorithm",identityHashAlgorithm);
+        return m;
+    }
+
+    @Override
+    public void fromMap(Map<String, Object> m) {
+        if(m.get("alias")!=null) alias = (String)m.get("alias");
+        if(m.get("passphrase")!=null) passphrase = (String)m.get("passphrase");
+        if(m.get("passphraseHash")!=null) passphraseHash = ((String)m.get("passphraseHash")).getBytes();
+        if(m.get("passphraseHashAlgorithm")!=null) passphraseHashAlgorithm = (String)m.get("passphraseHashAlgorithm");
+        if(m.get("description")!=null) description = (String)m.get("description");
+        if(m.get("status")!=null) status = Status.valueOf((String)m.get("status"));
+        if(m.get("verified")!=null) verified = Boolean.parseBoolean((String)m.get("verified"));
+        if(m.get("authenticated")!=null) authenticated = Boolean.parseBoolean((String)m.get("authenticated"));
+        if(m.get("identityHash")!=null) identityHash = ((String)m.get("identityHash")).getBytes();
+        if(m.get("identityHashAlgorithm")!=null) identityHashAlgorithm = (String)m.get("identityHashAlgorithm");
+    }
+
+    @Override
     public int hashCode() {
         return Arrays.hashCode(identityHash);
     }
@@ -149,6 +166,11 @@ public class DID implements Persistable, Serializable {
 
     @Override
     public String toString() {
-        return new String(getIdentityHash());
+        if(identityHash != null)
+            return new String(identityHash);
+        else if(alias != null)
+            return alias;
+        else
+            return null;
     }
 }

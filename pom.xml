@@ -48,18 +48,7 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.dizitart</groupId>
-			<artifactId>nitrite</artifactId>
-			<version>3.0.0</version>
-			<!--<license>Apache 2.0</license>-->
-			<exclusions>
-				<exclusion>
-					<groupId>com.squareup.okhttp3</groupId>
-					<artifactId>okhttp</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+
 	</dependencies>
 
 	<build>

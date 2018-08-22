@@ -5,8 +5,6 @@ import io.onemfive.data.DID;
 import io.onemfive.data.JSONSerializable;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,24 +122,10 @@ public class Content implements Addressable, JSONSerializable, Serializable {
     }
 
     public String getHash() {
-        if(hash == null) {
-            if(hashAlgorithm == null) hashAlgorithm = "sha512";
-            MessageDigest md = null;
-            try {
-                md = MessageDigest.getInstance(hashAlgorithm);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-                return null;
-            }
-            byte[] b = getBody();
-            if(b != null) {
-                hash = new String(md.digest(b));
-            }
-        }
         return hash;
     }
 
-    private void setHash(String hash) {
+    public void setHash(String hash) {
         this.hash = hash;
     }
 
