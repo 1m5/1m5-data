@@ -18,9 +18,7 @@ public class Peer implements Addressable, JSONSerializable {
     private String network;
     private String address;
 
-    public Peer() {
-
-    }
+    public Peer() {}
 
     public Peer(String network, String address) {
         this.network = network;
