@@ -15,13 +15,13 @@ public class DID implements Persistable, JSONSerializable {
     private String alias;
     private volatile String passphrase;
     private byte[] passphraseHash;
-    private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1";
+    private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
     private String description = "";
     private Status status = Status.ACTIVE;
     private volatile Boolean verified = false;
     private volatile Boolean authenticated = false;
     private byte[] identityHash;
-    private String identityHashAlgorithm;
+    private String identityHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
     private Map<String,PublicKey> identities = new HashMap<>();
     private Map<String,Peer> peers = new HashMap<>();
 
