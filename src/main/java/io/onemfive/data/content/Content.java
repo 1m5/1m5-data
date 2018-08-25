@@ -173,7 +173,7 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         if(m.containsKey("author.alias")) {
             DID did = new DID();
             did.setAlias((String)m.get("author.alias"));
-            did.setIdentityHash(((String)m.get("author.identityHash")).getBytes());
+            did.setIdentityHash(((String)m.get("author.identityHash")));
             did.setIdentityHashAlgorithm((String)m.get("author.identityHashAlgorithm"));
             setAuthor(did);
         }

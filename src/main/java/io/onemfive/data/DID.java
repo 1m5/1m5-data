@@ -14,13 +14,13 @@ public class DID implements Persistable, JSONSerializable {
 
     private String alias;
     private volatile String passphrase;
-    private byte[] passphraseHash;
+    private String passphraseHash;
     private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
     private String description = "";
     private Status status = Status.ACTIVE;
     private volatile Boolean verified = false;
     private volatile Boolean authenticated = false;
-    private byte[] identityHash;
+    private String identityHash;
     private String identityHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
     private Map<String,PublicKey> identities = new HashMap<>();
     private Map<String,Peer> peers = new HashMap<>();
@@ -83,11 +83,11 @@ public class DID implements Persistable, JSONSerializable {
         this.authenticated = authenticated;
     }
 
-    public byte[] getPassphraseHash() {
+    public String getPassphraseHash() {
         return passphraseHash;
     }
 
-    public void setPassphraseHash(byte[] passphraseHash) {
+    public void setPassphraseHash(String passphraseHash) {
         this.passphraseHash = passphraseHash;
     }
 
@@ -99,11 +99,11 @@ public class DID implements Persistable, JSONSerializable {
         this.passphraseHashAlgorithm = passphraseHashAlgorithm;
     }
 
-    public byte[] getIdentityHash() {
+    public String getIdentityHash() {
         return identityHash;
     }
 
-    public void setIdentityHash(byte[] identityHash) {
+    public void setIdentityHash(String identityHash) {
         this.identityHash = identityHash;
     }
 
@@ -124,13 +124,13 @@ public class DID implements Persistable, JSONSerializable {
         Map<String,Object> m = new HashMap<>();
         if(alias!=null) m.put("alias",alias);
         if(passphrase!=null) m.put("passphrase",passphrase);
-        if(passphraseHash!=null) m.put("passphraseHash",new String(passphraseHash));
+        if(passphraseHash!=null) m.put("passphraseHash",passphraseHash);
         if(passphraseHashAlgorithm!=null) m.put("passphraseHashAlgorithm",passphraseHashAlgorithm);
         if(description!=null) m.put("description",description);
         if(status!=null) m.put("status",status.name());
         if(verified!=null) m.put("verified",verified.toString());
         if(authenticated!=null) m.put("authenticated",authenticated.toString());
-        if(identityHash!=null) m.put("identityHash",new String(identityHash));
+        if(identityHash!=null) m.put("identityHash",identityHash);
         if(identityHashAlgorithm!=null) m.put("identityHashAlgorithm",identityHashAlgorithm);
         return m;
     }
@@ -139,19 +139,19 @@ public class DID implements Persistable, JSONSerializable {
     public void fromMap(Map<String, Object> m) {
         if(m.get("alias")!=null) alias = (String)m.get("alias");
         if(m.get("passphrase")!=null) passphrase = (String)m.get("passphrase");
-        if(m.get("passphraseHash")!=null) passphraseHash = ((String)m.get("passphraseHash")).getBytes();
+        if(m.get("passphraseHash")!=null) passphraseHash = ((String)m.get("passphraseHash"));
         if(m.get("passphraseHashAlgorithm")!=null) passphraseHashAlgorithm = (String)m.get("passphraseHashAlgorithm");
         if(m.get("description")!=null) description = (String)m.get("description");
         if(m.get("status")!=null) status = Status.valueOf((String)m.get("status"));
         if(m.get("verified")!=null) verified = Boolean.parseBoolean((String)m.get("verified"));
         if(m.get("authenticated")!=null) authenticated = Boolean.parseBoolean((String)m.get("authenticated"));
-        if(m.get("identityHash")!=null) identityHash = ((String)m.get("identityHash")).getBytes();
+        if(m.get("identityHash")!=null) identityHash = ((String)m.get("identityHash"));
         if(m.get("identityHashAlgorithm")!=null) identityHashAlgorithm = (String)m.get("identityHashAlgorithm");
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(identityHash);
+        return Arrays.hashCode(identityHash.getBytes());
     }
 
     @Override
@@ -159,7 +159,7 @@ public class DID implements Persistable, JSONSerializable {
         if(o instanceof DID) {
             DID did2 = (DID)o;
             if(getIdentityHash() != null && did2.getIdentityHash() != null)
-                return Arrays.equals(getIdentityHash(), did2.getIdentityHash());
+                return getIdentityHash().equals(did2.getIdentityHash());
         }
         return false;
     }
@@ -167,7 +167,7 @@ public class DID implements Persistable, JSONSerializable {
     @Override
     public String toString() {
         if(identityHash != null)
-            return new String(identityHash);
+            return identityHash;
         else if(alias != null)
             return alias;
         else
