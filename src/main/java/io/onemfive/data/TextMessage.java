@@ -5,11 +5,11 @@ package io.onemfive.data;
  *
  * @author objectorange
  */
-public final class TextMessage extends BaseMessage {
+public class TextMessage extends BaseMessage {
 
-    private DID to;
-    private DID from;
-    private String text;
+    protected DID to;
+    protected DID from;
+    protected String text;
 
     public TextMessage() {
     }
