@@ -18,7 +18,7 @@ import java.util.Map;
 public abstract class Content implements Addressable, JSONSerializable, Serializable {
 
     // Required
-    private String type;
+    protected String type;
     private Integer version = 0;
     protected DID author;
     private byte[] body;
@@ -28,7 +28,9 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
     private String hashAlgorithm;
     private List<String> keywords = new ArrayList<>();
 
-    public Content() {}
+    public Content() {
+        type = getClass().getName();
+    }
 
     @Override
     public String getAddress() {
@@ -157,25 +159,21 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         if(hash != null) m.put("hash", hash);
         if(hashAlgorithm != null) m.put("hashAlgorithm",hashAlgorithm);
         if(author != null) {
-            m.put("author.alias", author.getAlias());
-            m.put("author.identityHash", new String(author.getIdentityHash()));
-            m.put("author.identityHashAlgorithm", author.getIdentityHashAlgorithm());
+            m.put("author", author.toMap());
         }
         return m;
     }
 
     public void fromMap(Map<String,Object> m) {
+        if(m.containsKey("type")) setType((String)m.get("type"));
         if(m.containsKey("body")) setBody(((String)m.get("body")).getBytes());
         if(m.containsKey("bodyEncoding")) setBodyEncoding((String)m.get("bodyEncoding"));
         if(m.containsKey("createdAt")) setCreatedAt(Long.parseLong((String)m.get("createdAt")));
         if(m.containsKey("hash")) setHash((String)m.get("hash"));
         if(m.containsKey("hashAlgorithm")) setHashAlgorithm((String)m.get("hashAlgorithm"));
-        if(m.containsKey("author.alias")) {
-            DID did = new DID();
-            did.setAlias((String)m.get("author.alias"));
-            did.setIdentityHash(((String)m.get("author.identityHash")));
-            did.setIdentityHashAlgorithm((String)m.get("author.identityHashAlgorithm"));
-            setAuthor(did);
+        if(m.containsKey("author")) {
+            author = new DID();
+            author.fromMap((Map<String,Object>)m.get("author"));
         }
     }
 }
