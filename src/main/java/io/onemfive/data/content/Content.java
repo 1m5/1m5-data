@@ -161,6 +161,9 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         if(author != null) {
             m.put("author", author.toMap());
         }
+        if(keywords != null && keywords.size() > 0) {
+            m.put("keywords", keywords);
+        }
         return m;
     }
 
@@ -175,5 +178,6 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
             author = new DID();
             author.fromMap((Map<String,Object>)m.get("author"));
         }
+        if(m.containsKey("keywords")) keywords = (List<String>)m.get("keywords");
     }
 }
