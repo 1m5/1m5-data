@@ -15,6 +15,7 @@ public final class EventMessage extends BaseMessage {
         EXCEPTION,
         STATUS_BUS,
         STATUS_CLIENT,
+        STATUS_DID,
         STATUS_SENSOR,
         STATUS_SERVICE,
         TEXT
