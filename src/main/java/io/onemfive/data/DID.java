@@ -1,6 +1,8 @@
 package io.onemfive.data;
 
-import java.security.*;
+import io.onemfive.data.security.PublicKey;
+import io.onemfive.data.util.Base64;
+
 import java.util.*;
 
 /**
@@ -132,6 +134,28 @@ public class DID implements Persistable, JSONSerializable {
         if(authenticated!=null) m.put("authenticated",authenticated.toString());
         if(identityHash!=null) m.put("identityHash",identityHash);
         if(identityHashAlgorithm!=null) m.put("identityHashAlgorithm",identityHashAlgorithm);
+        if(identities != null && identities.size() > 0) {
+            Map<String,Object> ids = new HashMap<>();
+            m.put("identities",ids);
+            Set<String> aliases = identities.keySet();
+            for(String a : aliases) {
+                Map<String,Object> key = new HashMap<>();
+                ids.put(a, key);
+                PublicKey p = (PublicKey)ids.get(a);
+                key.put("algorithm", p.getAlgorithm());
+                key.put("format", p.getFormat());
+                key.put("encodedInBase64", Base64.encode(p.getEncoded()));
+                key.put("class", p.getClass().getName());
+            }
+        }
+        if(peers != null && peers.size() > 0) {
+            Map<String,Object> pm = new HashMap<>();
+            m.put("peers",pm);
+            Set<String> networks = peers.keySet();
+            for(String n : networks) {
+                pm.put(n,((Peer)m.get(n)).toMap());
+            }
+        }
         return m;
     }
 
@@ -147,11 +171,43 @@ public class DID implements Persistable, JSONSerializable {
         if(m.get("authenticated")!=null) authenticated = Boolean.parseBoolean((String)m.get("authenticated"));
         if(m.get("identityHash")!=null) identityHash = ((String)m.get("identityHash"));
         if(m.get("identityHashAlgorithm")!=null) identityHashAlgorithm = (String)m.get("identityHashAlgorithm");
+        if(m.get("identities")!=null) {
+            Map<String,Object> im = (Map<String,Object>)m.get("identities");
+            identities = new HashMap<>();
+            Set<String> aliases = im.keySet();
+            PublicKey key;
+            for(String a : aliases) {
+                Map<String,Object> km = (Map<String,Object>)im.get(a);
+                key = new PublicKey();
+                key.setAlgorithm((String)km.get("algorithm"));
+                key.setFormat((String)km.get("format"));
+                if(key.getEncodedInBase64()!=null) {
+                    key.setEncoded(Base64.decode(key.getEncodedInBase64()));
+                }
+                identities.put(a, key);
+            }
+        }
+        Peer p;
+        if(m.get("peers")!=null){
+            Map<String,Object> pm = (Map<String,Object>)m.get("peers");
+            peers = new HashMap<>();
+            Set<String> networks = pm.keySet();
+            for(String n : networks) {
+                p = new Peer();
+                p.fromMap((Map<String,Object>)pm.get(n));
+                peers.put(n, p);
+            }
+        }
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(identityHash.getBytes());
+        if(identityHash!=null)
+            return identityHash.hashCode();
+        else if(alias!=null)
+            return alias.hashCode();
+        else
+            return 0;
     }
 
     @Override
