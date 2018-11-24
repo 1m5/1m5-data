@@ -1,10 +1,17 @@
 package io.onemfive.data;
 
 /**
- * TODO: Add Description
+ * Supported networks with addressable peers.
  *
  * @author objectorange
  */
 public enum Network {
-    IDM, I2P, TOR, CLEAR
+    // Invisible Direct Mesh (1M5 internal project)
+    IDM,
+    // Invisible Internet Project - https://geti2p.net/
+    I2P,
+    // TOR - https://www.torproject.org/
+    TOR,
+    // Clearnet
+    CLEAR
 }
