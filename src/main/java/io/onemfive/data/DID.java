@@ -10,11 +10,16 @@ import java.util.*;
  *
  * @author objectorange
  */
-public class DID implements Persistable, JSONSerializable {
+public class DID implements Addressable, Persistable, JSONSerializable {
 
     public enum Status {INACTIVE, ACTIVE, SUSPENDED}
 
     private String alias;
+    // Hash of Alias - meant for local identification within this application only.
+    // Use identities for external identification.
+    // May want to change to public key in future based on private
+    private String address;
+    private String aliasHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
     private volatile String passphrase;
     private String passphraseHash;
     private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
@@ -22,9 +27,9 @@ public class DID implements Persistable, JSONSerializable {
     private Status status = Status.ACTIVE;
     private volatile Boolean verified = false;
     private volatile Boolean authenticated = false;
-    private String identityHash;
-    private String identityHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
+    // Identities used for personal identification: Alias, PublicKey
     private Map<String,PublicKey> identities = new HashMap<>();
+    // Identities used in peer networks: Peer.Network, Peer
     private Map<String,Peer> peers = new HashMap<>();
 
     public DID() {}
@@ -35,6 +40,22 @@ public class DID implements Persistable, JSONSerializable {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAliasHashAlgorithm() {
+        return aliasHashAlgorithm;
+    }
+
+    public void setAliasHashAlgorithm(String aliasHashAlgorithm) {
+        this.aliasHashAlgorithm = aliasHashAlgorithm;
     }
 
     public String getPassphrase() {
@@ -101,22 +122,6 @@ public class DID implements Persistable, JSONSerializable {
         this.passphraseHashAlgorithm = passphraseHashAlgorithm;
     }
 
-    public String getIdentityHash() {
-        return identityHash;
-    }
-
-    public void setIdentityHash(String identityHash) {
-        this.identityHash = identityHash;
-    }
-
-    public String getIdentityHashAlgorithm() {
-        return identityHashAlgorithm;
-    }
-
-    public void setIdentityHashAlgorithm(String identityHashAlgorithm) {
-        this.identityHashAlgorithm = identityHashAlgorithm;
-    }
-
     public PublicKey getPublicKey(String alias) {
         return identities.get(alias);
     }
@@ -125,6 +130,8 @@ public class DID implements Persistable, JSONSerializable {
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
         if(alias!=null) m.put("alias",alias);
+        if(aliasHashAlgorithm!=null) m.put("aliasHashAlgorithm",aliasHashAlgorithm);
+        if(address!=null) m.put("address",address);
         if(passphrase!=null) m.put("passphrase",passphrase);
         if(passphraseHash!=null) m.put("passphraseHash",passphraseHash);
         if(passphraseHashAlgorithm!=null) m.put("passphraseHashAlgorithm",passphraseHashAlgorithm);
@@ -132,8 +139,6 @@ public class DID implements Persistable, JSONSerializable {
         if(status!=null) m.put("status",status.name());
         if(verified!=null) m.put("verified",verified.toString());
         if(authenticated!=null) m.put("authenticated",authenticated.toString());
-        if(identityHash!=null) m.put("identityHash",identityHash);
-        if(identityHashAlgorithm!=null) m.put("identityHashAlgorithm",identityHashAlgorithm);
         if(identities != null && identities.size() > 0) {
             Map<String,Object> ids = new HashMap<>();
             m.put("identities",ids);
@@ -162,6 +167,8 @@ public class DID implements Persistable, JSONSerializable {
     @Override
     public void fromMap(Map<String, Object> m) {
         if(m.get("alias")!=null) alias = (String)m.get("alias");
+        if(m.get("address")!=null) address = (String)m.get("address");
+        if(m.get("aliasHashAlgorithm")!=null) aliasHashAlgorithm = (String)m.get("aliasHashAlgorithm");
         if(m.get("passphrase")!=null) passphrase = (String)m.get("passphrase");
         if(m.get("passphraseHash")!=null) passphraseHash = ((String)m.get("passphraseHash"));
         if(m.get("passphraseHashAlgorithm")!=null) passphraseHashAlgorithm = (String)m.get("passphraseHashAlgorithm");
@@ -169,8 +176,6 @@ public class DID implements Persistable, JSONSerializable {
         if(m.get("status")!=null) status = Status.valueOf((String)m.get("status"));
         if(m.get("verified")!=null) verified = Boolean.parseBoolean((String)m.get("verified"));
         if(m.get("authenticated")!=null) authenticated = Boolean.parseBoolean((String)m.get("authenticated"));
-        if(m.get("identityHash")!=null) identityHash = ((String)m.get("identityHash"));
-        if(m.get("identityHashAlgorithm")!=null) identityHashAlgorithm = (String)m.get("identityHashAlgorithm");
         if(m.get("identities")!=null) {
             Map<String,Object> im = (Map<String,Object>)m.get("identities");
             identities = new HashMap<>();
@@ -202,10 +207,8 @@ public class DID implements Persistable, JSONSerializable {
 
     @Override
     public int hashCode() {
-        if(identityHash!=null)
-            return identityHash.hashCode();
-        else if(alias!=null)
-            return alias.hashCode();
+        if(address!=null)
+            return address.hashCode();
         else
             return 0;
     }
@@ -214,18 +217,16 @@ public class DID implements Persistable, JSONSerializable {
     public boolean equals(Object o) {
         if(o instanceof DID) {
             DID did2 = (DID)o;
-            if(getIdentityHash() != null && did2.getIdentityHash() != null)
-                return getIdentityHash().equals(did2.getIdentityHash());
+            if(address != null && did2.address != null)
+                return address.equals(did2.address);
         }
         return false;
     }
 
     @Override
     public String toString() {
-        if(identityHash != null)
-            return identityHash;
-        else if(alias != null)
-            return alias;
+        if(address != null)
+            return address;
         else
             return null;
     }
