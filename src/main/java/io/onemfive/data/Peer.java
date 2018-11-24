@@ -10,25 +10,21 @@ import java.util.Map;
  */
 public class Peer implements Addressable, JSONSerializable {
 
-    public static final String NETWORK_1DM = "1DM";
-    public static final String NETWORK_I2P = "I2P";
-    public static final String NETWORK_TOR = "TOR";
-
-    private String network;
+    private Network network;
     private String address;
 
     public Peer() {}
 
-    public Peer(String network, String address) {
+    public Peer(Network network, String address) {
         this.network = network;
         this.address = address;
     }
 
-    public String getNetwork() {
+    public Network getNetwork() {
         return network;
     }
 
-    public void setNetwork(String network) {
+    public void setNetwork(Network network) {
         this.network = network;
     }
 
@@ -44,14 +40,14 @@ public class Peer implements Addressable, JSONSerializable {
     @Override
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
-        if(network!=null) m.put("network",network);
+        if(network!=null) m.put("network",network.name());
         if(address!=null) m.put("address",address);
         return m;
     }
 
     @Override
     public void fromMap(Map<String, Object> m) {
-        if(m.get("network")!=null) network = (String)m.get("network");
+        if(m.get("network")!=null) network = Network.valueOf((String)m.get("network"));
         if(m.get("address")!=null) address = (String)m.get("address");
     }
 }
