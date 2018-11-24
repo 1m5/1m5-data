@@ -30,7 +30,7 @@ public class DID implements Addressable, Persistable, JSONSerializable {
     // Identities used for personal identification: Alias, PublicKey
     private Map<String,PublicKey> identities = new HashMap<>();
     // Identities used in peer networks: Peer.Network, Peer
-    private Map<String,Peer> peers = new HashMap<>();
+    private Map<Network,Peer> peers = new HashMap<>();
 
     public DID() {}
 
@@ -154,10 +154,10 @@ public class DID implements Addressable, Persistable, JSONSerializable {
             }
         }
         if(peers != null && peers.size() > 0) {
-            Map<String,Object> pm = new HashMap<>();
+            Map<Network,Object> pm = new HashMap<>();
             m.put("peers",pm);
-            Set<String> networks = peers.keySet();
-            for(String n : networks) {
+            Set<Network> networks = peers.keySet();
+            for(Network n : networks) {
                 pm.put(n,((Peer)m.get(n)).toMap());
             }
         }
@@ -200,7 +200,7 @@ public class DID implements Addressable, Persistable, JSONSerializable {
             for(String n : networks) {
                 p = new Peer();
                 p.fromMap((Map<String,Object>)pm.get(n));
-                peers.put(n, p);
+                peers.put(Network.valueOf(n), p);
             }
         }
     }
