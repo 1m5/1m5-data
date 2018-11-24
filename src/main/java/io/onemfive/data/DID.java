@@ -70,7 +70,7 @@ public class DID implements Addressable, Persistable, JSONSerializable {
         peers.put(peer.getNetwork(),peer);
     }
 
-    public Peer getPeer(String network) {
+    public Peer getPeer(Network network) {
         return peers.get(network);
     }
 
