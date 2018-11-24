@@ -10,9 +10,8 @@ import java.util.Map;
  */
 public class Peer implements Addressable, JSONSerializable {
 
-    public static final String NETWORK_1MM = "1MM";
+    public static final String NETWORK_1DM = "1DM";
     public static final String NETWORK_I2P = "I2P";
-    public static final String NETWORK_I2PBOTE = "I2PBOTE";
     public static final String NETWORK_TOR = "TOR";
 
     private String network;
