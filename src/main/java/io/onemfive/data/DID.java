@@ -10,16 +10,10 @@ import java.util.*;
  *
  * @author objectorange
  */
-public class DID implements Addressable, Persistable, JSONSerializable {
+public class DID implements Persistable, JSONSerializable {
 
     public enum Status {INACTIVE, ACTIVE, SUSPENDED}
 
-    private String alias;
-    // Hash of Alias - meant for local identification within this application only.
-    // Use identities for external identification.
-    // May want to change to public key in future based on private
-    private String address;
-    private String aliasHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
     private volatile String passphrase;
     private String passphraseHash;
     private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
@@ -29,34 +23,10 @@ public class DID implements Addressable, Persistable, JSONSerializable {
     private volatile Boolean authenticated = false;
     // Identities used for personal identification: Alias, PublicKey
     private Map<String,PublicKey> identities = new HashMap<>();
-    // Identities used in peer networks: Peer.Network, Peer
-    private Map<Network,Peer> peers = new HashMap<>();
+    // Identities used in peer networks: Network name, Peer
+    private Map<String,Peer> peers = new HashMap<>();
 
     public DID() {}
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getAliasHashAlgorithm() {
-        return aliasHashAlgorithm;
-    }
-
-    public void setAliasHashAlgorithm(String aliasHashAlgorithm) {
-        this.aliasHashAlgorithm = aliasHashAlgorithm;
-    }
 
     public String getPassphrase() {
         return passphrase;
@@ -70,7 +40,7 @@ public class DID implements Addressable, Persistable, JSONSerializable {
         peers.put(peer.getNetwork(),peer);
     }
 
-    public Peer getPeer(Network network) {
+    public Peer getPeer(String network) {
         return peers.get(network);
     }
 
@@ -129,9 +99,6 @@ public class DID implements Addressable, Persistable, JSONSerializable {
     @Override
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
-        if(alias!=null) m.put("alias",alias);
-        if(aliasHashAlgorithm!=null) m.put("aliasHashAlgorithm",aliasHashAlgorithm);
-        if(address!=null) m.put("address",address);
         if(passphrase!=null) m.put("passphrase",passphrase);
         if(passphraseHash!=null) m.put("passphraseHash",passphraseHash);
         if(passphraseHashAlgorithm!=null) m.put("passphraseHashAlgorithm",passphraseHashAlgorithm);
@@ -154,10 +121,10 @@ public class DID implements Addressable, Persistable, JSONSerializable {
             }
         }
         if(peers != null && peers.size() > 0) {
-            Map<Network,Object> pm = new HashMap<>();
+            Map<String,Object> pm = new HashMap<>();
             m.put("peers",pm);
-            Set<Network> networks = peers.keySet();
-            for(Network n : networks) {
+            Set<String> networks = peers.keySet();
+            for(String n : networks) {
                 pm.put(n,((Peer)m.get(n)).toMap());
             }
         }
@@ -166,9 +133,6 @@ public class DID implements Addressable, Persistable, JSONSerializable {
 
     @Override
     public void fromMap(Map<String, Object> m) {
-        if(m.get("alias")!=null) alias = (String)m.get("alias");
-        if(m.get("address")!=null) address = (String)m.get("address");
-        if(m.get("aliasHashAlgorithm")!=null) aliasHashAlgorithm = (String)m.get("aliasHashAlgorithm");
         if(m.get("passphrase")!=null) passphrase = (String)m.get("passphrase");
         if(m.get("passphraseHash")!=null) passphraseHash = ((String)m.get("passphraseHash"));
         if(m.get("passphraseHashAlgorithm")!=null) passphraseHashAlgorithm = (String)m.get("passphraseHashAlgorithm");
@@ -200,15 +164,15 @@ public class DID implements Addressable, Persistable, JSONSerializable {
             for(String n : networks) {
                 p = new Peer();
                 p.fromMap((Map<String,Object>)pm.get(n));
-                peers.put(Network.valueOf(n), p);
+                peers.put(n, p);
             }
         }
     }
 
     @Override
     public int hashCode() {
-        if(address!=null)
-            return address.hashCode();
+        if(passphraseHash!=null)
+            return passphraseHash.hashCode();
         else
             return 0;
     }
@@ -217,16 +181,16 @@ public class DID implements Addressable, Persistable, JSONSerializable {
     public boolean equals(Object o) {
         if(o instanceof DID) {
             DID did2 = (DID)o;
-            if(address != null && did2.address != null)
-                return address.equals(did2.address);
+            if(passphraseHash != null && did2.passphraseHash != null)
+                return passphraseHash.equals(did2.passphraseHash);
         }
         return false;
     }
 
     @Override
     public String toString() {
-        if(address != null)
-            return address;
+        if(passphraseHash != null)
+            return passphraseHash;
         else
             return null;
     }
