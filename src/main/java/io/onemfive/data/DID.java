@@ -8,6 +8,11 @@ import java.util.*;
 /**
  * Decentralized IDentification
  *
+ * An identity container for personal identities and network identities
+ * to associate the two. Requires an alias and passphrase to secure them.
+ * Personal identities are managed through the Key Ring Service while
+ * network identities are persisted to the local hard drive.
+ *
  * @author objectorange
  */
 public class DID implements Persistable, JSONSerializable {
