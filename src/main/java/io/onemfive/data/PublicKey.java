@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @author objectorange
  */
-public class PublicKey implements JSONSerializable {
+public class PublicKey implements Addressable, JSONSerializable {
 
     private String alias;
     private String fingerprint;
@@ -41,6 +41,16 @@ public class PublicKey implements JSONSerializable {
 
     public void setEncodedBase64(byte[] encoded) {
         this.encodedBase64 = Base64.encode(encoded);
+    }
+
+    @Override
+    public String getShortAddress() {
+        return fingerprint;
+    }
+
+    @Override
+    public String getFullAddress() {
+        return encodedBase64;
     }
 
     @Override
