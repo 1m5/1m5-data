@@ -1,6 +1,6 @@
 package io.onemfive.data;
 
-import io.onemfive.data.security.PublicKey;
+import io.onemfive.data.PublicKey;
 import io.onemfive.data.util.Base64;
 
 import java.util.*;
@@ -128,10 +128,9 @@ public class DID implements Persistable, JSONSerializable {
                 Map<String,Object> key = new HashMap<>();
                 ids.put(a, key);
                 PublicKey p = (PublicKey)ids.get(a);
-                key.put("algorithm", p.getAlgorithm());
-                key.put("format", p.getFormat());
-                key.put("encodedInBase64", Base64.encode(p.getEncoded()));
-                key.put("class", p.getClass().getName());
+                key.put("alias", String.valueOf(p.getAlias()));
+                key.put("fingerprint", p.getFingerprint());
+                key.put("encodedBase64", p.getEncodedBase64());
             }
         }
         if(peers != null && peers.size() > 0) {
@@ -162,11 +161,9 @@ public class DID implements Persistable, JSONSerializable {
             for(String a : aliases) {
                 Map<String,Object> km = (Map<String,Object>)im.get(a);
                 key = new PublicKey();
-                key.setAlgorithm((String)km.get("algorithm"));
-                key.setFormat((String)km.get("format"));
-                if(key.getEncodedInBase64()!=null) {
-                    key.setEncoded(Base64.decode(key.getEncodedInBase64()));
-                }
+                key.setAlias((String)km.get("alias"));
+                key.setFingerprint((String)km.get("fingerprint"));
+                key.setEncodedBase64(key.getEncodedBase64());
                 identities.put(a, key);
             }
         }
