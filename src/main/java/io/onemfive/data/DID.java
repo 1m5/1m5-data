@@ -14,6 +14,7 @@ public class DID implements Persistable, JSONSerializable {
 
     public enum Status {INACTIVE, ACTIVE, SUSPENDED}
 
+    private String alias;
     private volatile String passphrase;
     private String passphraseHash;
     private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
@@ -27,6 +28,14 @@ public class DID implements Persistable, JSONSerializable {
     private Map<String,Peer> peers = new HashMap<>();
 
     public DID() {}
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 
     public String getPassphrase() {
         return passphrase;
