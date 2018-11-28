@@ -2,12 +2,14 @@ package io.onemfive.data;
 
 import io.onemfive.data.util.Base64;
 
+import java.util.Map;
+
 /**
  * TODO: Add Description
  *
  * @author objectorange
  */
-public class PublicKey {
+public class PublicKey implements JSONSerializable {
 
     private String alias;
     private String fingerprint;
@@ -39,5 +41,15 @@ public class PublicKey {
 
     public void setEncodedBase64(byte[] encoded) {
         this.encodedBase64 = Base64.encode(encoded);
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        return null;
+    }
+
+    @Override
+    public void fromMap(Map<String, Object> m) {
+
     }
 }

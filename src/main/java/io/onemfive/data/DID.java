@@ -1,8 +1,5 @@
 package io.onemfive.data;
 
-import io.onemfive.data.PublicKey;
-import io.onemfive.data.util.Base64;
-
 import java.util.*;
 
 /**
@@ -29,8 +26,8 @@ public class DID implements Persistable, JSONSerializable {
     private volatile Boolean authenticated = false;
     // Identities used for personal identification: Alias, PublicKey
     private Map<String,PublicKey> identities = new HashMap<>();
-    // Identities used in peer networks: Network name, Peer
-    private Map<String,Peer> peers = new HashMap<>();
+    // Identities used in peer networks: Network name, NetworkPeer
+    private Map<String,NetworkPeer> peers = new HashMap<>();
 
     public DID() {}
 
@@ -50,11 +47,11 @@ public class DID implements Persistable, JSONSerializable {
         this.passphrase = passphrase;
     }
 
-    public void addPeer(Peer peer) {
-        peers.put(peer.getNetwork(),peer);
+    public void addPeer(NetworkPeer networkPeer) {
+        peers.put(networkPeer.getNetwork(), networkPeer);
     }
 
-    public Peer getPeer(String network) {
+    public NetworkPeer getPeer(String network) {
         return peers.get(network);
     }
 
@@ -138,7 +135,7 @@ public class DID implements Persistable, JSONSerializable {
             m.put("peers",pm);
             Set<String> networks = peers.keySet();
             for(String n : networks) {
-                pm.put(n,((Peer)m.get(n)).toMap());
+                pm.put(n,((NetworkPeer)m.get(n)).toMap());
             }
         }
         return m;
@@ -167,13 +164,13 @@ public class DID implements Persistable, JSONSerializable {
                 identities.put(a, key);
             }
         }
-        Peer p;
+        NetworkPeer p;
         if(m.get("peers")!=null){
             Map<String,Object> pm = (Map<String,Object>)m.get("peers");
             peers = new HashMap<>();
             Set<String> networks = pm.keySet();
             for(String n : networks) {
-                p = new Peer();
+                p = new NetworkPeer();
                 p.fromMap((Map<String,Object>)pm.get(n));
                 peers.put(n, p);
             }

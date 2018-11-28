@@ -33,7 +33,12 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
     }
 
     @Override
-    public String getAddress() {
+    public String getShortAddress() {
+        return hash;
+    }
+
+    @Override
+    public String getFullAddress() {
         return hash;
     }
 

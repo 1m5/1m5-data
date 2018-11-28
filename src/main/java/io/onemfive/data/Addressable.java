@@ -1,10 +1,11 @@
 package io.onemfive.data;
 
 /**
- * Indicates object is addressable on network.
+ * Indicates object is addressable on network by its public key.
  *
  * @author objectorange
  */
 public interface Addressable {
-    String getAddress();
+    String getShortAddress();
+    String getFullAddress();
 }
