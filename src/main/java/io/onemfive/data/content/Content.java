@@ -24,7 +24,8 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
     private byte[] body;
     private String bodyEncoding;
     private Long createdAt;
-    private String hash;
+    private String shortHash;
+    private String fullHash;
     private String hashAlgorithm;
     private List<String> keywords = new ArrayList<>();
 
@@ -34,12 +35,12 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
 
     @Override
     public String getShortAddress() {
-        return hash;
+        return shortHash;
     }
 
     @Override
     public String getFullAddress() {
-        return hash;
+        return fullHash;
     }
 
     public String getType() {
@@ -70,9 +71,10 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         return body;
     }
 
-    public void setBody(byte[] body) {
+    public void setBody(byte[] body, String fullHash, String shortHash) {
         this.body = body;
-        hash = null; // will get rebuilt on next getHash()
+        this.shortHash = shortHash;
+        this.fullHash = fullHash;
         incrementVersion();
     }
 
@@ -96,12 +98,20 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         this.createdAt = createdAt;
     }
 
-    public String getHash() {
-        return hash;
+    public String getShortHash() {
+        return shortHash;
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
+    public void setShortHash(String shortHash) {
+        this.shortHash = shortHash;
+    }
+
+    public String getFullHash() {
+        return fullHash;
+    }
+
+    public void setFullHash(String fullHash) {
+        this.fullHash = fullHash;
     }
 
     public String getHashAlgorithm() {
@@ -131,15 +141,18 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
             m.append("xl=");
             m.append(getBody().length);
         }
-        if(getHash() != null && getHashAlgorithm() != null) {
+        String hash = null;
+        if(fullHash != null && fullHash.length() < 200) hash = fullHash;
+        else hash = shortHash;
+        if(hash != null && getHashAlgorithm() != null) {
             if(body != null) m.append("&");
             m.append("xt=urn:");
             m.append(getHashAlgorithm().toLowerCase());
             m.append(":");
-            m.append(getHash());
+            m.append(hash);
         }
         if(keywords != null && keywords.size() > 0) {
-            if(getHash() != null && getHashAlgorithm() != null) m.append("&");
+            if(hash != null && getHashAlgorithm() != null) m.append("&");
             m.append("kt=");
             boolean first = true;
             for(String k : keywords) {
@@ -161,7 +174,8 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         if(body != null) m.put("body", new String(body));
         if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
-        if(hash != null) m.put("hash", hash);
+        if(shortHash != null) m.put("shortHash", shortHash);
+        if(fullHash != null) m.put("fullHash", fullHash);
         if(hashAlgorithm != null) m.put("hashAlgorithm",hashAlgorithm);
         if(author != null) {
             m.put("author", author.toMap());
@@ -174,10 +188,9 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
 
     public void fromMap(Map<String,Object> m) {
         if(m.containsKey("type")) setType((String)m.get("type"));
-        if(m.containsKey("body")) setBody(((String)m.get("body")).getBytes());
+        if(m.containsKey("body")) setBody(((String)m.get("body")).getBytes(), (String)m.get("fullHash"), (String)m.get("shortHash"));
         if(m.containsKey("bodyEncoding")) setBodyEncoding((String)m.get("bodyEncoding"));
         if(m.containsKey("createdAt")) setCreatedAt(Long.parseLong((String)m.get("createdAt")));
-        if(m.containsKey("hash")) setHash((String)m.get("hash"));
         if(m.containsKey("hashAlgorithm")) setHashAlgorithm((String)m.get("hashAlgorithm"));
         if(m.containsKey("author")) {
             author = new DID();
