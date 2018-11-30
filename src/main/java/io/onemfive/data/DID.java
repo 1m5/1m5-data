@@ -104,12 +104,18 @@ public class DID implements Persistable, JSONSerializable {
     }
 
     public PublicKey getPublicKey() {
-        // User primary alias
-        return identities.get(alias);
+        // User primary as alias
+        return identities.get("primary");
     }
 
     public PublicKey getPublicKey(String alias) {
         return identities.get(alias);
+    }
+
+    public void addPublicKey(PublicKey publicKey) {
+        if(publicKey.getAlias() == null) {
+            publicKey.setAlias("primary");
+        }
     }
 
     public Collection<PublicKey> availableIdentities(){
