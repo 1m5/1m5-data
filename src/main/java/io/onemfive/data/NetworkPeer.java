@@ -21,9 +21,9 @@ public class NetworkPeer implements Addressable, JSONSerializable {
         CLEAR
     }
 
-    protected String network;
-    protected PublicKey publicKey;
-    protected DID did;
+    protected String network = Network.CLEAR.name(); // Default
+    protected PublicKey publicKey = new PublicKey();
+    protected DID did = new DID();
 
     public NetworkPeer() {}
 
