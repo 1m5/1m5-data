@@ -23,6 +23,7 @@ public class NetworkPeer implements Addressable, JSONSerializable {
 
     protected String network;
     protected PublicKey publicKey;
+    protected DID did;
 
     public NetworkPeer() {}
 
@@ -57,11 +58,20 @@ public class NetworkPeer implements Addressable, JSONSerializable {
         return publicKey == null ? null : publicKey.getEncodedBase64();
     }
 
+    public DID getDid() {
+        return did;
+    }
+
+    public void setDid(DID did) {
+        this.did = did;
+    }
+
     @Override
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
         if(network!=null) m.put("network",network);
         if(publicKey!=null) m.put("publicKey",publicKey.toMap());
+        if(did!=null) m.put("did",did.toMap());
         return m;
     }
 
@@ -72,6 +82,10 @@ public class NetworkPeer implements Addressable, JSONSerializable {
             Map<String, Object> mp = (Map<String, Object>) m.get("publicKey");
             publicKey = new PublicKey();
             publicKey.fromMap(mp);
+        }
+        if(m.get("did")!=null) {
+            did = new DID();
+            did.fromMap((Map<String,Object>)m.get("did"));
         }
     }
 }
