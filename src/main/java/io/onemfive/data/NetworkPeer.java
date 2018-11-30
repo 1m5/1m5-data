@@ -22,14 +22,14 @@ public class NetworkPeer implements Addressable, JSONSerializable {
     }
 
     protected String network = Network.CLEAR.name(); // Default
-    protected PublicKey publicKey = new PublicKey();
     protected DID did = new DID();
 
     public NetworkPeer() {}
 
-    public NetworkPeer(String network, PublicKey publicKey) {
+    public NetworkPeer(String network, String primaryAlias, String passphrase) {
         this.network = network;
-        this.publicKey = publicKey;
+        did.setAlias(primaryAlias);
+        did.setPassphrase(passphrase);
     }
 
     public String getNetwork() {
@@ -38,24 +38,6 @@ public class NetworkPeer implements Addressable, JSONSerializable {
 
     public void setNetwork(String network) {
         this.network = network;
-    }
-
-    public PublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(PublicKey publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    @Override
-    public String getShortAddress() {
-        return publicKey == null ? null : publicKey.getFingerprint();
-    }
-
-    @Override
-    public String getFullAddress() {
-        return publicKey == null ? null : publicKey.getEncodedBase64();
     }
 
     public DID getDid() {
@@ -67,10 +49,22 @@ public class NetworkPeer implements Addressable, JSONSerializable {
     }
 
     @Override
+    public String getShortAddress() {
+        // use primary alias
+        PublicKey p = did.getPublicKey();
+        return (p == null) ? null : p.getShortAddress();
+    }
+
+    @Override
+    public String getFullAddress() {
+        PublicKey p = did.getPublicKey();
+        return (p == null) ? null : p.getFullAddress();
+    }
+
+    @Override
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
         if(network!=null) m.put("network",network);
-        if(publicKey!=null) m.put("publicKey",publicKey.toMap());
         if(did!=null) m.put("did",did.toMap());
         return m;
     }
@@ -78,11 +72,6 @@ public class NetworkPeer implements Addressable, JSONSerializable {
     @Override
     public void fromMap(Map<String, Object> m) {
         if(m.get("network")!=null) network = (String)m.get("network");
-        if(m.get("publicKey")!=null) {
-            Map<String, Object> mp = (Map<String, Object>) m.get("publicKey");
-            publicKey = new PublicKey();
-            publicKey.fromMap(mp);
-        }
         if(m.get("did")!=null) {
             did = new DID();
             did.fromMap((Map<String,Object>)m.get("did"));
