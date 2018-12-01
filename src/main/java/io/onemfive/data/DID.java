@@ -116,6 +116,7 @@ public class DID implements Persistable, JSONSerializable {
         if(publicKey.getAlias() == null) {
             publicKey.setAlias("primary");
         }
+        identities.put(publicKey.getAlias(), publicKey);
     }
 
     public Collection<PublicKey> availableIdentities(){
