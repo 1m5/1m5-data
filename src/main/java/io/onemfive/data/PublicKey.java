@@ -15,6 +15,12 @@ public class PublicKey implements Addressable, JSONSerializable {
     private String fingerprint;
     private String encodedBase64;
 
+    public PublicKey() {}
+
+    public PublicKey(String encodedBase64) {
+        this.encodedBase64 = encodedBase64;
+    }
+
     public String getAlias() {
         return alias;
     }
