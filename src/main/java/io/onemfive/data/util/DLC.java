@@ -59,23 +59,6 @@ public final class DLC {
         return ((DocumentMessage)m).data.get(0).get(ENTITY);
     }
 
-    public static boolean addHash(Multihash hash, Envelope envelope) {
-        Message m = envelope.getMessage();
-        if(!(m instanceof DocumentMessage)) {
-            return false;
-        }
-        ((DocumentMessage)m).data.get(0).put(HASH, hash);
-        return true;
-    }
-
-    public static Multihash getHash(Envelope envelope) {
-        Message m = envelope.getMessage();
-        if(!(m instanceof DocumentMessage)) {
-            return null;
-        }
-        return (Multihash)((DocumentMessage)m).data.get(0).get(HASH);
-    }
-
     public static boolean addException(Exception e, Envelope envelope) {
         Message m = envelope.getMessage();
         if(!(m instanceof DocumentMessage)) {
