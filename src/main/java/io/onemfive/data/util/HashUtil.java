@@ -8,13 +8,6 @@ import java.security.SecureRandom;
 
 public class HashUtil {
 
-    public static final String MD2 = "MD2";
-    public static final String MD5 = "MD5";
-    public static final String SHA_1 = "SHA-1";
-    public static final String SHA_256 = "SHA-256";
-    public static final String SHA_384 = "SHA-384";
-    public static final String SHA_512 = "SHA-512";
-
     public static String generateHash(String contentToHash) {
         int iterations = 1000;
         byte[] salt = new byte[16];
