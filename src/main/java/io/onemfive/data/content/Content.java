@@ -3,8 +3,10 @@ package io.onemfive.data.content;
 import io.onemfive.data.Addressable;
 import io.onemfive.data.DID;
 import io.onemfive.data.JSONSerializable;
+import io.onemfive.data.util.HashUtil;
 
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,10 +73,18 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         return body;
     }
 
-    public void setBody(byte[] body, String fullHash, String shortHash) {
+    public void setBody(byte[] body, boolean generateFullHash, boolean generateShortHash) {
         this.body = body;
-        this.shortHash = shortHash;
-        this.fullHash = fullHash;
+        try {
+            if(generateFullHash) {
+                fullHash = HashUtil.generateHash(new String(body));
+            }
+            if(generateShortHash) {
+                shortHash = HashUtil.generateShortHash(new String(body));
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         incrementVersion();
     }
 
@@ -188,9 +198,11 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
 
     public void fromMap(Map<String,Object> m) {
         if(m.containsKey("type")) setType((String)m.get("type"));
-        if(m.containsKey("body")) setBody(((String)m.get("body")).getBytes(), (String)m.get("fullHash"), (String)m.get("shortHash"));
+        if(m.containsKey("body")) setBody(((String)m.get("body")).getBytes(), false, false);
         if(m.containsKey("bodyEncoding")) setBodyEncoding((String)m.get("bodyEncoding"));
         if(m.containsKey("createdAt")) setCreatedAt(Long.parseLong((String)m.get("createdAt")));
+        if(m.containsKey("shortHash")) setShortHash((String)m.get("shortHash"));
+        if(m.containsKey("fullHash")) setFullHash((String)m.get("fullHash"));
         if(m.containsKey("hashAlgorithm")) setHashAlgorithm((String)m.get("hashAlgorithm"));
         if(m.containsKey("author")) {
             author = new DID();
