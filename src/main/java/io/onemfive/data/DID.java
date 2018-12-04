@@ -29,7 +29,12 @@ public class DID implements Persistable, JSONSerializable {
     // Identities used in peer networks: Network name, NetworkPeer
     private Map<String,NetworkPeer> peers = new HashMap<>();
 
-    public DID() {}
+    public DID() {
+        // Ensure default primary key exists
+        PublicKey pk = new PublicKey();
+        pk.setAlias("primary");
+        identities.put("primary", pk);
+    }
 
     public String getAlias() {
         return alias;
