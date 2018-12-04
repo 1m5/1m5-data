@@ -13,6 +13,8 @@ public class NetworkPeer implements Addressable, JSONSerializable {
     public enum Network {
         // Invisible Direct Mesh (1M5 internal project)
         IDM,
+        // Bote
+        I2PBote,
         // Invisible Internet Project - https://geti2p.net/
         I2P,
         // TOR - https://www.torproject.org/
