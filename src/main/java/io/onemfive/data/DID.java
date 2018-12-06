@@ -18,6 +18,7 @@ public class DID implements Persistable, JSONSerializable {
 
     private String alias;
     private volatile String passphrase;
+    private volatile String passphrase2;
     private String passphraseHash;
     private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
     private String description = "";
@@ -50,6 +51,14 @@ public class DID implements Persistable, JSONSerializable {
 
     public void setPassphrase(String passphrase) {
         this.passphrase = passphrase;
+    }
+
+    public String getPassphrase2() {
+        return passphrase2;
+    }
+
+    public void setPassphrase2(String passphrase2) {
+        this.passphrase2 = passphrase2;
     }
 
     public void addPeer(NetworkPeer networkPeer) {
