@@ -6,7 +6,7 @@ import java.util.*;
  * Decentralized IDentification
  *
  * An identity container for both personal and network identities.
- * Requires an alias and passphrase to secure them.
+ * Requires an username and passphrase to secure them.
  * Personal identities are managed through the Key Ring Service while
  * network identities are persisted to the local hard drive.
  *
@@ -16,7 +16,7 @@ public class DID implements Persistable, JSONSerializable {
 
     public enum Status {INACTIVE, ACTIVE, SUSPENDED}
 
-    private String alias;
+    private String username;
     private volatile String passphrase;
     private volatile String passphrase2;
     private String passphraseHash;
@@ -37,12 +37,12 @@ public class DID implements Persistable, JSONSerializable {
         identities.put("primary", pk);
     }
 
-    public String getAlias() {
-        return alias;
+    public String getUsername() {
+        return username;
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassphrase() {
@@ -118,7 +118,7 @@ public class DID implements Persistable, JSONSerializable {
     }
 
     public PublicKey getPublicKey() {
-        // User primary as alias
+        // User primary as username
         return identities.get("primary");
     }
 
@@ -144,6 +144,7 @@ public class DID implements Persistable, JSONSerializable {
     @Override
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
+        if(username!=null) m.put("username",username);
         if(passphrase!=null) m.put("passphrase",passphrase);
         if(passphraseHash!=null) m.put("passphraseHash",passphraseHash);
         if(passphraseHashAlgorithm!=null) m.put("passphraseHashAlgorithm",passphraseHashAlgorithm);
@@ -159,7 +160,7 @@ public class DID implements Persistable, JSONSerializable {
                 Map<String,Object> key = new HashMap<>();
                 ids.put(a, key);
                 PublicKey p = identities.get(a);
-                key.put("alias", String.valueOf(p.getAlias()));
+                key.put("username", String.valueOf(p.getAlias()));
                 key.put("fingerprint", p.getFingerprint());
                 key.put("encodedBase64", p.getEncodedBase64());
             }
@@ -177,6 +178,7 @@ public class DID implements Persistable, JSONSerializable {
 
     @Override
     public void fromMap(Map<String, Object> m) {
+        if(m.get("username")!=null) username = (String)m.get("username");
         if(m.get("passphrase")!=null) passphrase = (String)m.get("passphrase");
         if(m.get("passphraseHash")!=null) passphraseHash = ((String)m.get("passphraseHash"));
         if(m.get("passphraseHashAlgorithm")!=null) passphraseHashAlgorithm = (String)m.get("passphraseHashAlgorithm");
@@ -192,7 +194,7 @@ public class DID implements Persistable, JSONSerializable {
             for(String a : aliases) {
                 Map<String,Object> km = (Map<String,Object>)im.get(a);
                 key = new PublicKey();
-                key.setAlias((String)km.get("alias"));
+                key.setAlias((String)km.get("username"));
                 key.setFingerprint((String)km.get("fingerprint"));
                 key.setEncodedBase64(key.getEncodedBase64());
                 identities.put(a, key);
@@ -211,29 +213,4 @@ public class DID implements Persistable, JSONSerializable {
         }
     }
 
-    @Override
-    public int hashCode() {
-        if(passphraseHash!=null)
-            return passphraseHash.hashCode();
-        else
-            return 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(o instanceof DID) {
-            DID did2 = (DID)o;
-            if(passphraseHash != null && did2.passphraseHash != null)
-                return passphraseHash.equals(did2.passphraseHash);
-        }
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        if(passphraseHash != null)
-            return passphraseHash;
-        else
-            return null;
-    }
 }

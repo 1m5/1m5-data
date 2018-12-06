@@ -34,7 +34,7 @@ public class NetworkPeer implements Addressable, JSONSerializable {
 
     public NetworkPeer(String network, String primaryAlias, String passphrase) {
         this.network = network;
-        did.setAlias(primaryAlias);
+        did.setUsername(primaryAlias);
         did.setPassphrase(passphrase);
     }
 

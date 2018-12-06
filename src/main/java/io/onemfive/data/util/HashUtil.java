@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Hashtable;
 
 public class HashUtil {
 
@@ -106,15 +105,15 @@ public class HashUtil {
 
     public static void main(String[] args) {
         DID did = new DID();
-        did.setAlias("Alice");
+        did.setUsername("Alice");
         try {
-            String hash = HashUtil.generateHash(did.getAlias());
+            String hash = HashUtil.generateHash(did.getUsername());
             System.out.println("Alias Full Hash: "+hash);
             Boolean aliasVerified = HashUtil.verifyHash("Alice", hash);
             System.out.println("Alias Full Hash Verified: "+aliasVerified);
-            String shortHash = HashUtil.generateShortHash(did.getAlias());
+            String shortHash = HashUtil.generateShortHash(did.getUsername());
             System.out.println("Alias Short Hash: "+shortHash);
-            Boolean shortHashVerified = HashUtil.verifyShortHash(did.getAlias().getBytes(), shortHash);
+            Boolean shortHashVerified = HashUtil.verifyShortHash(did.getUsername().getBytes(), shortHash);
             System.out.println("Alias Short Hash Verified: "+shortHashVerified);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
