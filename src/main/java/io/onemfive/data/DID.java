@@ -149,7 +149,7 @@ public class DID implements Persistable, JSONSerializable {
             for(String a : aliases) {
                 Map<String,Object> key = new HashMap<>();
                 ids.put(a, key);
-                PublicKey p = (PublicKey)ids.get(a);
+                PublicKey p = identities.get(a);
                 key.put("alias", String.valueOf(p.getAlias()));
                 key.put("fingerprint", p.getFingerprint());
                 key.put("encodedBase64", p.getEncodedBase64());
