@@ -29,7 +29,7 @@ public final class Envelope implements Persistable, Serializable {
     private Boolean external = false;
     private DynamicRoutingSlip dynamicRoutingSlip;
     private Route route = null;
-    private DID did = null;
+    private DID did = new DID();
     private Long client = 0L;
     private Boolean replyToClient = false;
     private String clientReplyAction = null;
@@ -48,9 +48,9 @@ public final class Envelope implements Persistable, Serializable {
         LOW, // HTTPS
         MEDIUM, // Tor
         HIGH, // I2P
-        VERYHIGH, // I2P Bote
-        EXTREME, // Mesh
-        NEO // Intelligent Combination of Tor, I2P, I2P Bote, and Mesh
+        VERYHIGH, // I2P Delayed
+        EXTREME, // Direct Mesh
+        NEO // Intelligent Combination of Tor, I2P, I2P Delayed, and Direct Mesh
     }
 
     public static Envelope commandFactory() {
