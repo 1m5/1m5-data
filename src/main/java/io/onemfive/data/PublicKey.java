@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class PublicKey implements Addressable, JSONSerializable {
 
-    private String alias = "primary"; // default
+    private String alias;
     private String fingerprint;
     private String encodedBase64;
 

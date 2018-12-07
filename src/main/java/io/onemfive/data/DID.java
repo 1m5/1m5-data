@@ -31,10 +31,6 @@ public class DID implements Persistable, JSONSerializable {
     private Map<String,NetworkPeer> peers = new HashMap<>();
 
     public DID() {
-        // Ensure default primary key exists
-        PublicKey pk = new PublicKey();
-        pk.setAlias("primary");
-        identities.put("primary", pk);
     }
 
     public String getUsername() {
@@ -118,8 +114,10 @@ public class DID implements Persistable, JSONSerializable {
     }
 
     public PublicKey getPublicKey() {
-        // User primary as username
-        return identities.get("primary");
+        if(username != null)
+            return identities.get(username);
+        else
+            return null;
     }
 
     public PublicKey getPublicKey(String alias) {
@@ -127,9 +125,6 @@ public class DID implements Persistable, JSONSerializable {
     }
 
     public void addPublicKey(PublicKey publicKey) {
-        if(publicKey.getAlias() == null) {
-            publicKey.setAlias("primary");
-        }
         identities.put(publicKey.getAlias(), publicKey);
     }
 
