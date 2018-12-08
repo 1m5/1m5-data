@@ -8,13 +8,11 @@ import java.util.Map;
  *
  * @author objectorange
  */
-public class NetworkPeer implements Addressable, JSONSerializable {
+public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable {
 
     public enum Network {
         // Invisible Direct Mesh (1M5 internal project)
         IDM,
-        // Bote
-        I2PBote,
         // Invisible Internet Project - https://geti2p.net/
         I2P,
         // TOR - https://www.torproject.org/
@@ -68,6 +66,11 @@ public class NetworkPeer implements Addressable, JSONSerializable {
     }
 
     @Override
+    public void clearSensitive() {
+        if(did!=null) did.clearSensitive();
+    }
+
+    @Override
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
         if(network!=null) m.put("network",network);
@@ -82,5 +85,13 @@ public class NetworkPeer implements Addressable, JSONSerializable {
             did = new DID();
             did.fromMap((Map<String,Object>)m.get("did"));
         }
+    }
+
+    @Override
+    public Object clone() {
+        NetworkPeer clone = new NetworkPeer();
+        clone.did = (DID)did.clone();
+        clone.network = network;
+        return clone;
     }
 }

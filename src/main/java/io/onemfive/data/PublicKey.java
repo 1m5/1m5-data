@@ -2,6 +2,7 @@ package io.onemfive.data;
 
 import io.onemfive.data.util.Base64;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -61,11 +62,26 @@ public class PublicKey implements Addressable, JSONSerializable {
 
     @Override
     public Map<String, Object> toMap() {
-        return null;
+        Map<String, Object> m = new HashMap<>();
+        if(alias!=null) m.put("alias",alias);
+        if(fingerprint!=null) m.put("fingerprint",fingerprint);
+        if(encodedBase64!=null) m.put("encodedBase64",encodedBase64);
+        return m;
     }
 
     @Override
     public void fromMap(Map<String, Object> m) {
+        if(m.get("alias")!=null) alias = (String)m.get("alias");
+        if(m.get("fingerprint")!=null) fingerprint = (String)m.get("fingerprint");
+        if(m.get("encodedBase64")!=null) encodedBase64 = (String)m.get("encodedBase64");
+    }
 
+    @Override
+    public Object clone() {
+        PublicKey clone = new PublicKey();
+        clone.alias = alias;
+        clone.fingerprint = fingerprint;
+        clone.encodedBase64 = encodedBase64;
+        return clone;
     }
 }

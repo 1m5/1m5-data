@@ -12,9 +12,11 @@ import java.util.*;
  *
  * @author objectorange
  */
-public class DID implements Persistable, JSONSerializable {
+public class DID implements Persistable, PIIClearable, JSONSerializable {
 
     public enum Status {INACTIVE, ACTIVE, SUSPENDED}
+
+    public static String DEFAULT_ALIAS = "default";
 
     private String username;
     private volatile String passphrase;
@@ -117,7 +119,7 @@ public class DID implements Persistable, JSONSerializable {
         if(username != null)
             return identities.get(username);
         else
-            return null;
+            return identities.get(DEFAULT_ALIAS);
     }
 
     public PublicKey getPublicKey(String alias) {
@@ -137,12 +139,26 @@ public class DID implements Persistable, JSONSerializable {
     }
 
     @Override
+    public void clearSensitive() {
+        username = null;
+        passphrase = null;
+        passphrase2 = null;
+        passphraseHash = null;
+        passphraseHashAlgorithm = null;
+        description = null;
+        status = Status.ACTIVE;
+        verified = false;
+        authenticated = false;
+    }
+
+    @Override
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
         if(username!=null) m.put("username",username);
         if(passphrase!=null) m.put("passphrase",passphrase);
         if(passphraseHash!=null) m.put("passphraseHash",passphraseHash);
         if(passphraseHashAlgorithm!=null) m.put("passphraseHashAlgorithm",passphraseHashAlgorithm);
+        if(passphrase2!=null) m.put("passphrase2",passphrase2);
         if(description!=null) m.put("description",description);
         if(status!=null) m.put("status",status.name());
         if(verified!=null) m.put("verified",verified.toString());
@@ -177,6 +193,7 @@ public class DID implements Persistable, JSONSerializable {
         if(m.get("passphrase")!=null) passphrase = (String)m.get("passphrase");
         if(m.get("passphraseHash")!=null) passphraseHash = ((String)m.get("passphraseHash"));
         if(m.get("passphraseHashAlgorithm")!=null) passphraseHashAlgorithm = (String)m.get("passphraseHashAlgorithm");
+        if(m.get("passphrase2")!=null) passphrase2 = (String)m.get("passphrase2");
         if(m.get("description")!=null) description = (String)m.get("description");
         if(m.get("status")!=null) status = Status.valueOf((String)m.get("status"));
         if(m.get("verified")!=null) verified = Boolean.parseBoolean((String)m.get("verified"));
@@ -208,4 +225,26 @@ public class DID implements Persistable, JSONSerializable {
         }
     }
 
+    @Override
+    public Object clone() {
+        DID clone = new DID();
+        clone.username = username;
+        clone.passphrase = passphrase;
+        clone.passphraseHash = passphraseHash;
+        clone.passphraseHashAlgorithm = passphraseHashAlgorithm;
+        clone.passphrase2 = passphrase2;
+        clone.description = description;
+        clone.status = status;
+        clone.verified = verified;
+        clone.authenticated = authenticated;
+        Set<String> aliases = identities.keySet();
+        for(String alias : aliases) {
+            clone.identities.put(alias,(PublicKey)identities.get(alias).clone());
+        }
+        Set<String> networks = peers.keySet();
+        for(String network : networks) {
+            clone.peers.put(network, (NetworkPeer)peers.get(network).clone());
+        }
+        return clone;
+    }
 }
