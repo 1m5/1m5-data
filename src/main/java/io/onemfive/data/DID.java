@@ -118,8 +118,14 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
     public PublicKey getPublicKey() {
         if(username != null)
             return identities.get(username);
-        else
+        else if(identities.get(DEFAULT_ALIAS)!=null)
             return identities.get(DEFAULT_ALIAS);
+        else {
+            PublicKey pk = new PublicKey();
+            identities.put(DEFAULT_ALIAS,pk);
+            pk.setAlias(DEFAULT_ALIAS);
+            return pk;
+        }
     }
 
     public PublicKey getPublicKey(String alias) {
