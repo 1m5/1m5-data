@@ -6,6 +6,8 @@ package io.onemfive.data;
  * @author objectorange
  */
 public interface Addressable {
-    String getShortAddress();
-    String getFullAddress();
+    String getFingerprint();
+    void setFingerprint(String fingerprint);
+    String getAddress();
+    void setAddress(String address);
 }
