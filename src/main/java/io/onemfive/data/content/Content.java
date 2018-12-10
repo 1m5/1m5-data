@@ -1,7 +1,5 @@
 package io.onemfive.data.content;
 
-import io.onemfive.data.Addressable;
-import io.onemfive.data.DID;
 import io.onemfive.data.JSONSerializable;
 import io.onemfive.data.util.HashUtil;
 
@@ -17,32 +15,25 @@ import java.util.Map;
  *
  * @author objectorange
  */
-public abstract class Content implements Addressable, JSONSerializable, Serializable {
+public abstract class Content implements JSONSerializable, Serializable {
 
     // Required
     protected String type;
     private Integer version = 0;
-    protected DID author;
+    protected String authorAddress;
     private byte[] body;
-    private String bodyEncoding;
+    private String bodyEncoding = "UTF-8"; // default
     private Long createdAt;
     private String shortHash;
+    private String shortHashAlgorithm = "SHA-1"; // default
     private String fullHash;
-    private String hashAlgorithm;
+    private String fullHashAlgorithm = "SHA-256"; // default
+    private Boolean encrypted = false;
+    private String encryptionAlgorithm;
     private List<String> keywords = new ArrayList<>();
 
     public Content() {
         type = getClass().getName();
-    }
-
-    @Override
-    public String getShortAddress() {
-        return shortHash;
-    }
-
-    @Override
-    public String getFullAddress() {
-        return fullHash;
     }
 
     public String getType() {
@@ -61,12 +52,12 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         return version;
     }
 
-    public DID getAuthor() {
-        return author;
+    public String getAuthorAddress() {
+        return authorAddress;
     }
 
-    public void setAuthor(DID author) {
-        this.author = author;
+    public void setAuthorAddress(String authorAddress) {
+        this.authorAddress = authorAddress;
     }
 
     public byte[] getBody() {
@@ -116,6 +107,14 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         this.shortHash = shortHash;
     }
 
+    public String getShortHashAlgorithm() {
+        return shortHashAlgorithm;
+    }
+
+    public void setShortHashAlgorithm(String shortHashAlgorithm) {
+        this.shortHashAlgorithm = shortHashAlgorithm;
+    }
+
     public String getFullHash() {
         return fullHash;
     }
@@ -124,12 +123,28 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         this.fullHash = fullHash;
     }
 
-    public String getHashAlgorithm() {
-        return hashAlgorithm;
+    public String getFullHashAlgorithm() {
+        return fullHashAlgorithm;
     }
 
-    public void setHashAlgorithm(String hashAlgorithm) {
-        this.hashAlgorithm = hashAlgorithm;
+    public void setFullHashAlgorithm(String fullHashAlgorithm) {
+        this.fullHashAlgorithm = fullHashAlgorithm;
+    }
+
+    public boolean getEncrypted() {
+        return encrypted;
+    }
+
+    public void setEncrypted(boolean encrypted) {
+        this.encrypted = encrypted;
+    }
+
+    public String getEncryptionAlgorithm() {
+        return encryptionAlgorithm;
+    }
+
+    public void setEncryptionAlgorithm(String encryptionAlgorithm) {
+        this.encryptionAlgorithm = encryptionAlgorithm;
     }
 
     public List<String> getKeywords() {
@@ -152,17 +167,23 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
             m.append(getBody().length);
         }
         String hash = null;
-        if(fullHash != null && fullHash.length() < 200) hash = fullHash;
-        else hash = shortHash;
-        if(hash != null && getHashAlgorithm() != null) {
+        String hashAlgorithm = null;
+        if(fullHash != null && fullHash.length() < 200) {
+            hash = fullHash;
+            hashAlgorithm = fullHashAlgorithm;
+        } else {
+            hash = shortHash;
+            hashAlgorithm = shortHashAlgorithm;
+        }
+        if(hash != null && hashAlgorithm != null) {
             if(body != null) m.append("&");
             m.append("xt=urn:");
-            m.append(getHashAlgorithm().toLowerCase());
+            m.append(hashAlgorithm.toLowerCase());
             m.append(":");
             m.append(hash);
         }
         if(keywords != null && keywords.size() > 0) {
-            if(hash != null && getHashAlgorithm() != null) m.append("&");
+            if(hash != null && hashAlgorithm != null) m.append("&");
             m.append("kt=");
             boolean first = true;
             for(String k : keywords) {
@@ -185,11 +206,12 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
         if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
         if(shortHash != null) m.put("shortHash", shortHash);
+        if(shortHashAlgorithm != null) m.put("shortHashAlgorithm",shortHashAlgorithm);
         if(fullHash != null) m.put("fullHash", fullHash);
-        if(hashAlgorithm != null) m.put("hashAlgorithm",hashAlgorithm);
-        if(author != null) {
-            m.put("author", author.toMap());
-        }
+        if(fullHashAlgorithm != null) m.put("fullHashAlgorithm",fullHashAlgorithm);
+        if(authorAddress != null) m.put("authorAddress", authorAddress);
+        if(encrypted!=null) m.put("encrypted",encrypted);
+        if(encryptionAlgorithm!=null) m.put("encryptionAlgorithm",encryptionAlgorithm);
         if(keywords != null && keywords.size() > 0) {
             m.put("keywords", keywords);
         }
@@ -197,17 +219,17 @@ public abstract class Content implements Addressable, JSONSerializable, Serializ
     }
 
     public void fromMap(Map<String,Object> m) {
-        if(m.containsKey("type")) setType((String)m.get("type"));
-        if(m.containsKey("body")) setBody(((String)m.get("body")).getBytes(), false, false);
-        if(m.containsKey("bodyEncoding")) setBodyEncoding((String)m.get("bodyEncoding"));
-        if(m.containsKey("createdAt")) setCreatedAt(Long.parseLong((String)m.get("createdAt")));
-        if(m.containsKey("shortHash")) setShortHash((String)m.get("shortHash"));
-        if(m.containsKey("fullHash")) setFullHash((String)m.get("fullHash"));
-        if(m.containsKey("hashAlgorithm")) setHashAlgorithm((String)m.get("hashAlgorithm"));
-        if(m.containsKey("author")) {
-            author = new DID();
-            author.fromMap((Map<String,Object>)m.get("author"));
-        }
+        if(m.containsKey("type")) type = (String)m.get("type");
+        if(m.containsKey("body")) body = ((String)m.get("body")).getBytes();
+        if(m.containsKey("bodyEncoding")) bodyEncoding = (String)m.get("bodyEncoding");
+        if(m.containsKey("createdAt")) createdAt = Long.parseLong((String)m.get("createdAt"));
+        if(m.containsKey("shortHash")) shortHash = (String)m.get("shortHash");
+        if(m.containsKey("shortHashAlgorithm")) shortHashAlgorithm = (String)m.get("shortHashAlgorithm");
+        if(m.containsKey("fullHash")) fullHash = (String)m.get("fullHash");
+        if(m.containsKey("fullHashAlgorithm")) fullHashAlgorithm = (String)m.get("fullHashAlgorithm");
+        if(m.containsKey("authorAddress")) authorAddress = (String)m.get("authorAddress");
+        if(m.containsKey("encrypted")) encrypted = Boolean.parseBoolean((String)m.get("encrypted"));
+        if(m.containsKey("encryptionAlgorithm")) encryptionAlgorithm = (String)m.get("encryptionAlgorithm");
         if(m.containsKey("keywords")) keywords = (List<String>)m.get("keywords");
     }
 }
