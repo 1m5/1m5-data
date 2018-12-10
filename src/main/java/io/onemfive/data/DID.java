@@ -179,7 +179,7 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
                 PublicKey p = identities.get(a);
                 key.put("alias", String.valueOf(p.getAlias()));
                 key.put("fingerprint", p.getFingerprint());
-                key.put("encodedBase64", p.getEncodedBase64());
+                key.put("encodedBase64", p.getAddress());
             }
         }
         if(peers != null && peers.size() > 0) {
@@ -214,7 +214,7 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
                 key = new PublicKey();
                 key.setAlias((String)km.get("alias"));
                 key.setFingerprint((String)km.get("fingerprint"));
-                key.setEncodedBase64(key.getEncodedBase64());
+                key.setAddress(key.getAddress());
                 identities.put(a, key);
             }
         }
