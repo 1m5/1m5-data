@@ -14,12 +14,12 @@ public class PublicKey implements Addressable, JSONSerializable {
 
     private String alias;
     private String fingerprint;
-    private String encodedBase64;
+    private String address;
 
     public PublicKey() {}
 
-    public PublicKey(String encodedBase64) {
-        this.encodedBase64 = encodedBase64;
+    public PublicKey(String address) {
+        this.address = address;
     }
 
     public String getAlias() {
@@ -30,34 +30,28 @@ public class PublicKey implements Addressable, JSONSerializable {
         this.alias = alias;
     }
 
+    @Override
     public String getFingerprint() {
         return fingerprint;
     }
 
+    @Override
     public void setFingerprint(String fingerprint) {
         this.fingerprint = fingerprint;
     }
 
-    public String getEncodedBase64() {
-        return encodedBase64;
+    @Override
+    public String getAddress() {
+        return address;
     }
 
-    public void setEncodedBase64(String encodedBase64) {
-        this.encodedBase64 = encodedBase64;
+    @Override
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setEncodedBase64(byte[] encoded) {
-        this.encodedBase64 = Base64.encode(encoded);
-    }
-
-    @Override
-    public String getShortAddress() {
-        return fingerprint;
-    }
-
-    @Override
-    public String getFullAddress() {
-        return encodedBase64;
+        this.address = Base64.encode(encoded);
     }
 
     @Override
@@ -65,7 +59,7 @@ public class PublicKey implements Addressable, JSONSerializable {
         Map<String, Object> m = new HashMap<>();
         if(alias!=null) m.put("alias",alias);
         if(fingerprint!=null) m.put("fingerprint",fingerprint);
-        if(encodedBase64!=null) m.put("encodedBase64",encodedBase64);
+        if(address !=null) m.put("address", address);
         return m;
     }
 
@@ -73,7 +67,7 @@ public class PublicKey implements Addressable, JSONSerializable {
     public void fromMap(Map<String, Object> m) {
         if(m.get("alias")!=null) alias = (String)m.get("alias");
         if(m.get("fingerprint")!=null) fingerprint = (String)m.get("fingerprint");
-        if(m.get("encodedBase64")!=null) encodedBase64 = (String)m.get("encodedBase64");
+        if(m.get("address")!=null) address = (String)m.get("address");
     }
 
     @Override
@@ -81,7 +75,7 @@ public class PublicKey implements Addressable, JSONSerializable {
         PublicKey clone = new PublicKey();
         clone.alias = alias;
         clone.fingerprint = fingerprint;
-        clone.encodedBase64 = encodedBase64;
+        clone.address = address;
         return clone;
     }
 }

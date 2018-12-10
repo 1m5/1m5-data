@@ -30,9 +30,9 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         this.network = network;
     }
 
-    public NetworkPeer(String network, String primaryAlias, String passphrase) {
+    public NetworkPeer(String network, String username, String passphrase) {
         this.network = network;
-        did.setUsername(primaryAlias);
+        did.setUsername(username);
         did.setPassphrase(passphrase);
     }
 
@@ -53,16 +53,21 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     }
 
     @Override
-    public String getShortAddress() {
-        // use primary alias
-        PublicKey p = did.getPublicKey();
-        return (p == null) ? null : p.getShortAddress();
+    public String getFingerprint() {
+        return did.getPublicKey().getFingerprint();
+    }
+
+    public void setFingerprint(String fingerprint) {
+        did.getPublicKey().setFingerprint(fingerprint);
     }
 
     @Override
-    public String getFullAddress() {
-        PublicKey p = did.getPublicKey();
-        return (p == null) ? null : p.getFullAddress();
+    public String getAddress() {
+        return did.getPublicKey().getAddress();
+    }
+
+    public void setAddress(String address) {
+        did.getPublicKey().setAddress(address);
     }
 
     @Override
