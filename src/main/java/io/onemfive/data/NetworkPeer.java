@@ -21,17 +21,22 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         CLEAR
     }
 
-    protected String network = Network.CLEAR.name(); // Default
-    protected DID did = new DID();
+    protected String network;
+    protected DID did;
 
-    public NetworkPeer() {}
+    public NetworkPeer() {
+        network = Network.CLEAR.name();
+        did = new DID();
+    }
 
     public NetworkPeer(String network) {
         this.network = network;
+        did = new DID();
     }
 
     public NetworkPeer(String network, String username, String passphrase) {
         this.network = network;
+        did = new DID();
         did.setUsername(username);
         did.setPassphrase(passphrase);
     }
