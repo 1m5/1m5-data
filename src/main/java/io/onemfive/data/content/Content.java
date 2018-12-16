@@ -202,6 +202,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     public Map<String,Object> toMap() {
         Map<String,Object> m = new HashMap<>();
         if(type!=null) m.put("type",type);
+        if(version!=null) m.put("version",version);
         if(body != null) m.put("body", new String(body));
         if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
@@ -220,6 +221,7 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public void fromMap(Map<String,Object> m) {
         if(m.containsKey("type")) type = (String)m.get("type");
+        if(m.containsKey("version")) version = Integer.parseInt((String)m.get("version"));
         if(m.containsKey("body")) body = ((String)m.get("body")).getBytes();
         if(m.containsKey("bodyEncoding")) bodyEncoding = (String)m.get("bodyEncoding");
         if(m.containsKey("createdAt")) createdAt = Long.parseLong((String)m.get("createdAt"));
