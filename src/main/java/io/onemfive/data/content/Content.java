@@ -2,6 +2,7 @@ package io.onemfive.data.content;
 
 import io.onemfive.data.JSONSerializable;
 import io.onemfive.data.util.HashUtil;
+import io.onemfive.data.util.JSONParser;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
@@ -233,5 +234,10 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.containsKey("encrypted")) encrypted = Boolean.parseBoolean((String)m.get("encrypted"));
         if(m.containsKey("encryptionAlgorithm")) encryptionAlgorithm = (String)m.get("encryptionAlgorithm");
         if(m.containsKey("keywords")) keywords = (List<String>)m.get("keywords");
+    }
+
+    @Override
+    public String toString() {
+        return JSONParser.toString(toMap());
     }
 }
