@@ -7,4 +7,6 @@ package io.onemfive.data.content;
  */
 public class JSON extends Text {
 
+    public JSON() {}
+
 }
