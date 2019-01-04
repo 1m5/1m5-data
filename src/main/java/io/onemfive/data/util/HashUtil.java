@@ -1,6 +1,7 @@
 package io.onemfive.data.util;
 
 import io.onemfive.data.DID;
+import io.onemfive.data.Hash;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -8,51 +9,80 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 public class HashUtil {
 
-    public static String generateShortHash(byte[] contentToHash) throws NoSuchAlgorithmException {
-        return generateShortHash(getSalt(), contentToHash);
+    public static Hash generateHash(String contentToHash, Hash.Algorithm algorithm) throws NoSuchAlgorithmException {
+        if(algorithm == Hash.Algorithm.PBKDF2WithHmacSHA1)
+            return generatePasswordHash(contentToHash);
+        else
+            return generateHash(getSalt(), contentToHash.getBytes(), algorithm);
+    }
+    /**
+     * Generate Hash using supplied bytes and specified Algorithm
+     * @param contentToHash
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
+    public static Hash generateHash(byte[] contentToHash, Hash.Algorithm algorithm) throws NoSuchAlgorithmException {
+        if(algorithm == Hash.Algorithm.PBKDF2WithHmacSHA1)
+            return generatePasswordHash(new String(contentToHash));
+        else
+            return generateHash(getSalt(), contentToHash, algorithm);
     }
 
-    public static String generateShortHash(String contentToHash) throws NoSuchAlgorithmException {
-        return generateShortHash(getSalt(), contentToHash.getBytes());
+    private static Hash generateHash(byte[] salt, byte[] contentToHash, Hash.Algorithm algorithm) throws NoSuchAlgorithmException {
+        if(algorithm == Hash.Algorithm.PBKDF2WithHmacSHA1)
+            return generatePasswordHash(salt, new String(contentToHash));
+        else {
+            MessageDigest md = MessageDigest.getInstance(algorithm.getName());
+            md.update(salt);
+            byte[] hash = md.digest(contentToHash);
+            String hashString = toHex(salt) + ":" + toHex(hash);
+            return new Hash(Base64.encode(hashString), algorithm);
+        }
     }
 
-    private static String generateShortHash(byte[] salt, byte[] contentToHash) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        md.update(salt);
-        byte[] bytes = md.digest(contentToHash);
-        String hashString = toHex(salt)+":"+toHex(bytes);
-        return Base64.encode(hashString);
+    public static Boolean verifyHash(String contentToVerify, Hash hashToVerify) throws NoSuchAlgorithmException {
+        if(hashToVerify.getAlgorithm() == Hash.Algorithm.PBKDF2WithHmacSHA1)
+            return verifyPasswordHash(contentToVerify, hashToVerify);
+        else {
+            String hashString = Base64.decodeToString(hashToVerify.getHash());
+            String[] parts = hashString.split(":");
+            byte[] salt = fromHex(parts[0]);
+            byte[] hash = fromHex(parts[1]);
+            Hash contentHash = generateHash(salt, contentToVerify.getBytes(), hashToVerify.getAlgorithm());
+            String hashStringToVerify = Base64.decodeToString(contentHash.getHash());
+            String[] partsToVerify = hashStringToVerify.split(":");
+            byte[] hashToVerifyBytes = fromHex(partsToVerify[1]);
+            return Arrays.equals(hash, hashToVerifyBytes);
+        }
     }
 
-    public static Boolean verifyShortHash(byte[] contentToVerify, String hashToVerify) throws NoSuchAlgorithmException {
-        String hashString = Base64.decodeToString(hashToVerify);
-        String[] parts = hashString.split(":");
-        byte[] bytes = fromHex(parts[0]);
-        String contentHash = generateShortHash(bytes, contentToVerify);
-        return hashToVerify.equals(contentHash);
+    public static Hash generatePasswordHash(String passwordToHash) throws NoSuchAlgorithmException {
+        return generatePasswordHash(getSalt(), passwordToHash);
     }
 
-    public static String generateHash(String contentToHash) throws NoSuchAlgorithmException {
+    public static Hash generatePasswordHash(byte[] salt, String passwordToHash) throws NoSuchAlgorithmException {
         int iterations = 1000;
-        byte[] salt = getSalt();
         byte[] hash;
         try {
-            PBEKeySpec spec = new PBEKeySpec(contentToHash.toCharArray(), salt, iterations, 64 * 8);
-            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            PBEKeySpec spec = new PBEKeySpec(passwordToHash.toCharArray(), salt, iterations, 64 * 8);
+            SecretKeyFactory skf = SecretKeyFactory.getInstance(Hash.Algorithm.PBKDF2WithHmacSHA1.getName());
             hash = skf.generateSecret(spec).getEncoded();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
         String hashString = iterations + ":" + toHex(salt) + ":" + toHex(hash);
-        return Base64.encode(hashString);
+        return new Hash(Base64.encode(hashString),Hash.Algorithm.PBKDF2WithHmacSHA1);
     }
 
-    public static Boolean verifyHash(String contentToVerify, String hashToVerify) {
-        String hashString = Base64.decodeToString(hashToVerify);
+    public static Boolean verifyPasswordHash(String contentToVerify, Hash hashToVerify) throws NoSuchAlgorithmException {
+        if(hashToVerify.getAlgorithm() != Hash.Algorithm.PBKDF2WithHmacSHA1)
+            throw new NoSuchAlgorithmException();
+        String hashString = Base64.decodeToString(hashToVerify.getHash());
         String[] parts = hashString.split(":");
         int iterations = Integer.parseInt(parts[0]);
         byte[] salt = fromHex(parts[1]);
@@ -106,15 +136,16 @@ public class HashUtil {
     public static void main(String[] args) {
         DID did = new DID();
         did.setUsername("Alice");
+        did.setPassphrase("1234");
         try {
-            String hash = HashUtil.generateHash(did.getUsername());
-            System.out.println("Alias Full Hash: "+hash);
-            Boolean aliasVerified = HashUtil.verifyHash("Alice", hash);
-            System.out.println("Alias Full Hash Verified: "+aliasVerified);
-            String shortHash = HashUtil.generateShortHash(did.getUsername());
-            System.out.println("Alias Short Hash: "+shortHash);
-            Boolean shortHashVerified = HashUtil.verifyShortHash(did.getUsername().getBytes(), shortHash);
-            System.out.println("Alias Short Hash Verified: "+shortHashVerified);
+            Hash passwordHash = HashUtil.generatePasswordHash(did.getPassphrase());
+            System.out.println("Alias Password Hash: "+passwordHash.getHash());
+            Boolean aliasVerified = HashUtil.verifyPasswordHash("1234", passwordHash);
+            System.out.println("Alias Password Hash Verified: "+aliasVerified);
+            Hash aliasHash = HashUtil.generateHash(did.getUsername(), Hash.Algorithm.SHA1);
+            System.out.println("Alias Hash: "+aliasHash.getHash());
+            Boolean shortHashVerified = HashUtil.verifyHash(did.getUsername(), aliasHash);
+            System.out.println("Alias Hash Verified: "+shortHashVerified);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

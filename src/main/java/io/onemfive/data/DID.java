@@ -21,8 +21,8 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
     private String username;
     private volatile String passphrase;
     private volatile String passphrase2;
-    private String passphraseHash;
-    private String passphraseHashAlgorithm = "PBKDF2WithHmacSHA1"; // Default
+    private Hash passphraseHash;
+    private Hash.Algorithm passphraseHashAlgorithm = Hash.Algorithm.PBKDF2WithHmacSHA1; // Default
     private String description = "";
     private Status status = Status.ACTIVE;
     private volatile Boolean verified = false;
@@ -99,19 +99,19 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
         this.authenticated = authenticated;
     }
 
-    public String getPassphraseHash() {
+    public Hash getPassphraseHash() {
         return passphraseHash;
     }
 
-    public void setPassphraseHash(String passphraseHash) {
+    public void setPassphraseHash(Hash passphraseHash) {
         this.passphraseHash = passphraseHash;
     }
 
-    public String getPassphraseHashAlgorithm() {
-        return passphraseHashAlgorithm;
+    public Hash.Algorithm getPassphraseHashAlgorithm() {
+        return passphraseHash.getAlgorithm();
     }
 
-    public void setPassphraseHashAlgorithm(String passphraseHashAlgorithm) {
+    public void setPassphraseHashAlgorithm(Hash.Algorithm passphraseHashAlgorithm) {
         this.passphraseHashAlgorithm = passphraseHashAlgorithm;
     }
 
@@ -165,8 +165,8 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
         Map<String,Object> m = new HashMap<>();
         if(username!=null) m.put("username",username);
         if(passphrase!=null) m.put("passphrase",passphrase);
-        if(passphraseHash!=null) m.put("passphraseHash",passphraseHash);
-        if(passphraseHashAlgorithm!=null) m.put("passphraseHashAlgorithm",passphraseHashAlgorithm);
+        if(passphraseHash!=null) m.put("passphraseHash",passphraseHash.getHash());
+        if(passphraseHashAlgorithm!=null) m.put("passphraseHashAlgorithm",passphraseHashAlgorithm.getName());
         if(passphrase2!=null) m.put("passphrase2",passphrase2);
         if(description!=null) m.put("description",description);
         if(status!=null) m.put("status",status.name());
@@ -200,8 +200,8 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
     public void fromMap(Map<String, Object> m) {
         if(m.get("username")!=null) username = (String)m.get("username");
         if(m.get("passphrase")!=null) passphrase = (String)m.get("passphrase");
-        if(m.get("passphraseHash")!=null) passphraseHash = ((String)m.get("passphraseHash"));
-        if(m.get("passphraseHashAlgorithm")!=null) passphraseHashAlgorithm = (String)m.get("passphraseHashAlgorithm");
+        if(m.get("passphraseHashAlgorithm")!=null) passphraseHashAlgorithm = Hash.Algorithm.valueOf((String)m.get("passphraseHashAlgorithm"));
+        if(m.get("passphraseHash")!=null) passphraseHash = new Hash(((String)m.get("passphraseHash")), passphraseHashAlgorithm);
         if(m.get("passphrase2")!=null) passphrase2 = (String)m.get("passphrase2");
         if(m.get("description")!=null) description = (String)m.get("description");
         if(m.get("status")!=null) status = Status.valueOf((String)m.get("status"));

@@ -1,5 +1,6 @@
 package io.onemfive.data.content;
 
+import io.onemfive.data.Hash;
 import io.onemfive.data.JSONSerializable;
 import io.onemfive.data.util.HashUtil;
 import io.onemfive.data.util.JSONParser;
@@ -25,10 +26,10 @@ public abstract class Content implements JSONSerializable, Serializable {
     private byte[] body;
     private String bodyEncoding = "UTF-8"; // default
     private Long createdAt;
-    private String shortHash;
-    private String shortHashAlgorithm = "SHA-1"; // default
-    private String fullHash;
-    private String fullHashAlgorithm = "SHA-256"; // default
+    private Hash shortHash;
+    private Hash.Algorithm shortHashAlgorithm = Hash.Algorithm.SHA256; // default
+    private Hash fullHash;
+    private Hash.Algorithm fullHashAlgorithm = Hash.Algorithm.SHA512; // default
     private Boolean encrypted = false;
     private String encryptionAlgorithm;
     private List<String> keywords = new ArrayList<>();
@@ -69,10 +70,10 @@ public abstract class Content implements JSONSerializable, Serializable {
         this.body = body;
         try {
             if(generateFullHash) {
-                fullHash = HashUtil.generateHash(new String(body));
+                fullHash = HashUtil.generateHash(body, fullHashAlgorithm);
             }
             if(generateShortHash) {
-                shortHash = HashUtil.generateShortHash(new String(body));
+                shortHash = HashUtil.generateHash(body, shortHashAlgorithm);
             }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -100,35 +101,35 @@ public abstract class Content implements JSONSerializable, Serializable {
         this.createdAt = createdAt;
     }
 
-    public String getShortHash() {
+    public Hash getShortHash() {
         return shortHash;
     }
 
-    public void setShortHash(String shortHash) {
+    public void setShortHash(Hash shortHash) {
         this.shortHash = shortHash;
     }
 
-    public String getShortHashAlgorithm() {
+    public Hash.Algorithm getShortHashAlgorithm() {
         return shortHashAlgorithm;
     }
 
-    public void setShortHashAlgorithm(String shortHashAlgorithm) {
+    public void setShortHashAlgorithm(Hash.Algorithm shortHashAlgorithm) {
         this.shortHashAlgorithm = shortHashAlgorithm;
     }
 
-    public String getFullHash() {
+    public Hash getFullHash() {
         return fullHash;
     }
 
-    public void setFullHash(String fullHash) {
+    public void setFullHash(Hash fullHash) {
         this.fullHash = fullHash;
     }
 
-    public String getFullHashAlgorithm() {
+    public Hash.Algorithm getFullHashAlgorithm() {
         return fullHashAlgorithm;
     }
 
-    public void setFullHashAlgorithm(String fullHashAlgorithm) {
+    public void setFullHashAlgorithm(Hash.Algorithm fullHashAlgorithm) {
         this.fullHashAlgorithm = fullHashAlgorithm;
     }
 
@@ -170,11 +171,11 @@ public abstract class Content implements JSONSerializable, Serializable {
         String hash = null;
         String hashAlgorithm = null;
         if(fullHash != null && fullHash.length() < 200) {
-            hash = fullHash;
-            hashAlgorithm = fullHashAlgorithm;
+            hash = fullHash.getHash();
+            hashAlgorithm = fullHashAlgorithm.getName();
         } else {
-            hash = shortHash;
-            hashAlgorithm = shortHashAlgorithm;
+            hash = shortHash.getHash();
+            hashAlgorithm = shortHashAlgorithm.getName();
         }
         if(hash != null && hashAlgorithm != null) {
             if(body != null) m.append("&");
@@ -207,10 +208,10 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(body != null) m.put("body", new String(body));
 //        if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
 //        if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
-        if(shortHash != null) m.put("shortHash", shortHash);
-//        if(shortHashAlgorithm != null) m.put("shortHashAlgorithm",shortHashAlgorithm);
+        if(shortHash != null) m.put("shortHash", shortHash.getHash());
+        if(shortHashAlgorithm != null) m.put("shortHashAlgorithm",shortHashAlgorithm.getName());
         if(fullHash != null) m.put("fullHash", fullHash);
-//        if(fullHashAlgorithm != null) m.put("fullHashAlgorithm",fullHashAlgorithm);
+        if(fullHashAlgorithm != null) m.put("fullHashAlgorithm",fullHashAlgorithm.getName());
 //        if(authorAddress != null) m.put("authorAddress", authorAddress);
 //        if(encrypted!=null) m.put("encrypted",encrypted);
 //        if(encryptionAlgorithm!=null) m.put("encryptionAlgorithm",encryptionAlgorithm);
@@ -226,10 +227,10 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.containsKey("body")) body = ((String)m.get("body")).getBytes();
 //        if(m.containsKey("bodyEncoding")) bodyEncoding = (String)m.get("bodyEncoding");
 //        if(m.containsKey("createdAt")) createdAt = Long.parseLong((String)m.get("createdAt"));
-        if(m.containsKey("shortHash")) shortHash = (String)m.get("shortHash");
-//        if(m.containsKey("shortHashAlgorithm")) shortHashAlgorithm = (String)m.get("shortHashAlgorithm");
-        if(m.containsKey("fullHash")) fullHash = (String)m.get("fullHash");
-//        if(m.containsKey("fullHashAlgorithm")) fullHashAlgorithm = (String)m.get("fullHashAlgorithm");
+        if(m.containsKey("shortHashAlgorithm")) shortHashAlgorithm = Hash.Algorithm.valueOf((String)m.get("shortHashAlgorithm"));
+        if(m.containsKey("shortHash")) shortHash = new Hash((String)m.get("shortHash"), shortHashAlgorithm);
+        if(m.containsKey("fullHashAlgorithm")) fullHashAlgorithm = Hash.Algorithm.valueOf((String)m.get("fullHashAlgorithm"));
+        if(m.containsKey("fullHash")) fullHash = new Hash((String)m.get("fullHash"), fullHashAlgorithm);
 //        if(m.containsKey("authorAddress")) authorAddress = (String)m.get("authorAddress");
 //        if(m.containsKey("encrypted")) encrypted = Boolean.parseBoolean((String)m.get("encrypted"));
 //        if(m.containsKey("encryptionAlgorithm")) encryptionAlgorithm = (String)m.get("encryptionAlgorithm");
