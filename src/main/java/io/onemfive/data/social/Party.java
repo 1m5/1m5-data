@@ -7,7 +7,7 @@ import io.onemfive.data.DID;
  *
  * @author objectorange
  */
-public abstract class Party extends DID {
+public abstract class Party {
 
     private Profile profile;
 
