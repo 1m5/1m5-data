@@ -1,5 +1,8 @@
 package io.onemfive.data;
 
+import io.onemfive.data.util.HashUtil;
+import io.onemfive.data.util.JSONParser;
+
 import java.util.*;
 
 /**
@@ -239,7 +242,7 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
         DID clone = new DID();
         clone.username = username;
         clone.passphrase = passphrase;
-        clone.passphraseHash = passphraseHash;
+        clone.passphraseHash = new Hash(passphraseHash.getHash(), passphraseHash.getAlgorithm());
         clone.passphraseHashAlgorithm = passphraseHashAlgorithm;
         clone.passphrase2 = passphrase2;
         clone.description = description;
@@ -255,5 +258,17 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
             clone.peers.put(network, (NetworkPeer)peers.get(network).clone());
         }
         return clone;
+    }
+
+    public static void main(String[] args) throws Exception {
+        DID d = new DID();
+        d.setUsername("Alice");
+        d.setPassphrase("1234");
+        d.setPassphraseHash(HashUtil.generatePasswordHash(d.getPassphrase()));
+        d.setAuthenticated(true);
+        String json = JSONParser.toString(d.toMap());
+        DID d2 = new DID();
+        d2.fromMap((Map<String,Object>)JSONParser.parse(json));
+        assert(d.getPassphraseHash().getHash() == d2.getPassphraseHash().getHash());
     }
 }

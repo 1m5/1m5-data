@@ -1,7 +1,7 @@
 package io.onemfive.data;
 
 /**
- * TODO: Add Description
+ * A hash with its algorithm.
  *
  * @author objectorange
  */
@@ -61,9 +61,6 @@ public class Hash extends Data {
 
     @Override
     public String toString() {
-        if(algorithm==null)
-            return hash;
-        else
-            return algorithm.getName()+":"+hash;
+        return hash;
     }
 }
