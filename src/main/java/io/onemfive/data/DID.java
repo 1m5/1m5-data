@@ -260,15 +260,4 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
         return clone;
     }
 
-    public static void main(String[] args) throws Exception {
-        DID d = new DID();
-        d.setUsername("Alice");
-        d.setPassphrase("1234");
-        d.setPassphraseHash(HashUtil.generatePasswordHash(d.getPassphrase()));
-        d.setAuthenticated(true);
-        String json = JSONParser.toString(d.toMap());
-        DID d2 = new DID();
-        d2.fromMap((Map<String,Object>)JSONParser.parse(json));
-        assert(d.getPassphraseHash().getHash() == d2.getPassphraseHash().getHash());
-    }
 }
