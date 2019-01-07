@@ -23,6 +23,12 @@ public class Hash extends Data {
         public String getName() {
             return name;
         }
+
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     private String hash;
@@ -40,6 +46,8 @@ public class Hash extends Data {
     public Algorithm getAlgorithm() {
         return algorithm;
     }
+
+
 
     @Override
     public int length() {
