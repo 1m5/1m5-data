@@ -24,6 +24,15 @@ public class Hash extends Data {
             return name;
         }
 
+        public static Algorithm value(String name) {
+            switch(name){
+                case "SHA-1": return SHA1;
+                case "SHA-256": return SHA256;
+                case "SHA-512": return SHA512;
+                case "PBKDF2WithHmacSHA1": return PBKDF2WithHmacSHA1;
+                default: return null;
+            }
+        }
 
         @Override
         public String toString() {
