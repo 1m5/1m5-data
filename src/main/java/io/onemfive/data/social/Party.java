@@ -1,7 +1,5 @@
 package io.onemfive.data.social;
 
-import io.onemfive.data.DID;
-
 /**
  * An identity representing an individual or a group.
  *
