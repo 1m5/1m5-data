@@ -227,9 +227,9 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.containsKey("body")) body = ((String)m.get("body")).getBytes();
 //        if(m.containsKey("bodyEncoding")) bodyEncoding = (String)m.get("bodyEncoding");
 //        if(m.containsKey("createdAt")) createdAt = Long.parseLong((String)m.get("createdAt"));
-        if(m.containsKey("shortHashAlgorithm")) shortHashAlgorithm = Hash.Algorithm.valueOf((String)m.get("shortHashAlgorithm"));
+        if(m.containsKey("shortHashAlgorithm")) shortHashAlgorithm = Hash.Algorithm.value((String)m.get("shortHashAlgorithm"));
         if(m.containsKey("shortHash")) shortHash = new Hash((String)m.get("shortHash"), shortHashAlgorithm);
-        if(m.containsKey("fullHashAlgorithm")) fullHashAlgorithm = Hash.Algorithm.valueOf((String)m.get("fullHashAlgorithm"));
+        if(m.containsKey("fullHashAlgorithm")) fullHashAlgorithm = Hash.Algorithm.value((String)m.get("fullHashAlgorithm"));
         if(m.containsKey("fullHash")) fullHash = new Hash((String)m.get("fullHash"), fullHashAlgorithm);
 //        if(m.containsKey("authorAddress")) authorAddress = (String)m.get("authorAddress");
 //        if(m.containsKey("encrypted")) encrypted = Boolean.parseBoolean((String)m.get("encrypted"));
