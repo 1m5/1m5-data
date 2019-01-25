@@ -5,7 +5,7 @@
 
 	<groupId>io.onemfive</groupId>
 	<artifactId>data</artifactId>
-	<version>0.5.2-SNAPSHOT</version>
+	<version>0.6.0</version>
 
 	<packaging>jar</packaging>
 
@@ -16,11 +16,11 @@
 
 	<name>1m5-data</name>
 	<url>https://1m5.io</url>
-	<description>Invisible Matrix Services</description>
+	<description>Invisible Matrix Services - Data Library`</description>
 	<inceptionYear>2018</inceptionYear>
 	<organization>
 		<name>1M5</name>
-		<url>https://1M5.io</url>
+		<url>https://1m5.io</url>
 	</organization>
 	<licenses>
 		<license>
@@ -31,25 +31,9 @@
 	<developers>
 		<developer>
 			<name>objectorange</name>
-			<organization>Resolving Architecture</organization>
-			<url>http://resolvingarchitecture.com</url>
-			<email>1m5@protonmail.com</email>
+			<email>objectorange@1m5.io</email>
 		</developer>
 	</developers>
-
-	<dependencyManagement>
-		<dependencies>
-			<!--<dependency>-->
-				<!--<groupId>commons-codec</groupId>-->
-				<!--<artifactId>commons-codec</artifactId>-->
-				<!--<version>1.10</version>-->
-			<!--</dependency>-->
-		</dependencies>
-	</dependencyManagement>
-
-	<dependencies>
-
-	</dependencies>
 
 	<build>
 		<finalName>${project.name}-${project.version}</finalName>
@@ -66,28 +50,6 @@
 		</resources>
 		<pluginManagement>
 			<plugins>
-				<!--<plugin>-->
-					<!--<groupId>org.apache.maven.plugins</groupId>-->
-					<!--<artifactId>maven-project-info-reports-plugin</artifactId>-->
-					<!--<version>2.8.1</version>-->
-				<!--</plugin>-->
-				<!--<plugin>-->
-					<!--<groupId>org.apache.maven.plugins</groupId>-->
-					<!--<artifactId>maven-assembly-plugin</artifactId>-->
-					<!--<version>2.5.5</version>-->
-				<!--</plugin>-->
-				<!--<plugin>-->
-					<!--<artifactId>maven-antrun-plugin</artifactId>-->
-					<!--<version>1.8</version>-->
-				<!--</plugin>-->
-				<!--<plugin>-->
-					<!--<artifactId>maven-dependency-plugin</artifactId>-->
-					<!--<version>2.10</version>-->
-				<!--</plugin>-->
-				<!--<plugin>-->
-					<!--<artifactId>maven-release-plugin</artifactId>-->
-					<!--<version>2.5.2</version>-->
-				<!--</plugin>-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
