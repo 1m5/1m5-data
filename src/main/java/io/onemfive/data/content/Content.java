@@ -2,6 +2,7 @@ package io.onemfive.data.content;
 
 import io.onemfive.data.Hash;
 import io.onemfive.data.JSONSerializable;
+import io.onemfive.data.util.Base64;
 import io.onemfive.data.util.HashUtil;
 import io.onemfive.data.util.JSONParser;
 
@@ -81,6 +82,11 @@ public abstract class Content implements JSONSerializable, Serializable {
             e.printStackTrace();
         }
         incrementVersion();
+    }
+
+    public String getBase64Body() {
+        if(body==null) return null;
+        return Base64.encode(body);
     }
 
     public String getBodyEncoding() {
