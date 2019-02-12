@@ -1,6 +1,7 @@
 package io.onemfive.data;
 
 import io.onemfive.data.util.Multipart;
+import io.onemfive.data.util.RandomUtil;
 
 import java.io.Serializable;
 import java.net.URL;
@@ -54,11 +55,11 @@ public final class Envelope implements Persistable, Serializable {
     }
 
     public static Envelope commandFactory() {
-        return new Envelope(new Random(9743129723981731L).nextLong(), new CommandMessage());
+        return new Envelope(RandomUtil.nextRandomLong(), new CommandMessage());
     }
 
     public static Envelope documentFactory() {
-        return new Envelope(new Random(9743129723981731L).nextLong(), new DocumentMessage());
+        return new Envelope(RandomUtil.nextRandomLong(), new DocumentMessage());
     }
 
     public static Envelope documentFactory(Long id) {
@@ -66,15 +67,15 @@ public final class Envelope implements Persistable, Serializable {
     }
 
     public static Envelope headersOnlyFactory() {
-        return new Envelope(new Random(9743129723981731L).nextLong(), null);
+        return new Envelope(RandomUtil.nextRandomLong(), null);
     }
 
     public static Envelope eventFactory(EventMessage.Type type) {
-        return new Envelope(new Random(9743129723981731L).nextLong(), new EventMessage(type.name()));
+        return new Envelope(RandomUtil.nextRandomLong(), new EventMessage(type.name()));
     }
 
     public static Envelope textFactory() {
-        return new Envelope(new Random(9743129723981731L).nextLong(), new TextMessage());
+        return new Envelope(RandomUtil.nextRandomLong(), new TextMessage());
     }
 
     public static Envelope envelopeFactory(Envelope envelope){
