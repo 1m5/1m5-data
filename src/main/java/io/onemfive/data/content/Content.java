@@ -30,6 +30,8 @@ public abstract class Content implements JSONSerializable, Serializable {
     private Hash.Algorithm shortHashAlgorithm = Hash.Algorithm.SHA256; // default
     private Hash fullHash;
     private Hash.Algorithm fullHashAlgorithm = Hash.Algorithm.SHA512; // default
+    private Hash parentFullHash;
+    private Hash.Algorithm parentFullHashAlgorithm = Hash.Algorithm.SHA512; // default
     private Boolean encrypted = false;
     private String encryptionAlgorithm;
     private List<String> keywords = new ArrayList<>();
@@ -131,6 +133,22 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public void setFullHashAlgorithm(Hash.Algorithm fullHashAlgorithm) {
         this.fullHashAlgorithm = fullHashAlgorithm;
+    }
+
+    public Hash getParentFullHash() {
+        return parentFullHash;
+    }
+
+    public void setParentFullHash(Hash parentFullHash) {
+        this.parentFullHash = parentFullHash;
+    }
+
+    public Hash.Algorithm getParentFullHashAlgorithm() {
+        return parentFullHashAlgorithm;
+    }
+
+    public void setParentFullHashAlgorithm(Hash.Algorithm parentFullHashAlgorithm) {
+        this.parentFullHashAlgorithm = parentFullHashAlgorithm;
     }
 
     public boolean getEncrypted() {
