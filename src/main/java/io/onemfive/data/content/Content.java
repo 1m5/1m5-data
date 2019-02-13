@@ -201,6 +201,10 @@ public abstract class Content implements JSONSerializable, Serializable {
         this.writeable = writeable;
     }
 
+    public boolean metaOnly() {
+        return parentFullHash == null && body == null;
+    }
+
     /**
      * Follows https://en.wikipedia.org/wiki/Magnet_URI_scheme
      *
