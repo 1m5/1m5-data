@@ -25,6 +25,7 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     // Required
     protected String type;
+    protected String contentType;
     private Integer version = 0;
     private String name;
     protected String authorAddress;
@@ -54,6 +55,14 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public void advanceVersion() {
@@ -255,6 +264,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     public Map<String,Object> toMap() {
         Map<String,Object> m = new HashMap<>();
         if(type!=null) m.put("type",type);
+        if(contentType!=null) m.put("contentType",contentType);
         if(version!=null) m.put("version",String.valueOf(version));
         if(name!=null) m.put("name",name);
         if(body != null) m.put("body", new String(body));
@@ -282,6 +292,7 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public void fromMap(Map<String,Object> m) {
         if(m.get("type")!=null) type = (String)m.get("type");
+        if(m.get("contentType")!=null) contentType = (String)m.get("contentType");
         if(m.get("version")!=null) version = Integer.parseInt((String)m.get("version"));
         if(m.get("name")!=null) name = (String)m.get("name");
         if(m.get("body")!=null) body = ((String)m.get("body")).getBytes();
