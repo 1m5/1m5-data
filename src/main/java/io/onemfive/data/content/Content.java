@@ -26,6 +26,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     // Required
     protected String type;
     private Integer version = 0;
+    private String name;
     protected String authorAddress;
     private byte[] body;
     private String bodyEncoding = "UTF-8"; // default
@@ -61,6 +62,14 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public Integer getVersion() {
         return version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getAuthorAddress() {
@@ -247,6 +256,7 @@ public abstract class Content implements JSONSerializable, Serializable {
         Map<String,Object> m = new HashMap<>();
         if(type!=null) m.put("type",type);
         if(version!=null) m.put("version",String.valueOf(version));
+        if(name!=null) m.put("name",name);
         if(body != null) m.put("body", new String(body));
         if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
@@ -273,6 +283,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     public void fromMap(Map<String,Object> m) {
         if(m.get("type")!=null) type = (String)m.get("type");
         if(m.get("version")!=null) version = Integer.parseInt((String)m.get("version"));
+        if(m.get("name")!=null) name = (String)m.get("name");
         if(m.get("body")!=null) body = ((String)m.get("body")).getBytes();
         if(m.get("bodyEncoding")!=null) bodyEncoding = (String)m.get("bodyEncoding");
         if(m.get("createdAt")!=null) createdAt = Long.parseLong((String)m.get("createdAt"));
