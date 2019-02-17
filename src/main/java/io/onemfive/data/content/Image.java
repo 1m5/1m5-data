@@ -7,4 +7,14 @@ package io.onemfive.data.content;
  */
 public class Image extends Content {
 
+    public Image() {
+    }
+
+    public Image(byte[] body, String contentType) {
+        super(body, contentType);
+    }
+
+    public Image(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash) {
+        super(body, contentType, name, generateFullHash, generateShortHash);
+    }
 }

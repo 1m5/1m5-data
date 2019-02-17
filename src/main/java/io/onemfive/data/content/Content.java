@@ -28,9 +28,10 @@ public abstract class Content implements JSONSerializable, Serializable {
     protected String contentType;
     private Integer version = 0;
     private String name;
+    private Long size = 0L;
     protected String authorAddress;
     private byte[] body;
-    private String bodyEncoding = "UTF-8"; // default
+    private String bodyEncoding;
     private Long createdAt;
     private Hash shortHash;
     private Hash.Algorithm shortHashAlgorithm = Hash.Algorithm.SHA256; // default
@@ -45,8 +46,56 @@ public abstract class Content implements JSONSerializable, Serializable {
     // Everyone is given write access (e.g. wiki)
     private Boolean writeable = false;
 
+    public static Content buildContent(byte[] body, String contentType) {
+        return buildContent(body, contentType, null, false, false);
+    }
+
+    public static Content buildContent(byte[] body, String contentType, String name) {
+        return buildContent(body, contentType, name, false, false);
+    }
+
+    public static Content buildContent(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash) {
+        Content c = null;
+        if(contentType==null) return null;
+        else if(contentType.startsWith("text/plain")) c = new Text(body, contentType, name, generateFullHash, generateShortHash);
+        else if(contentType.startsWith("text/html")) c = new HTML(body, contentType, name, generateFullHash, generateShortHash);
+        else if(contentType.startsWith("image/")) c = new Image(body, contentType, name, generateFullHash, generateShortHash);
+        else if(contentType.startsWith("audio/")) c = new Audio(body, contentType, name, generateFullHash, generateShortHash);
+        else if(contentType.startsWith("video/")) c = new Video(body, contentType, name, generateFullHash, generateShortHash);
+        else if(contentType.startsWith("application/json"))  c = new JSON(body, contentType, name, generateFullHash, generateShortHash);
+        return c;
+    }
+
     public Content() {
         type = getClass().getName();
+    }
+
+    public Content(byte[] body, String contentType) {
+        this(body, contentType, null, true, true);
+    }
+
+    public Content(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash) {
+        type = getClass().getName();
+        setBody(body, generateFullHash, generateShortHash);
+        this.size = (long)body.length;
+        this.contentType = contentType;
+        this.name = name;
+        if(contentType!=null && contentType.contains("charset:")) {
+            bodyEncoding = contentType.substring(contentType.indexOf("charset:")+1);
+        }
+        String msg = "Content Instantiated : {";
+        msg += "\n\tName: "+name;
+        msg += "\n\tType: "+type;
+        msg += "\n\tContent Type: " + contentType;
+        if (this instanceof Text)
+            msg += "\n\tBody: " + new String(body).substring(0, 20) + "...";
+        msg += "\n\tBody Encoding: " + bodyEncoding;
+        msg += "\n\tSize: " + size;
+        if(generateShortHash)
+            msg += "\n\tShort Hash: " + shortHash.getHash().substring(0, 20) + "...";
+        if(generateFullHash)
+            msg += "\n\tFull Hash: " + fullHash.getHash().substring(0, 20) + "...\n}";
+        LOG.info(msg);
     }
 
     public String getType() {
@@ -79,6 +128,14 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
     }
 
     public String getAuthorAddress() {
@@ -267,7 +324,8 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(contentType!=null) m.put("contentType",contentType);
         if(version!=null) m.put("version",String.valueOf(version));
         if(name!=null) m.put("name",name);
-        if(body != null) m.put("body", new String(body));
+        if(size!=null) m.put("size",String.valueOf(size));
+        if(body != null) m.put("body",Base64.encode(body));
         if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
         if(shortHash != null) m.put("shortHash", shortHash.getHash());
@@ -295,7 +353,8 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.get("contentType")!=null) contentType = (String)m.get("contentType");
         if(m.get("version")!=null) version = Integer.parseInt((String)m.get("version"));
         if(m.get("name")!=null) name = (String)m.get("name");
-        if(m.get("body")!=null) body = ((String)m.get("body")).getBytes();
+        if(m.get("size")!=null) size = Long.parseLong((String)m.get("size"));
+        if(m.get("body")!=null) body = Base64.decode((String)m.get("body"));
         if(m.get("bodyEncoding")!=null) bodyEncoding = (String)m.get("bodyEncoding");
         if(m.get("createdAt")!=null) createdAt = Long.parseLong((String)m.get("createdAt"));
         if(m.get("shortHashAlgorithm")!=null) shortHashAlgorithm = Hash.Algorithm.value((String)m.get("shortHashAlgorithm"));
