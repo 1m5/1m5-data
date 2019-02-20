@@ -34,6 +34,18 @@
 			<email>objectorange@1m5.io</email>
 		</developer>
 	</developers>
+	<scm>
+		<connection>scm:git@github.com/1m5/1m5-data</connection>
+		<developerConnection>scm:git@github.com/1m5/1m5-data</developerConnection>
+		<url>git@github.com/1m5/1m5-data</url>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<finalName>${project.name}-${project.version}</finalName>
