@@ -9,7 +9,7 @@ public class Video extends Content {
         super(body, contentType);
     }
 
-    public Video(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash) {
-        super(body, contentType, name, generateFullHash, generateShortHash);
+    public Video(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
+        super(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
     }
 }

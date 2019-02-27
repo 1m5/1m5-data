@@ -9,7 +9,7 @@ public class HTML extends Text {
         super(body, contentType);
     }
 
-    public HTML(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash) {
-        super(body, contentType, name, generateFullHash, generateShortHash);
+    public HTML(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
+        super(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
     }
 }

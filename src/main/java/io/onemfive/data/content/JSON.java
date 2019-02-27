@@ -14,7 +14,7 @@ public class JSON extends Text {
         super(body, contentType);
     }
 
-    public JSON(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash) {
-        super(body, contentType, name, generateFullHash, generateShortHash);
+    public JSON(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
+        super(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
     }
 }

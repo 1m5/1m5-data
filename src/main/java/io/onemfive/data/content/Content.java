@@ -37,6 +37,8 @@ public abstract class Content implements JSONSerializable, Serializable {
     private Hash.Algorithm shortHashAlgorithm = Hash.Algorithm.SHA256; // default
     private Hash fullHash;
     private Hash.Algorithm fullHashAlgorithm = Hash.Algorithm.SHA512; // default
+    private Hash fingerprint;
+    private Hash.Algorithm fingerprintHashAlgorithm = Hash.Algorithm.SHA1; // default
     private List<Content> children = new ArrayList<>();
     private Boolean encrypted = false;
     private String encryptionAlgorithm;
@@ -47,22 +49,22 @@ public abstract class Content implements JSONSerializable, Serializable {
     private Boolean writeable = false;
 
     public static Content buildContent(byte[] body, String contentType) {
-        return buildContent(body, contentType, null, false, false);
+        return buildContent(body, contentType, null, false, false, false);
     }
 
     public static Content buildContent(byte[] body, String contentType, String name) {
-        return buildContent(body, contentType, name, false, false);
+        return buildContent(body, contentType, name, false, false, false);
     }
 
-    public static Content buildContent(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash) {
+    public static Content buildContent(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
         Content c = null;
         if(contentType==null) return null;
-        else if(contentType.startsWith("text/plain")) c = new Text(body, contentType, name, generateFullHash, generateShortHash);
-        else if(contentType.startsWith("text/html")) c = new HTML(body, contentType, name, generateFullHash, generateShortHash);
-        else if(contentType.startsWith("image/")) c = new Image(body, contentType, name, generateFullHash, generateShortHash);
-        else if(contentType.startsWith("audio/")) c = new Audio(body, contentType, name, generateFullHash, generateShortHash);
-        else if(contentType.startsWith("video/")) c = new Video(body, contentType, name, generateFullHash, generateShortHash);
-        else if(contentType.startsWith("application/json"))  c = new JSON(body, contentType, name, generateFullHash, generateShortHash);
+        else if(contentType.startsWith("text/plain")) c = new Text(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+        else if(contentType.startsWith("text/html")) c = new HTML(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+        else if(contentType.startsWith("image/")) c = new Image(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+        else if(contentType.startsWith("audio/")) c = new Audio(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+        else if(contentType.startsWith("video/")) c = new Video(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+        else if(contentType.startsWith("application/json"))  c = new JSON(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
         return c;
     }
 
@@ -71,12 +73,12 @@ public abstract class Content implements JSONSerializable, Serializable {
     }
 
     public Content(byte[] body, String contentType) {
-        this(body, contentType, null, true, true);
+        this(body, contentType, null, true, true, true);
     }
 
-    public Content(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash) {
+    public Content(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
         type = getClass().getName();
-        setBody(body, generateFullHash, generateShortHash);
+        setBody(body, generateFullHash, generateShortHash, generateFingerprint);
         this.size = (long)body.length;
         this.contentType = contentType;
         this.name = name;
@@ -91,11 +93,13 @@ public abstract class Content implements JSONSerializable, Serializable {
             msg += "\n\tBody: " + new String(body).substring(0, 20) + "...";
         msg += "\n\tBody Encoding: " + bodyEncoding;
         msg += "\n\tSize: " + size;
+        if(generateFingerprint)
+            msg += "\n\tFingerprint: " + fingerprint.getHash();
         if(generateShortHash)
             msg += "\n\tShort Hash: " + shortHash.getHash().substring(0, 20) + "...";
         if(generateFullHash)
-            msg += "\n\tFull Hash: " + fullHash.getHash().substring(0, 20) + "...\n}";
-        LOG.info(msg);
+            msg += "\n\tFull Hash: " + fullHash.getHash().substring(0, 20) + "...";
+        LOG.info(msg+"\n}");
     }
 
     public String getType() {
@@ -150,7 +154,7 @@ public abstract class Content implements JSONSerializable, Serializable {
         return body;
     }
 
-    public void setBody(byte[] body, boolean generateFullHash, boolean generateShortHash) {
+    public void setBody(byte[] body, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
         this.body = body;
         try {
             if(generateFullHash) {
@@ -158,6 +162,9 @@ public abstract class Content implements JSONSerializable, Serializable {
             }
             if(generateShortHash) {
                 shortHash = HashUtil.generateHash(body, shortHashAlgorithm);
+            }
+            if(generateFingerprint && fullHash != null) {
+                fingerprint = HashUtil.generateHash(fullHash.getHash(), fingerprintHashAlgorithm);
             }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
