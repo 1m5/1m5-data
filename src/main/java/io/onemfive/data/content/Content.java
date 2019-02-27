@@ -94,7 +94,7 @@ public abstract class Content implements JSONSerializable, Serializable {
         msg += "\n\tBody Encoding: " + bodyEncoding;
         msg += "\n\tSize: " + size;
         if(generateFingerprint)
-            msg += "\n\tFingerprint: " + fingerprint.getHash();
+            msg += "\n\tFingerprint: " + fingerprint.toHexString();
         if(generateShortHash)
             msg += "\n\tShort Hash: " + shortHash.getHash().substring(0, 20) + "...";
         if(generateFullHash)
