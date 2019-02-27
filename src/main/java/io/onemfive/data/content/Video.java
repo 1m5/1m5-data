@@ -1,6 +1,6 @@
 package io.onemfive.data.content;
 
-public class Video extends Content {
+public class Video extends Binary {
 
     public Video() {
     }

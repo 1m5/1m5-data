@@ -2,16 +2,12 @@ package io.onemfive.data.content;
 
 import io.onemfive.data.Hash;
 import io.onemfive.data.JSONSerializable;
-import io.onemfive.data.util.Base64;
 import io.onemfive.data.util.HashUtil;
 import io.onemfive.data.util.JSONParser;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -172,9 +168,26 @@ public abstract class Content implements JSONSerializable, Serializable {
         incrementVersion();
     }
 
-    public String getBase64Body() {
+    public String base64EncodeBody() {
         if(body==null) return null;
-        return Base64.encode(body);
+        String encoded = null;
+        try {
+            encoded = Base64.getEncoder().encodeToString(body);
+        } catch (Exception e) {
+            LOG.warning(e.getLocalizedMessage());
+        }
+        return encoded;
+    }
+
+    public byte[] base64DecodeBody(String body) {
+        if(body==null) return null;
+        byte[] decoded = null;
+        try {
+            decoded = Base64.getDecoder().decode(body);
+        } catch (Exception e) {
+            LOG.warning(e.getLocalizedMessage());
+        }
+        return decoded;
     }
 
     public String getBodyEncoding() {
@@ -332,7 +345,12 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(version!=null) m.put("version",String.valueOf(version));
         if(name!=null) m.put("name",name);
         if(size!=null) m.put("size",String.valueOf(size));
-        if(body != null) m.put("body",Base64.encode(body));
+        if(body != null) {
+            if(this instanceof Binary)
+                m.put("body", base64EncodeBody());
+            else
+                m.put("body", new String(body));
+        }
         if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
         if(shortHash != null) m.put("shortHash", shortHash.getHash());
@@ -361,7 +379,12 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.get("version")!=null) version = Integer.parseInt((String)m.get("version"));
         if(m.get("name")!=null) name = (String)m.get("name");
         if(m.get("size")!=null) size = Long.parseLong((String)m.get("size"));
-        if(m.get("body")!=null) body = Base64.decode((String)m.get("body"));
+        if(m.get("body")!=null) {
+            if(this instanceof Binary)
+                body = base64DecodeBody((String)m.get("body"));
+            else
+                body = ((String)m.get("body")).getBytes();
+        }
         if(m.get("bodyEncoding")!=null) bodyEncoding = (String)m.get("bodyEncoding");
         if(m.get("createdAt")!=null) createdAt = Long.parseLong((String)m.get("createdAt"));
         if(m.get("shortHashAlgorithm")!=null) shortHashAlgorithm = Hash.Algorithm.value((String)m.get("shortHashAlgorithm"));

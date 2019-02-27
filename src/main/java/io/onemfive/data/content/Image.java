@@ -5,7 +5,7 @@ package io.onemfive.data.content;
  *
  * @author objectorange
  */
-public class Image extends Content {
+public class Image extends Binary {
 
     public Image() {
     }

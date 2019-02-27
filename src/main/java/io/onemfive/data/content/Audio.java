@@ -1,6 +1,6 @@
 package io.onemfive.data.content;
 
-public class Audio extends Content {
+public class Audio extends Binary {
 
     public Audio() {}
 
