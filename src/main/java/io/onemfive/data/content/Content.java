@@ -219,6 +219,22 @@ public abstract class Content implements JSONSerializable, Serializable {
         this.hashAlgorithm = hashAlgorithm;
     }
 
+    public Hash getFingerprint() {
+        return fingerprint;
+    }
+
+    public void setFingerprint(Hash fingerprint) {
+        this.fingerprint = fingerprint;
+    }
+
+    public Hash.Algorithm getFingerprintAlgorithm() {
+        return fingerprintAlgorithm;
+    }
+
+    public void setFingerprintAlgorithm(Hash.Algorithm fingerprintAlgorithm) {
+        this.fingerprintAlgorithm = fingerprintAlgorithm;
+    }
+
     public boolean addChild(Content content) {
         return children.add(content);
     }
