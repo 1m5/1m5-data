@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public abstract class Content implements JSONSerializable, Serializable {
 
-    private Logger LOG = Logger.getLogger(Content.class.getName());
+    private static Logger LOG = Logger.getLogger(Content.class.getName());
 
     // Required
     protected String type;
@@ -84,13 +84,13 @@ public abstract class Content implements JSONSerializable, Serializable {
         msg += "\n\tType: "+type;
         msg += "\n\tContent Type: " + contentType;
         if (this instanceof Text)
-            msg += "\n\tBody: " + new String(body).substring(0, 80) + "...";
+            msg += "\n\tBody: " + new String(body);
         msg += "\n\tBody Encoding: " + bodyEncoding;
         msg += "\n\tSize: " + size;
         if(generateFingerprint)
             msg += "\n\tFingerprint: " + fingerprint.getHash();
-        if(generateHash)
-            msg += "\n\tHash: " + hash.getHash().substring(0, 80) + "...";
+        if(generateHash && hash.getHash()!=null && hash.getHash().length() > 40)
+            msg += "\n\tHash: " + hash.getHash().substring(0, 40) + "...";
         LOG.info(msg+"\n}");
     }
 
