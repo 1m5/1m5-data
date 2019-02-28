@@ -9,7 +9,7 @@ public class Text extends Content {
         super(body, contentType);
     }
 
-    public Text(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
-        super(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+    public Text(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
+        super(body, contentType, name, generateHash, generateFingerprint);
     }
 }

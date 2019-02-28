@@ -14,7 +14,7 @@ public class Image extends Binary {
         super(body, contentType);
     }
 
-    public Image(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
-        super(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+    public Image(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
+        super(body, contentType, name, generateHash, generateFingerprint);
     }
 }

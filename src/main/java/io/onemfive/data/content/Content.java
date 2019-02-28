@@ -29,12 +29,10 @@ public abstract class Content implements JSONSerializable, Serializable {
     private byte[] body;
     private String bodyEncoding;
     private Long createdAt;
-    private Hash shortHash;
-    private Hash.Algorithm shortHashAlgorithm = Hash.Algorithm.SHA256; // default
-    private Hash fullHash;
-    private Hash.Algorithm fullHashAlgorithm = Hash.Algorithm.SHA512; // default
+    private Hash hash;
+    private Hash.Algorithm hashAlgorithm = Hash.Algorithm.SHA256; // default
     private Hash fingerprint;
-    private Hash.Algorithm fingerprintHashAlgorithm = Hash.Algorithm.SHA1; // default
+    private Hash.Algorithm fingerprintAlgorithm = Hash.Algorithm.SHA1; // default
     private List<Content> children = new ArrayList<>();
     private Boolean encrypted = false;
     private String encryptionAlgorithm;
@@ -45,22 +43,22 @@ public abstract class Content implements JSONSerializable, Serializable {
     private Boolean writeable = false;
 
     public static Content buildContent(byte[] body, String contentType) {
-        return buildContent(body, contentType, null, false, false, false);
+        return buildContent(body, contentType, null, false, false);
     }
 
     public static Content buildContent(byte[] body, String contentType, String name) {
-        return buildContent(body, contentType, name, false, false, false);
+        return buildContent(body, contentType, name, false, false);
     }
 
-    public static Content buildContent(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
+    public static Content buildContent(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
         Content c = null;
         if(contentType==null) return null;
-        else if(contentType.startsWith("text/plain")) c = new Text(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
-        else if(contentType.startsWith("text/html")) c = new HTML(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
-        else if(contentType.startsWith("image/")) c = new Image(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
-        else if(contentType.startsWith("audio/")) c = new Audio(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
-        else if(contentType.startsWith("video/")) c = new Video(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
-        else if(contentType.startsWith("application/json"))  c = new JSON(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+        else if(contentType.startsWith("text/plain")) c = new Text(body, contentType, name, generateHash, generateFingerprint);
+        else if(contentType.startsWith("text/html")) c = new HTML(body, contentType, name, generateHash, generateFingerprint);
+        else if(contentType.startsWith("image/")) c = new Image(body, contentType, name, generateHash, generateFingerprint);
+        else if(contentType.startsWith("audio/")) c = new Audio(body, contentType, name, generateHash, generateFingerprint);
+        else if(contentType.startsWith("video/")) c = new Video(body, contentType, name, generateHash, generateFingerprint);
+        else if(contentType.startsWith("application/json"))  c = new JSON(body, contentType, name, generateHash, generateFingerprint);
         return c;
     }
 
@@ -69,12 +67,12 @@ public abstract class Content implements JSONSerializable, Serializable {
     }
 
     public Content(byte[] body, String contentType) {
-        this(body, contentType, null, true, true, true);
+        this(body, contentType, null, true, true);
     }
 
-    public Content(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
+    public Content(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
         type = getClass().getName();
-        setBody(body, generateFullHash, generateShortHash, generateFingerprint);
+        setBody(body, generateHash, generateFingerprint);
         this.size = (long)body.length;
         this.contentType = contentType;
         this.name = name;
@@ -86,15 +84,13 @@ public abstract class Content implements JSONSerializable, Serializable {
         msg += "\n\tType: "+type;
         msg += "\n\tContent Type: " + contentType;
         if (this instanceof Text)
-            msg += "\n\tBody: " + new String(body).substring(0, 20) + "...";
+            msg += "\n\tBody: " + new String(body).substring(0, 80) + "...";
         msg += "\n\tBody Encoding: " + bodyEncoding;
         msg += "\n\tSize: " + size;
         if(generateFingerprint)
-            msg += "\n\tFingerprint: " + fingerprint.toHexString();
-        if(generateShortHash)
-            msg += "\n\tShort Hash: " + shortHash.getHash().substring(0, 20) + "...";
-        if(generateFullHash)
-            msg += "\n\tFull Hash: " + fullHash.getHash().substring(0, 20) + "...";
+            msg += "\n\tFingerprint: " + fingerprint.getHash();
+        if(generateHash)
+            msg += "\n\tHash: " + hash.getHash().substring(0, 80) + "...";
         LOG.info(msg+"\n}");
     }
 
@@ -150,17 +146,14 @@ public abstract class Content implements JSONSerializable, Serializable {
         return body;
     }
 
-    public void setBody(byte[] body, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
+    public void setBody(byte[] body, boolean generateHash, boolean generateFingerprint) {
         this.body = body;
         try {
-            if(generateFullHash) {
-                fullHash = HashUtil.generateHash(body, fullHashAlgorithm);
+            if(generateHash) {
+                hash = HashUtil.generateHash(body, hashAlgorithm);
             }
-            if(generateShortHash) {
-                shortHash = HashUtil.generateHash(body, shortHashAlgorithm);
-            }
-            if(generateFingerprint && fullHash != null) {
-                fingerprint = HashUtil.generateHash(fullHash.getHash(), fingerprintHashAlgorithm);
+            if(generateFingerprint && hash != null) {
+                fingerprint = HashUtil.generateFingerprint(hash.getHash().getBytes(), fingerprintAlgorithm);
             }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -210,36 +203,20 @@ public abstract class Content implements JSONSerializable, Serializable {
         this.createdAt = createdAt;
     }
 
-    public Hash getShortHash() {
-        return shortHash;
+    public Hash getHash() {
+        return hash;
     }
 
-    public void setShortHash(Hash shortHash) {
-        this.shortHash = shortHash;
+    public void setHash(Hash hash) {
+        this.hash = hash;
     }
 
-    public Hash.Algorithm getShortHashAlgorithm() {
-        return shortHashAlgorithm;
+    public Hash.Algorithm getHashAlgorithm() {
+        return hashAlgorithm;
     }
 
-    public void setShortHashAlgorithm(Hash.Algorithm shortHashAlgorithm) {
-        this.shortHashAlgorithm = shortHashAlgorithm;
-    }
-
-    public Hash getFullHash() {
-        return fullHash;
-    }
-
-    public void setFullHash(Hash fullHash) {
-        this.fullHash = fullHash;
-    }
-
-    public Hash.Algorithm getFullHashAlgorithm() {
-        return fullHashAlgorithm;
-    }
-
-    public void setFullHashAlgorithm(Hash.Algorithm fullHashAlgorithm) {
-        this.fullHashAlgorithm = fullHashAlgorithm;
+    public void setHashAlgorithm(Hash.Algorithm hashAlgorithm) {
+        this.hashAlgorithm = hashAlgorithm;
     }
 
     public boolean addChild(Content content) {
@@ -305,19 +282,10 @@ public abstract class Content implements JSONSerializable, Serializable {
             m.append("xl=");
             m.append(getBody().length);
         }
-        String hash = null;
-        String hashAlgorithm = null;
-        if(fullHash != null && fullHash.length() < 200) {
-            hash = fullHash.getHash();
-            hashAlgorithm = fullHashAlgorithm.getName();
-        } else {
-            hash = shortHash.getHash();
-            hashAlgorithm = shortHashAlgorithm.getName();
-        }
         if(hash != null && hashAlgorithm != null) {
             if(body != null) m.append("&");
             m.append("xt=urn:");
-            m.append(hashAlgorithm.toLowerCase());
+            m.append(hashAlgorithm.getName().toLowerCase());
             m.append(":");
             m.append(hash);
         }
@@ -353,10 +321,8 @@ public abstract class Content implements JSONSerializable, Serializable {
         }
         if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
-        if(shortHash != null) m.put("shortHash", shortHash.getHash());
-        if(shortHashAlgorithm != null) m.put("shortHashAlgorithm",shortHashAlgorithm.getName());
-        if(fullHash != null) m.put("fullHash", fullHash.getHash());
-        if(fullHashAlgorithm != null) m.put("fullHashAlgorithm",fullHashAlgorithm.getName());
+        if(hash != null) m.put("hash", hash.getHash());
+        if(hashAlgorithm != null) m.put("hashAlgorithm",hashAlgorithm.getName());
         if(children != null && children.size() > 0) {
             List<Map<String,Object>> l = new ArrayList<>();
             for(Content c : children) {
@@ -387,10 +353,8 @@ public abstract class Content implements JSONSerializable, Serializable {
         }
         if(m.get("bodyEncoding")!=null) bodyEncoding = (String)m.get("bodyEncoding");
         if(m.get("createdAt")!=null) createdAt = Long.parseLong((String)m.get("createdAt"));
-        if(m.get("shortHashAlgorithm")!=null) shortHashAlgorithm = Hash.Algorithm.value((String)m.get("shortHashAlgorithm"));
-        if(m.get("shortHash")!=null) shortHash = new Hash((String)m.get("shortHash"), shortHashAlgorithm);
-        if(m.get("fullHashAlgorithm")!=null) fullHashAlgorithm = Hash.Algorithm.value((String)m.get("fullHashAlgorithm"));
-        if(m.get("fullHash")!=null) fullHash = new Hash((String)m.get("fullHash"), fullHashAlgorithm);
+        if(m.get("hashAlgorithm")!=null) hashAlgorithm = Hash.Algorithm.value((String)m.get("hashAlgorithm"));
+        if(m.get("hash")!=null) hash = new Hash((String)m.get("hash"), hashAlgorithm);
         if(m.get("children")!=null) {
             List<Map<String,Object>> l = (List<Map<String,Object>>)m.get("children");
             Content c;

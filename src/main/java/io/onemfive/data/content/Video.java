@@ -9,7 +9,7 @@ public class Video extends Binary {
         super(body, contentType);
     }
 
-    public Video(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
-        super(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+    public Video(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
+        super(body, contentType, name, generateHash, generateFingerprint);
     }
 }

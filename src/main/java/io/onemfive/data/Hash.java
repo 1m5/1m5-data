@@ -1,6 +1,6 @@
 package io.onemfive.data;
 
-import java.math.BigInteger;
+import io.onemfive.data.util.HashUtil;
 
 /**
  * A hash with its algorithm.
@@ -58,11 +58,15 @@ public class Hash extends Data {
         return algorithm;
     }
 
-    public String toHexString() {
+    public String toHex() {
         if(hash != null)
-            return String.format("%x", new BigInteger(1, hash.getBytes()));
+            return HashUtil.toHex(hash.getBytes());
         else
             return null;
+    }
+
+    public byte[] fromHex(String hex) {
+        return HashUtil.fromHex(hex);
     }
 
     @Override

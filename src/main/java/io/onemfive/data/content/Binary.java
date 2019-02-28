@@ -13,7 +13,7 @@ public abstract class Binary extends Content {
         super(body, contentType);
     }
 
-    public Binary(byte[] body, String contentType, String name, boolean generateFullHash, boolean generateShortHash, boolean generateFingerprint) {
-        super(body, contentType, name, generateFullHash, generateShortHash, generateFingerprint);
+    public Binary(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
+        super(body, contentType, name, generateHash, generateFingerprint);
     }
 }
