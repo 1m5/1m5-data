@@ -339,6 +339,8 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
         if(hash != null) m.put("hash", hash.getHash());
         if(hashAlgorithm != null) m.put("hashAlgorithm",hashAlgorithm.getName());
+        if(fingerprint != null) m.put("fingerprint", fingerprint.getHash());
+        if(fingerprintAlgorithm != null) m.put("fingerprintAlgorithm",fingerprintAlgorithm.getName());
         if(children != null && children.size() > 0) {
             List<Map<String,Object>> l = new ArrayList<>();
             for(Content c : children) {
@@ -371,6 +373,8 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.get("createdAt")!=null) createdAt = Long.parseLong((String)m.get("createdAt"));
         if(m.get("hashAlgorithm")!=null) hashAlgorithm = Hash.Algorithm.value((String)m.get("hashAlgorithm"));
         if(m.get("hash")!=null) hash = new Hash((String)m.get("hash"), hashAlgorithm);
+        if(m.get("fingerprintAlgorithm")!=null) fingerprintAlgorithm = Hash.Algorithm.value((String)m.get("fingerprintAlgorithm"));
+        if(m.get("fingerprint")!=null) fingerprint = new Hash((String)m.get("fingerprint"), fingerprintAlgorithm);
         if(m.get("children")!=null) {
             List<Map<String,Object>> l = (List<Map<String,Object>>)m.get("children");
             Content c;
