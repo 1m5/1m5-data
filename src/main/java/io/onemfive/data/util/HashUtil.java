@@ -16,7 +16,7 @@ public class HashUtil {
     public static Hash generateFingerprint(byte[] contentToFingerprint, Hash.Algorithm algorithm) throws NoSuchAlgorithmException {
             MessageDigest md = MessageDigest.getInstance(algorithm.getName());
             byte[] hash = md.digest(contentToFingerprint);
-            return new Hash(new String(hash), algorithm);
+            return new Hash(toHex(hash), algorithm);
     }
 
     public static Hash generateHash(String contentToHash, Hash.Algorithm algorithm) throws NoSuchAlgorithmException {
@@ -120,9 +120,18 @@ public class HashUtil {
         String hex = bi.toString(16);
         int paddingLength = (array.length * 2) - hex.length();
         if(paddingLength > 0)
-            return String.format("%0"  +paddingLength + "d", 0) + hex;
-        else
-            return hex;
+            hex = String.format("%0"  +paddingLength + "d", 0) + hex;
+        hex = hex.toUpperCase();
+        StringBuilder sb = new StringBuilder();
+        char[] ch = hex.toCharArray();
+        int i = 1;
+        for(char c : ch) {
+            sb.append(c);
+            if((i++%4)==0 && i<ch.length) {
+                sb.append(":");
+            }
+        }
+        return sb.toString();
     }
 
     public static byte[] fromHex(String hex)
