@@ -39,6 +39,14 @@ public class FileUtil {
 
     private static final Logger LOG = Logger.getLogger(FileUtil.class.getName());
 
+    public static boolean fileExists(String path) {
+        return new File(path).exists();
+    }
+
+    public static boolean rmFile(String path) {
+        return new File(path).delete();
+    }
+
     /**
      * Delete the path as well as any files or directories underneath it.
      *
