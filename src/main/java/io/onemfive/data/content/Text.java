@@ -3,6 +3,7 @@ package io.onemfive.data.content;
 public class Text extends Content {
 
     public Text() {
+        contentType = "text/plain";
     }
 
     public Text(byte[] body, String contentType) {

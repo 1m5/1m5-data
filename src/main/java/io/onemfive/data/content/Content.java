@@ -26,7 +26,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     private String name;
     private Long size = 0L;
     protected String authorAddress;
-    private byte[] body;
+    protected byte[] body;
     private String bodyEncoding;
     private Boolean bodyBase64Encoded = false;
     private Long createdAt;
@@ -67,6 +67,10 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public Content() {
         type = getClass().getName();
+    }
+
+    public Content(byte[] body) {
+        this.body = body;
     }
 
     public Content(byte[] body, String contentType) {

@@ -9,6 +9,10 @@ public abstract class Binary extends Content {
     public Binary() {
     }
 
+    public Binary(byte[] body) {
+        super.body = body;
+    }
+
     public Binary(byte[] body, String contentType) {
         super(body, contentType);
     }

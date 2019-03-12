@@ -5,6 +5,11 @@ public class HTML extends Text {
     public HTML() {
     }
 
+    public HTML(byte[] body) {
+        super.body = body;
+        contentType = "text/html";
+    }
+
     public HTML(byte[] body, String contentType) {
         super(body, contentType);
     }

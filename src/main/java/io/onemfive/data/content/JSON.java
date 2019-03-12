@@ -10,6 +10,11 @@ public class JSON extends Text {
     public JSON() {
     }
 
+    public JSON(byte[] body) {
+        super.body = body;
+        contentType = "application/json";
+    }
+
     public JSON(byte[] body, String contentType) {
         super(body, contentType);
     }
