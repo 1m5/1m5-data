@@ -28,6 +28,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     protected String authorAddress;
     private byte[] body;
     private String bodyEncoding;
+    private Boolean bodyBase64Encoded = false;
     private Long createdAt;
     private Hash hash;
     private Hash.Algorithm hashAlgorithm = Hash.Algorithm.SHA256; // default
@@ -36,6 +37,8 @@ public abstract class Content implements JSONSerializable, Serializable {
     private List<Content> children = new ArrayList<>();
     private Boolean encrypted = false;
     private String encryptionAlgorithm;
+    private String encryptionPassphrase;
+    private String base64EncodedIV;
     private List<String> keywords = new ArrayList<>();
     // Everyone is given read access (e.g. article)
     private Boolean readable = false;
@@ -191,6 +194,14 @@ public abstract class Content implements JSONSerializable, Serializable {
         this.bodyEncoding = bodyEncoding;
     }
 
+    public Boolean getBodyBase64Encoded() {
+        return bodyBase64Encoded;
+    }
+
+    public void setBodyBase64Encoded(Boolean bodyBase64Encoded) {
+        this.bodyBase64Encoded = bodyBase64Encoded;
+    }
+
     private void incrementVersion() {
         version++;
     }
@@ -257,6 +268,22 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public void setEncryptionAlgorithm(String encryptionAlgorithm) {
         this.encryptionAlgorithm = encryptionAlgorithm;
+    }
+
+    public String getEncryptionPassphrase() {
+        return encryptionPassphrase;
+    }
+
+    public void setEncryptionPassphrase(String encryptionPassphrase) {
+        this.encryptionPassphrase = encryptionPassphrase;
+    }
+
+    public String getBase64EncodedIV() {
+        return base64EncodedIV;
+    }
+
+    public void setBase64EncodedIV(String base64EncodedIV) {
+        this.base64EncodedIV = base64EncodedIV;
     }
 
     public List<String> getKeywords() {
@@ -336,6 +363,7 @@ public abstract class Content implements JSONSerializable, Serializable {
                 m.put("body", new String(body));
         }
         if(bodyEncoding != null) m.put("bodyEncoding",bodyEncoding);
+        if(bodyBase64Encoded != null) m.put("bodyBase64Encoded",bodyBase64Encoded.toString());
         if(createdAt != null) m.put("createdAt",String.valueOf(createdAt));
         if(hash != null) m.put("hash", hash.getHash());
         if(hashAlgorithm != null) m.put("hashAlgorithm",hashAlgorithm.getName());
@@ -351,6 +379,8 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(authorAddress != null) m.put("authorAddress", authorAddress);
         if(encrypted!=null) m.put("encrypted",encrypted.toString());
         if(encryptionAlgorithm!=null) m.put("encryptionAlgorithm",encryptionAlgorithm);
+        if(encryptionPassphrase!=null) m.put("encryptionPassphrase",encryptionPassphrase);
+        if(base64EncodedIV!=null) m.put("base64EncodedIV",base64EncodedIV);
         if(keywords != null && keywords.size() > 0) m.put("keywords", keywords);
         if(readable!=null) m.put("readable",readable.toString());
         if(writeable!=null) m.put("writeable",writeable.toString());
@@ -370,6 +400,7 @@ public abstract class Content implements JSONSerializable, Serializable {
                 body = ((String)m.get("body")).getBytes();
         }
         if(m.get("bodyEncoding")!=null) bodyEncoding = (String)m.get("bodyEncoding");
+        if(m.get("bodyBase64Encoded")!=null) bodyBase64Encoded = Boolean.parseBoolean((String)m.get("bodyBase64Encoded"));
         if(m.get("createdAt")!=null) createdAt = Long.parseLong((String)m.get("createdAt"));
         if(m.get("hashAlgorithm")!=null) hashAlgorithm = Hash.Algorithm.value((String)m.get("hashAlgorithm"));
         if(m.get("hash")!=null) hash = new Hash((String)m.get("hash"), hashAlgorithm);
@@ -391,6 +422,8 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.get("authorAddress")!=null) authorAddress = (String)m.get("authorAddress");
         if(m.get("encrypted")!=null) encrypted = Boolean.parseBoolean((String)m.get("encrypted"));
         if(m.get("encryptionAlgorithm")!=null) encryptionAlgorithm = (String)m.get("encryptionAlgorithm");
+        if(m.get("encryptionPassphrase")!=null) encryptionPassphrase = (String)m.get("encryptionPassphrase");
+        if(m.get("base64EncodedIV")!=null) base64EncodedIV = (String)m.get("base64EncodedIV");
         if(m.get("keywords")!=null) keywords = (List<String>)m.get("keywords");
         if(m.get("readable")!=null) readable = Boolean.parseBoolean((String)m.get("readable"));
         if(m.get("writeable")!=null) writeable = Boolean.parseBoolean((String)m.get("writeable"));
