@@ -8,6 +8,7 @@ package io.onemfive.data.content;
 public class JSON extends Text {
 
     public JSON() {
+        contentType = "application/json";
     }
 
     public JSON(byte[] body) {

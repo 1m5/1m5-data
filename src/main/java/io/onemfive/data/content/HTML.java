@@ -3,6 +3,7 @@ package io.onemfive.data.content;
 public class HTML extends Text {
 
     public HTML() {
+        contentType = "text/html";
     }
 
     public HTML(byte[] body) {

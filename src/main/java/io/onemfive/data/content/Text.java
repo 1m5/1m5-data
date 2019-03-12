@@ -6,6 +6,11 @@ public class Text extends Content {
         contentType = "text/plain";
     }
 
+    public Text(byte[] body){
+        super.body = body;
+        contentType = "text/plain";
+    }
+
     public Text(byte[] body, String contentType) {
         super(body, contentType);
     }
