@@ -56,12 +56,12 @@ public abstract class Content implements JSONSerializable, Serializable {
     public static Content buildContent(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
         Content c = null;
         if(contentType==null) return null;
-        else if(contentType.startsWith("text/plain")) c = new Text(body, contentType, name, generateHash, generateFingerprint);
-        else if(contentType.startsWith("text/html")) c = new HTML(body, contentType, name, generateHash, generateFingerprint);
+        else if(contentType.startsWith("text/plain")) c = new Text(body, name, generateHash, generateFingerprint);
+        else if(contentType.startsWith("text/html")) c = new HTML(body, name, generateHash, generateFingerprint);
         else if(contentType.startsWith("image/")) c = new Image(body, contentType, name, generateHash, generateFingerprint);
         else if(contentType.startsWith("audio/")) c = new Audio(body, contentType, name, generateHash, generateFingerprint);
         else if(contentType.startsWith("video/")) c = new Video(body, contentType, name, generateHash, generateFingerprint);
-        else if(contentType.startsWith("application/json"))  c = new JSON(body, contentType, name, generateHash, generateFingerprint);
+        else if(contentType.startsWith("application/json"))  c = new JSON(body, name, generateHash, generateFingerprint);
         return c;
     }
 
@@ -74,26 +74,30 @@ public abstract class Content implements JSONSerializable, Serializable {
     }
 
     public Content(byte[] body, String contentType) {
-        this(body, contentType, null, true, true);
+        this(body, contentType, null, false, false);
     }
 
     public Content(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
         type = getClass().getName();
         setBody(body, generateHash, generateFingerprint);
-        this.size = (long)body.length;
+        if(body!=null)
+            size = (long)body.length;
         this.contentType = contentType;
         this.name = name;
         if(contentType!=null && contentType.contains("charset:")) {
             bodyEncoding = contentType.substring(contentType.indexOf("charset:")+1);
         }
         String msg = "Content Instantiated : {";
-        msg += "\n\tName: "+name;
+        if(name!=null)
+            msg += "\n\tName: "+name;
         msg += "\n\tType: "+type;
         msg += "\n\tContent Type: " + contentType;
-        if (this instanceof Text)
+        if (this instanceof Text && body!=null)
             msg += "\n\tBody: " + new String(body);
-        msg += "\n\tBody Encoding: " + bodyEncoding;
-        msg += "\n\tSize: " + size;
+        if(bodyEncoding!=null)
+            msg += "\n\tBody Encoding: " + bodyEncoding;
+        if(size > 0L)
+            msg += "\n\tSize: " + size;
         if(generateFingerprint)
             msg += "\n\tFingerprint: " + fingerprint.getHash();
         if(generateHash && hash.getHash()!=null && hash.getHash().length() > 40)
