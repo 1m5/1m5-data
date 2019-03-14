@@ -11,6 +11,8 @@ import java.util.Map;
 public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable {
 
     public enum Network {
+        // Invisible Matrix Services (1M5)
+        IMS,
         // Invisible Direct Mesh (1M5 internal project)
         IDM,
         // Invisible Internet Project - https://geti2p.net/
