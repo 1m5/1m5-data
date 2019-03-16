@@ -42,7 +42,7 @@ public final class Envelope implements Persistable, Serializable {
 
     private Map<String, Object> headers;
     private Message message;
-    private Sensitivity sensitivity = Sensitivity.VERYHIGH; // Default to I2P
+    private Sensitivity sensitivity = Sensitivity.HIGH; // Default to I2P
 
     public enum Sensitivity { // with default sensors chosen
         NONE, // HTTP
@@ -50,8 +50,8 @@ public final class Envelope implements Persistable, Serializable {
         MEDIUM, // Tor
         HIGH, // I2P
         VERYHIGH, // I2P Delayed
-        EXTREME, // Direct Mesh
-        NEO // Intelligent Combination of Tor, I2P, I2P Delayed, and Direct Mesh
+        EXTREME, // 1DN
+        NEO // Intelligent Combination of Tor, I2P, and 1DN
     }
 
     public static Envelope commandFactory() {
