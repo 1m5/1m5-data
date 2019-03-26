@@ -231,6 +231,16 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
         if(network!=null) m.put("network",network);
+        if(getAddress()!=null) m.put("address",getAddress());
+        if(getFingerprint()!=null) m.put("fingerprint",getFingerprint());
+        if(getI2PAddress()!=null) m.put("i2pAddress",getI2PAddress());
+        if(getI2PFingerprint()!=null) m.put("i2pFingerprint",getI2PFingerprint());
+        if(getTorAddress()!=null) m.put("torAddress",getTorAddress());
+        if(getTorFingerprint()!=null) m.put("torFingerprint",getTorFingerprint());
+        if(getIDNAddress()!=null) m.put("idnAddress",getIDNAddress());
+        if(getIDNFingerprint()!=null) m.put("idnFingerprint",getIDNFingerprint());
+        if(getIMSAddress()!=null) m.put("imsAddress",getIMSAddress());
+        if(getIMSFingerprint()!=null) m.put("imsFingerprint",getIMSFingerprint());
         if(did!=null) m.put("did",did.toMap());
         return m;
     }

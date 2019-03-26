@@ -70,11 +70,6 @@ public class Hash extends Data {
     }
 
     @Override
-    public int length() {
-        return 0;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         return hash != null && obj instanceof Hash && hash.equals(((Hash)obj).getHash());
     }
