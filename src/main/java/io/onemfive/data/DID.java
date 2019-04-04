@@ -1,8 +1,5 @@
 package io.onemfive.data;
 
-import io.onemfive.data.util.HashUtil;
-import io.onemfive.data.util.JSONParser;
-
 import java.util.*;
 
 /**
@@ -18,6 +15,8 @@ import java.util.*;
 public class DID implements Persistable, PIIClearable, JSONSerializable {
 
     public enum Status {INACTIVE, ACTIVE, SUSPENDED}
+
+    public static String VERSION = "https://w3id.org/did/v1";
 
     public static String DEFAULT_ALIAS = "default";
 
@@ -235,6 +234,48 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
                 peers.put(n, p);
             }
         }
+    }
+
+    public Map<String,Object> toDocumentMap() {
+        return toDocumentMap(DEFAULT_ALIAS, true);
+    }
+
+    public Map<String,Object> toDocumentMap(String alias, Boolean authenticate) {
+        Map<String,Object> m = new HashMap<>();
+
+        // Context
+        m.put("@context",VERSION);
+
+        if(alias==null)
+            alias = DEFAULT_ALIAS;
+
+        PublicKey publicKey = getPublicKey(alias);
+        if(publicKey == null) {
+            return m;
+        }
+
+        // Subject
+        m.put("id","did:1m5:"+publicKey.getFingerprint());
+
+        if(authenticate) {
+            List<Map<String, Object>> authnList = new ArrayList<>();
+            m.put("authentication", authnList);
+            Map<String, Object> authNM = new HashMap<>();
+            authNM.put("id", "did:1m5:"+publicKey.getFingerprint());
+            authNM.put("type", "RsaVerificationKey2018");
+            authNM.put("controller", "did:1m5:" + publicKey.getFingerprint());
+            authNM.put("publicKeyPem", publicKey.getAddress());
+            authnList.add(authNM);
+        }
+
+        List<Map<String,Object>> serviceList = new ArrayList<>();
+        m.put("service", serviceList);
+        Map<String,Object> serviceM = new HashMap<>();
+        serviceM.put("type", "io.onemfive.did.DIDService");
+        serviceM.put("serviceEndpoint", "1m5:io.onemfive.did.DIDService");
+        serviceList.add(serviceM);
+
+        return m;
     }
 
     @Override
