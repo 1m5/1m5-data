@@ -284,29 +284,25 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
 
         sb.append("{\n\tlocal: "+isLocal());
 
-        if(getIMSAddress()!=null && getIMSAddress().length()>80)
-            sb.append("\n\t1m5Address: "+getIMSAddress().substring(0,80)+"...");
-        else
+        if(getIMSAddress()!=null)
             sb.append("\n\t1m5Address: "+getIMSAddress());
-        sb.append("\n\t1m5Fingerprint: "+getIMSFingerprint());
+        if(getIMSFingerprint()!=null)
+            sb.append("\n\t1m5Fingerprint: "+getIMSFingerprint());
 
-        if(getTorAddress()!=null && getTorAddress().length()>80)
-            sb.append("\n\ttorAddress: "+getTorAddress().substring(0,80)+"...");
-        else
+        if(getTorAddress()!=null)
             sb.append("\n\ttorAddress: "+getTorAddress());
-        sb.append("\n\ttorFingerprint: "+getTorFingerprint());
+        if(getTorFingerprint()!=null)
+            sb.append("\n\ttorFingerprint: "+getTorFingerprint());
 
-        if(getI2PAddress()!=null && getI2PAddress().length()>80)
-            sb.append("\n\ti2pAddress: "+getI2PAddress().substring(0,80)+"...");
-        else
+        if(getI2PAddress()!=null)
             sb.append("\n\ti2pAddress: "+getI2PAddress());
-        sb.append("\n\ti2pFingerprint: "+getI2PFingerprint());
+        if(getI2PFingerprint()!=null)
+            sb.append("\n\ti2pFingerprint: "+getI2PFingerprint());
 
-        if(getIDNAddress()!=null && getIDNAddress().length()>80)
-            sb.append("\n\tidnAddress: "+getIDNAddress().substring(0,80)+"...");
-        else
+        if(getIDNAddress()!=null)
             sb.append("\n\tidnAddress: "+getIDNAddress());
-        sb.append("\n\tidnFingerprint: "+getIDNFingerprint());
+        if(getIDNFingerprint()!=null)
+            sb.append("\n\tidnFingerprint: "+getIDNFingerprint());
 
         sb.append("\n}");
         return sb.toString();
