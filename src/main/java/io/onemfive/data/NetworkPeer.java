@@ -87,8 +87,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public String getIMSAddress(){
         if(Network.IMS.name().equals(network))
             return getAddress();
-        else
+        else if(did.getPeer(Network.IMS.name())!=null)
             return did.getPeer(Network.IMS.name()).getAddress();
+        else
+            return null;
     }
 
     public void setIMSAddress(String address) {
@@ -100,8 +102,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public String getIMSFingerprint() {
         if(Network.IMS.name().equals(network))
             return getFingerprint();
-        else
+        else if(did.getPeer(Network.IMS.name())!=null)
             return did.getPeer(Network.IMS.name()).getFingerprint();
+        else
+            return null;
     }
 
     public void setIMSFingerprint(String fingerprint) {
@@ -114,8 +118,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public String getTorAddress(){
         if(Network.TOR.name().equals(network))
             return getAddress();
-        else
+        else if(did.getPeer(Network.TOR.name())!=null)
             return did.getPeer(Network.TOR.name()).getAddress();
+        else
+            return null;
     }
 
     public void setTorAddress(String address) {
@@ -128,8 +134,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public String getTorFingerprint() {
         if(Network.TOR.name().equals(network))
             return getFingerprint();
-        else
+        else if(did.getPeer(Network.TOR.name())!=null)
             return did.getPeer(Network.TOR.name()).getFingerprint();
+        else
+            return null;
     }
 
     public void setTorFingerprint(String fingerprint) {
@@ -142,8 +150,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public String getI2PAddress(){
         if(Network.I2P.name().equals(network))
             return getAddress();
-        else
+        else if(did.getPeer(Network.I2P.name())!=null)
             return did.getPeer(Network.I2P.name()).getAddress();
+        else
+            return null;
     }
 
     public void setI2PAddress(String address) {
@@ -156,8 +166,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public String getI2PFingerprint() {
         if(Network.I2P.name().equals(network))
             return getFingerprint();
-        else
+        else if(did.getPeer(Network.I2P.name())!=null)
             return did.getPeer(Network.I2P.name()).getFingerprint();
+        else
+            return null;
     }
 
     public void setI2PFingerprint(String fingerprint) {
@@ -189,8 +201,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public String getIDNAddress(){
         if(Network.IDN.name().equals(network))
             return getAddress();
-        else
+        else if(did.getPeer(Network.IDN.name())!=null)
             return did.getPeer(Network.IDN.name()).getAddress();
+        else
+            return null;
     }
 
     public void setIDNAddress(String address) {
@@ -203,8 +217,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public String getIDNFingerprint() {
         if(Network.IDN.name().equals(network))
             return getFingerprint();
-        else
+        else if(did.getPeer(Network.IDN.name())!=null)
             return did.getPeer(Network.IDN.name()).getFingerprint();
+        else
+            return null;
     }
 
     public void setIDNFingerprint(String fingerprint) {
