@@ -192,7 +192,7 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
             m.put("peers",pm);
             Set<String> networks = peers.keySet();
             for(String n : networks) {
-                pm.put(n,((NetworkPeer)m.get(n)).toMap());
+                pm.put(n, peers.get(n).toMap());
             }
         }
         return m;
