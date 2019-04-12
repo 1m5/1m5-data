@@ -165,15 +165,24 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
     @Override
     public Map<String, Object> toMap() {
         Map<String,Object> m = new HashMap<>();
-        if(username!=null) m.put("username",username);
-        if(passphrase!=null) m.put("passphrase",passphrase);
-        if(passphraseHash!=null) m.put("passphraseHash",passphraseHash.getHash());
-        if(passphraseHashAlgorithm!=null) m.put("passphraseHashAlgorithm",passphraseHashAlgorithm.getName());
-        if(passphrase2!=null) m.put("passphrase2",passphrase2);
-        if(description!=null) m.put("description",description);
-        if(status!=null) m.put("status",status.name());
-        if(verified!=null) m.put("verified",verified.toString());
-        if(authenticated!=null) m.put("authenticated",authenticated.toString());
+        if(username!=null)
+            m.put("username",username);
+        if(passphrase!=null)
+            m.put("passphrase",passphrase);
+        if(passphraseHash!=null)
+            m.put("passphraseHash",passphraseHash.getHash());
+        if(passphraseHashAlgorithm!=null)
+            m.put("passphraseHashAlgorithm",passphraseHashAlgorithm.getName());
+        if(passphrase2!=null)
+            m.put("passphrase2",passphrase2);
+        if(description!=null)
+            m.put("description",description);
+        if(status!=null)
+            m.put("status",status.name());
+        if(verified!=null)
+            m.put("verified",verified.toString());
+        if(authenticated!=null)
+            m.put("authenticated",authenticated.toString());
         if(identities != null && identities.size() > 0) {
             Map<String,Object> ids = new HashMap<>();
             m.put("identities",ids);
@@ -192,7 +201,7 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
             m.put("peers",pm);
             Set<String> networks = peers.keySet();
             for(String n : networks) {
-                pm.put(n,((NetworkPeer)m.get(n)).toMap());
+                pm.put(n,(peers.get(n)).toMap());
             }
         }
         return m;
@@ -200,15 +209,24 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
 
     @Override
     public void fromMap(Map<String, Object> m) {
-        if(m.get("username")!=null) username = (String)m.get("username");
-        if(m.get("passphrase")!=null) passphrase = (String)m.get("passphrase");
-        if(m.get("passphraseHashAlgorithm")!=null) passphraseHashAlgorithm = Hash.Algorithm.valueOf((String)m.get("passphraseHashAlgorithm"));
-        if(m.get("passphraseHash")!=null) passphraseHash = new Hash(((String)m.get("passphraseHash")), passphraseHashAlgorithm);
-        if(m.get("passphrase2")!=null) passphrase2 = (String)m.get("passphrase2");
-        if(m.get("description")!=null) description = (String)m.get("description");
-        if(m.get("status")!=null) status = Status.valueOf((String)m.get("status"));
-        if(m.get("verified")!=null) verified = Boolean.parseBoolean((String)m.get("verified"));
-        if(m.get("authenticated")!=null) authenticated = Boolean.parseBoolean((String)m.get("authenticated"));
+        if(m.get("username")!=null)
+            username = (String)m.get("username");
+        if(m.get("passphrase")!=null)
+            passphrase = (String)m.get("passphrase");
+        if(m.get("passphraseHashAlgorithm")!=null)
+            passphraseHashAlgorithm = Hash.Algorithm.valueOf((String)m.get("passphraseHashAlgorithm"));
+        if(m.get("passphraseHash")!=null)
+            passphraseHash = new Hash(((String)m.get("passphraseHash")), passphraseHashAlgorithm);
+        if(m.get("passphrase2")!=null)
+            passphrase2 = (String)m.get("passphrase2");
+        if(m.get("description")!=null)
+            description = (String)m.get("description");
+        if(m.get("status")!=null)
+            status = Status.valueOf((String)m.get("status"));
+        if(m.get("verified")!=null)
+            verified = Boolean.parseBoolean((String)m.get("verified"));
+        if(m.get("authenticated")!=null)
+            authenticated = Boolean.parseBoolean((String)m.get("authenticated"));
         if(m.get("identities")!=null) {
             Map<String,Object> im = (Map<String,Object>)m.get("identities");
             identities = new HashMap<>();
