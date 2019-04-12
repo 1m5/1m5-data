@@ -2,6 +2,7 @@ package io.onemfive.data;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * A node on the 1M5 peer-to-peer network.
@@ -14,6 +15,8 @@ import java.util.Map;
  * @author objectorange
  */
 public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable {
+
+    private static Logger LOG = Logger.getLogger(NetworkPeer.class.getName());
 
     public enum Network {
         // Invisible Matrix Services (1M5) - https://github.com/1m5/1m5-core
@@ -45,6 +48,9 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         did = new DID();
         did.setUsername(username);
         did.setPassphrase(passphrase);
+        if(Network.IMS.name().equals(network)) {
+            did.addPeer(new NetworkPeer(Network.I2P.name()));
+        }
     }
 
     public String getNetwork() {
@@ -60,10 +66,12 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     }
 
     public void setDid(DID did) {
-        // Ensure 1M5 DID has an I2P network Peer
-        if(Network.IMS.name().equals(network) && did.getPeer(Network.I2P.name())==null)
-            did.addPeer(new NetworkPeer(Network.I2P.name()));
-        this.did = did;
+        if(did != null) {
+            if (Network.IMS.name().equals(network) && did.getPeer(Network.I2P.name()) == null) {
+                did.addPeer(new NetworkPeer(Network.I2P.name()));
+            }
+            this.did = did;
+        }
     }
 
     @Override
