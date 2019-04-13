@@ -43,6 +43,16 @@ public class FileUtil {
         return new File(path).exists();
     }
 
+    public static boolean writeFile(byte[] data, String path) {
+        try (FileOutputStream stream = new FileOutputStream(path)) {
+            stream.write(data);
+        } catch (Exception e) {
+            LOG.warning(e.getLocalizedMessage());
+            return false;
+        }
+        return true;
+    }
+
     public static boolean rmFile(String path) {
         return new File(path).delete();
     }
