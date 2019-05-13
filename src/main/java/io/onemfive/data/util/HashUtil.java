@@ -84,7 +84,7 @@ public class HashUtil {
             e.printStackTrace();
             return null;
         }
-        String hashString = iterations + ":" + toHex(salt) + ":" + toHex(hash);
+        String hashString = iterations + "|" + toHex(salt) + "|" + toHex(hash);
         return new Hash(Base64.encode(hashString),Hash.Algorithm.PBKDF2WithHmacSHA1);
     }
 
@@ -92,7 +92,7 @@ public class HashUtil {
         if(hashToVerify.getAlgorithm() != Hash.Algorithm.PBKDF2WithHmacSHA1)
             throw new NoSuchAlgorithmException();
         String hashString = Base64.decodeToString(hashToVerify.getHash());
-        String[] parts = hashString.split(":");
+        String[] parts = hashString.split("|");
         int iterations = Integer.parseInt(parts[0]);
         byte[] salt = fromHex(parts[1]);
         byte[] hash = fromHex(parts[2]);
