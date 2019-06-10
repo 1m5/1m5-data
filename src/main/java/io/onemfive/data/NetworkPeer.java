@@ -28,7 +28,9 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         // The Onion Router (TOR) - https://www.torproject.org/
         TOR,
         // Clearnet
-        CLEAR
+        CLEAR,
+        // Software Defined Radio
+        SDR
     }
 
     protected String network;
