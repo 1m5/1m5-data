@@ -5,35 +5,43 @@
 
 	<groupId>io.onemfive</groupId>
 	<artifactId>data</artifactId>
-	<version>0.6.0</version>
+	<version>0.6.1</version>
 
 	<packaging>jar</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 	</properties>
 
 	<name>1m5-data</name>
 	<url>https://1m5.io</url>
 	<description>Invisible Matrix Services - Data Library`</description>
 	<inceptionYear>2018</inceptionYear>
-	<organization>
-		<name>1M5</name>
-		<url>https://1m5.io</url>
-	</organization>
 	<licenses>
 		<license>
-			<name>GPLv3</name>
-			<url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+			<name>Unlicense</name>
+			<url>https://unlicense.org/</url>
 		</license>
 	</licenses>
 	<developers>
 		<developer>
 			<name>objectorange</name>
-			<email>objectorange@1m5.io</email>
+			<email>objectorange@1m5.i2p</email>
 		</developer>
 	</developers>
+	<scm>
+		<connection>scm:git@github.com/1m5/1m5-data</connection>
+		<developerConnection>scm:git@github.com/1m5/1m5-data</developerConnection>
+		<url>git@github.com/1m5/1m5-data</url>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<finalName>${project.name}-${project.version}</finalName>

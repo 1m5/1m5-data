@@ -1,5 +1,7 @@
 package io.onemfive.data;
 
+import io.onemfive.data.util.HashUtil;
+
 /**
  * A hash with its algorithm.
  *
@@ -56,11 +58,15 @@ public class Hash extends Data {
         return algorithm;
     }
 
+    public String toHex() {
+        if(hash != null)
+            return HashUtil.toHex(hash.getBytes());
+        else
+            return null;
+    }
 
-
-    @Override
-    public int length() {
-        return 0;
+    public byte[] fromHex(String hex) {
+        return HashUtil.fromHex(hex);
     }
 
     @Override

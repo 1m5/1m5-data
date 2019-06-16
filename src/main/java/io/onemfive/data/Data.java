@@ -24,7 +24,10 @@ public abstract class Data {
         this.data = data;
     }
 
-    public abstract int length();
+    public int length() {
+        if(data==null) return 0;
+        return data.length;
+    }
 
     public String toBase64() throws DataFormatException, IOException {
         return data == null ? null : Base64.encode(data);

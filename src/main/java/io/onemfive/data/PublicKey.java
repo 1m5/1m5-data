@@ -15,6 +15,8 @@ public class PublicKey implements Addressable, JSONSerializable {
     private String alias;
     private String fingerprint;
     private String address;
+    private Boolean isIdentityKey = false;
+    private Boolean isEncryptionKey = false;
 
     public PublicKey() {}
 
@@ -54,12 +56,30 @@ public class PublicKey implements Addressable, JSONSerializable {
         this.address = Base64.encode(encoded);
     }
 
+    public boolean isIdentityKey() {
+        return isIdentityKey;
+    }
+
+    public void isIdentityKey(boolean identityKey) {
+        isIdentityKey = identityKey;
+    }
+
+    public boolean isEncryptionKey() {
+        return isEncryptionKey;
+    }
+
+    public void isEncryptionKey(boolean encryptionKey) {
+        isEncryptionKey = encryptionKey;
+    }
+
     @Override
     public Map<String, Object> toMap() {
         Map<String, Object> m = new HashMap<>();
         if(alias!=null) m.put("alias",alias);
         if(fingerprint!=null) m.put("fingerprint",fingerprint);
         if(address !=null) m.put("address", address);
+        if(isEncryptionKey!=null) m.put("isEncryptionKey",isEncryptionKey);
+        if(isIdentityKey!=null) m.put("isIdentityKey",isIdentityKey);
         return m;
     }
 
@@ -68,6 +88,8 @@ public class PublicKey implements Addressable, JSONSerializable {
         if(m.get("alias")!=null) alias = (String)m.get("alias");
         if(m.get("fingerprint")!=null) fingerprint = (String)m.get("fingerprint");
         if(m.get("address")!=null) address = (String)m.get("address");
+        if(m.get("isEncryptionKey")!=null) isEncryptionKey = (Boolean)m.get("isEncryptionKey");
+        if(m.get("isIdentityKey")!=null) isIdentityKey = (Boolean)m.get("isIdentityKey");
     }
 
     @Override

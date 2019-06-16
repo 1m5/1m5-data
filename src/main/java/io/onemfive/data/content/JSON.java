@@ -7,6 +7,15 @@ package io.onemfive.data.content;
  */
 public class JSON extends Text {
 
-    public JSON() {}
+    public JSON() {
+        super(null, "application/json");
+    }
 
+    public JSON(byte[] body) {
+        super(body, "application/json");
+    }
+
+    public JSON(byte[] body, String name, boolean generateHash, boolean generateFingerprint) {
+        super(body, "application/json", name, generateHash, generateFingerprint);
+    }
 }

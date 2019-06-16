@@ -10,8 +10,19 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class HashUtil {
+
+    private static Logger LOG = Logger.getLogger(HashUtil.class.getName());
+
+    private static String DEL = "_";
+
+    public static Hash generateFingerprint(byte[] contentToFingerprint, Hash.Algorithm algorithm) throws NoSuchAlgorithmException {
+            MessageDigest md = MessageDigest.getInstance(algorithm.getName());
+            byte[] hash = md.digest(contentToFingerprint);
+            return new Hash(toHex(hash), algorithm);
+    }
 
     public static Hash generateHash(String contentToHash, Hash.Algorithm algorithm) throws NoSuchAlgorithmException {
         if(algorithm == Hash.Algorithm.PBKDF2WithHmacSHA1)
@@ -39,8 +50,7 @@ public class HashUtil {
             MessageDigest md = MessageDigest.getInstance(algorithm.getName());
             md.update(salt);
             byte[] hash = md.digest(contentToHash);
-            String hashString = toHex(salt) + ":" + toHex(hash);
-            return new Hash(Base64.encode(hashString), algorithm);
+            return new Hash(Base64.encode(hash) + DEL + Base64.encode(salt), algorithm);
         }
     }
 
@@ -48,14 +58,14 @@ public class HashUtil {
         if(hashToVerify.getAlgorithm() == Hash.Algorithm.PBKDF2WithHmacSHA1)
             return verifyPasswordHash(contentToVerify, hashToVerify);
         else {
-            String hashString = Base64.decodeToString(hashToVerify.getHash());
-            String[] parts = hashString.split(":");
-            byte[] salt = fromHex(parts[0]);
-            byte[] hash = fromHex(parts[1]);
+            String hashString = hashToVerify.getHash();
+            String[] parts = hashString.split(DEL);
+            byte[] hash = Base64.decode(parts[0]);
+            byte[] salt = Base64.decode(parts[1]);
             Hash contentHash = generateHash(salt, contentToVerify.getBytes(), hashToVerify.getAlgorithm());
-            String hashStringToVerify = Base64.decodeToString(contentHash.getHash());
-            String[] partsToVerify = hashStringToVerify.split(":");
-            byte[] hashToVerifyBytes = fromHex(partsToVerify[1]);
+            String hashStringToVerify = contentHash.getHash();
+            String[] partsToVerify = hashStringToVerify.split(DEL);
+            byte[] hashToVerifyBytes = Base64.decode(partsToVerify[0]);
             return Arrays.equals(hash, hashToVerifyBytes);
         }
     }
@@ -75,26 +85,30 @@ public class HashUtil {
             e.printStackTrace();
             return null;
         }
-        String hashString = iterations + ":" + toHex(salt) + ":" + toHex(hash);
-        return new Hash(Base64.encode(hashString),Hash.Algorithm.PBKDF2WithHmacSHA1);
+//        String hashString = iterations + DEL + toHex(salt) + DEL + toHex(hash);
+        String hashString = iterations + DEL + Base64.encode(salt) + DEL + Base64.encode(hash);
+        return new Hash(hashString,Hash.Algorithm.PBKDF2WithHmacSHA1);
     }
 
     public static Boolean verifyPasswordHash(String contentToVerify, Hash hashToVerify) throws NoSuchAlgorithmException {
         if(hashToVerify.getAlgorithm() != Hash.Algorithm.PBKDF2WithHmacSHA1)
             throw new NoSuchAlgorithmException();
-        String hashString = Base64.decodeToString(hashToVerify.getHash());
-        String[] parts = hashString.split(":");
+//        String hashString = Base64.decodeToString(hashToVerify.getHash());
+        String hashString = hashToVerify.getHash();
+        String[] parts = hashString.split(DEL);
         int iterations = Integer.parseInt(parts[0]);
-        byte[] salt = fromHex(parts[1]);
-        byte[] hash = fromHex(parts[2]);
+//        byte[] salt = fromHex(parts[1]);
+        byte[] salt = Base64.decode(parts[1]);
+//        byte[] hash = fromHex(parts[2]);
+        byte[] hash = Base64.decode(parts[2]);
 
-        PBEKeySpec spec = new PBEKeySpec(contentToVerify.toCharArray(), salt, iterations, hash.length * 8);
+        PBEKeySpec spec = new PBEKeySpec(contentToVerify.toCharArray(), salt, iterations, 64 * 8);
         byte[] testHash;
         try {
-            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            SecretKeyFactory skf = SecretKeyFactory.getInstance(Hash.Algorithm.PBKDF2WithHmacSHA1.getName());
             testHash = skf.generateSecret(spec).getEncoded();
         } catch (Exception e) {
-            e.printStackTrace();
+
             return null;
         }
 
@@ -106,17 +120,26 @@ public class HashUtil {
         return diff == 0;
     }
 
-    private static String toHex(byte[] array) {
+    public static String toHex(byte[] array) {
         BigInteger bi = new BigInteger(1, array);
         String hex = bi.toString(16);
         int paddingLength = (array.length * 2) - hex.length();
         if(paddingLength > 0)
-            return String.format("%0"  +paddingLength + "d", 0) + hex;
-        else
-            return hex;
+            hex = String.format("%0"  +paddingLength + "d", 0) + hex;
+        hex = hex.toUpperCase();
+        StringBuilder sb = new StringBuilder();
+        char[] ch = hex.toCharArray();
+        int i = 1;
+        for(char c : ch) {
+            sb.append(c);
+            if((i++%4)==0 && i<ch.length) {
+                sb.append(":");
+            }
+        }
+        return sb.toString();
     }
 
-    private static byte[] fromHex(String hex)
+    public static byte[] fromHex(String hex)
     {
         byte[] bytes = new byte[hex.length() / 2];
         for(int i = 0; i<bytes.length ;i++)
@@ -126,7 +149,7 @@ public class HashUtil {
         return bytes;
     }
 
-    private static byte[] getSalt() throws NoSuchAlgorithmException {
+    public static byte[] getSalt() throws NoSuchAlgorithmException {
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         byte[] salt = new byte[16];
         sr.nextBytes(salt);
