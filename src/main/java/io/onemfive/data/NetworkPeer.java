@@ -32,7 +32,9 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         // Software Defined Radio (SDR) - https://github.com/1m5/1m5-radio
         SDR,
         // Satellite - https://github.com/1m5/1m5-satellite
-        SAT
+        SAT,
+        // Ultraviolet (UV)
+        UV
     }
 
     protected String network;
