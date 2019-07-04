@@ -23,18 +23,16 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         IMS,
         // Invisible Direct Network (1DN) - https://github.com/1m5/1m5-1dn
         IDN,
-        // Invisible Internet Project (I2P) - https://geti2p.net/
+        // Invisible Internet Project (I2P) - https://geti2p.net/ and  - https://github.com/1m5/1m5-i2p
         I2P,
-        // The Onion Router (TOR) - https://www.torproject.org/
+        // The Onion Router (TOR) - https://www.torproject.org/ and https://github.com/1m5/1m5-tor-client
         TOR,
-        // Clearnet
+        // Clearnet - https://github.com/1m5/1m5-clearnet
         CLEAR,
         // Software Defined Radio (SDR) - https://github.com/1m5/1m5-radio
         SDR,
-        // Satellite - https://github.com/1m5/1m5-satellite
-        SAT,
-        // Ultraviolet (UV)
-        UV
+        // Light Fidelity (LiFi) - https://github.com/1m5/1m5-lifi
+        LIFI
     }
 
     protected String network;
@@ -242,6 +240,70 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
             setFingerprint(fingerprint);
         else
             did.getPeer(Network.IDN.name()).setFingerprint(fingerprint);
+    }
+
+    public String getSDRAddress(){
+        if(Network.SDR.name().equals(network))
+            return getAddress();
+        else if(did.getPeer(Network.SDR.name())!=null)
+            return did.getPeer(Network.SDR.name()).getAddress();
+        else
+            return null;
+    }
+
+    public void setSDRAddress(String address) {
+        if(Network.SDR.name().equals(network))
+            setAddress(address);
+        else
+            did.getPeer(Network.SDR.name()).setAddress(address);
+    }
+
+    public String getSDRFingerprint() {
+        if(Network.SDR.name().equals(network))
+            return getFingerprint();
+        else if(did.getPeer(Network.SDR.name())!=null)
+            return did.getPeer(Network.SDR.name()).getFingerprint();
+        else
+            return null;
+    }
+
+    public void setSDRFingerprint(String fingerprint) {
+        if(Network.SDR.name().equals(network))
+            setFingerprint(fingerprint);
+        else
+            did.getPeer(Network.SDR.name()).setFingerprint(fingerprint);
+    }
+
+    public String getLiFiAddress(){
+        if(Network.LIFI.name().equals(network))
+            return getAddress();
+        else if(did.getPeer(Network.LIFI.name())!=null)
+            return did.getPeer(Network.LIFI.name()).getAddress();
+        else
+            return null;
+    }
+
+    public void setLiFiAddress(String address) {
+        if(Network.LIFI.name().equals(network))
+            setAddress(address);
+        else
+            did.getPeer(Network.LIFI.name()).setAddress(address);
+    }
+
+    public String getLiFiFingerprint() {
+        if(Network.LIFI.name().equals(network))
+            return getFingerprint();
+        else if(did.getPeer(Network.LIFI.name())!=null)
+            return did.getPeer(Network.LIFI.name()).getFingerprint();
+        else
+            return null;
+    }
+
+    public void setLiFiFingerprint(String fingerprint) {
+        if(Network.LIFI.name().equals(network))
+            setFingerprint(fingerprint);
+        else
+            did.getPeer(Network.LIFI.name()).setFingerprint(fingerprint);
     }
 
     public Boolean isLocal() {
