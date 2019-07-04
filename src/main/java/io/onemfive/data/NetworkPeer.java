@@ -10,7 +10,7 @@ import java.util.logging.Logger;
  * Maintains addresses of the base networked peers including Tor, I2P, and IDN.
  *
  * In 1m5-core, a NetworkPeer is provided set with an IMS address/fingerprint
- * with Tor, I2P, and IDN set if their respective sensors are activated.
+ * with Tor, I2P, IDN, RAD, and LiFi set if their respective sensors are activated.
  *
  * @author objectorange
  */
