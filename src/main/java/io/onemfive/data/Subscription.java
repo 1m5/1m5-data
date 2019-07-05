@@ -5,6 +5,7 @@ package io.onemfive.data;
  *
  * @author objectorange
  */
+@FunctionalInterface
 public interface Subscription {
     void notifyOfEvent(Envelope envelope);
 }
