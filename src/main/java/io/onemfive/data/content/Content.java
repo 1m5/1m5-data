@@ -73,7 +73,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     }
 
     public Content(byte[] body) {
-        this.body = body;
+        setBody(body, false, false);
     }
 
     public Content(byte[] body, String contentType) {
@@ -83,8 +83,6 @@ public abstract class Content implements JSONSerializable, Serializable {
     public Content(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
         type = getClass().getName();
         setBody(body, generateHash, generateFingerprint);
-        if(body!=null)
-            size = (long)body.length;
         this.contentType = contentType;
         this.name = name;
         if(contentType!=null && contentType.contains("charset:")) {
@@ -162,6 +160,7 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public void setBody(byte[] body, boolean generateHash, boolean generateFingerprint) {
         this.body = body;
+        this.size = (long)body.length;
         try {
             if(generateHash) {
                 hash = HashUtil.generateHash(body, hashAlgorithm);
