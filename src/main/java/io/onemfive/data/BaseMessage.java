@@ -17,4 +17,9 @@ public class BaseMessage implements Message, Persistable {
     public List<String> getErrorMessages() {
         return errorMessages;
     }
+
+    @Override
+    public void clearErrorMessages() {
+        errorMessages.clear();
+    }
 }
