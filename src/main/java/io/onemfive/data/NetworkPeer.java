@@ -21,8 +21,6 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public enum Network {
         // Invisible Matrix Services (1M5) - https://github.com/1m5/1m5-core
         IMS,
-        // Invisible Direct Network (1DN) - https://github.com/1m5/1m5-1dn
-        IDN,
         // Invisible Internet Project (I2P) - https://geti2p.net/ and  - https://github.com/1m5/1m5-i2p
         I2P,
         // The Onion Router (TOR) - https://www.torproject.org/ and https://github.com/1m5/1m5-tor-client
@@ -210,38 +208,6 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         return result;
     }
 
-    public String getIDNAddress(){
-        if(Network.IDN.name().equals(network))
-            return getAddress();
-        else if(did.getPeer(Network.IDN.name())!=null)
-            return did.getPeer(Network.IDN.name()).getAddress();
-        else
-            return null;
-    }
-
-    public void setIDNAddress(String address) {
-        if(Network.IDN.name().equals(network))
-            setAddress(address);
-        else
-            did.getPeer(Network.IDN.name()).setAddress(address);
-    }
-
-    public String getIDNFingerprint() {
-        if(Network.IDN.name().equals(network))
-            return getFingerprint();
-        else if(did.getPeer(Network.IDN.name())!=null)
-            return did.getPeer(Network.IDN.name()).getFingerprint();
-        else
-            return null;
-    }
-
-    public void setIDNFingerprint(String fingerprint) {
-        if(Network.IDN.name().equals(network))
-            setFingerprint(fingerprint);
-        else
-            did.getPeer(Network.IDN.name()).setFingerprint(fingerprint);
-    }
-
     public String getSDRAddress(){
         if(Network.SDR.name().equals(network))
             return getAddress();
@@ -336,10 +302,14 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
             m.put("torAddress",getTorAddress());
         if(getTorFingerprint()!=null)
             m.put("torFingerprint",getTorFingerprint());
-        if(getIDNAddress()!=null)
-            m.put("idnAddress",getIDNAddress());
-        if(getIDNFingerprint()!=null)
-            m.put("idnFingerprint",getIDNFingerprint());
+        if(getSDRAddress()!=null)
+            m.put("sdrAddress",getSDRAddress());
+        if(getSDRFingerprint()!=null)
+            m.put("sdrFingerprint",getSDRFingerprint());
+        if(getLiFiAddress()!=null)
+            m.put("lifiAddress",getLiFiAddress());
+        if(getLiFiFingerprint()!=null)
+            m.put("lifiFingerprint",getLiFiFingerprint());
         if(getIMSAddress()!=null)
             m.put("imsAddress",getIMSAddress());
         if(getIMSFingerprint()!=null)
@@ -388,10 +358,15 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         if(getI2PFingerprint()!=null)
             sb.append("\n\ti2pFingerprint: "+getI2PFingerprint());
 
-        if(getIDNAddress()!=null)
-            sb.append("\n\tidnAddress: "+getIDNAddress());
-        if(getIDNFingerprint()!=null)
-            sb.append("\n\tidnFingerprint: "+getIDNFingerprint());
+        if(getSDRAddress()!=null)
+            sb.append("\n\tsdrAddress: "+getSDRAddress());
+        if(getSDRFingerprint()!=null)
+            sb.append("\n\tsdrFingerprint: "+getSDRFingerprint());
+
+        if(getLiFiAddress()!=null)
+            sb.append("\n\tlifiAddress: "+getLiFiAddress());
+        if(getLiFiFingerprint()!=null)
+            sb.append("\n\tlifiFingerprint: "+getLiFiFingerprint());
 
         sb.append("\n}");
         return sb.toString();
