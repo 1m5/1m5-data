@@ -149,6 +149,26 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
         return peers.values();
     }
 
+    public NetworkPeer getPrioritizedPeer() {
+        return getPrioritizedPeer(NetworkPeer.Network.IMS.name());
+    }
+
+    public NetworkPeer getPrioritizedPeer(String highestPriorityNetwork) {
+        // Prioritization: highestPriorityNetwork, 1M5, I2P, SDR (Radio), LiFi
+        if(peers.get(highestPriorityNetwork)!=null)
+            return peers.get(highestPriorityNetwork);
+        else if(peers.get(NetworkPeer.Network.IMS.name())!=null)
+            return peers.get(NetworkPeer.Network.IMS.name());
+        else if(peers.get(NetworkPeer.Network.I2P.name())!=null)
+            return peers.get(NetworkPeer.Network.I2P.name());
+        else if(peers.get(NetworkPeer.Network.SDR.name())!=null)
+            return peers.get(NetworkPeer.Network.SDR.name());
+        else if(peers.get(NetworkPeer.Network.LIFI.name())!=null)
+            return peers.get(NetworkPeer.Network.LIFI.name());
+        else
+            return null;
+    }
+
     @Override
     public void clearSensitive() {
         username = null;
