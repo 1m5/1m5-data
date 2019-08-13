@@ -82,7 +82,9 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public Content(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
         type = getClass().getName();
-        setBody(body, generateHash, generateFingerprint);
+        if(body!=null) {
+            setBody(body, generateHash, generateFingerprint);
+        }
         this.contentType = contentType;
         this.name = name;
         if(contentType!=null && contentType.contains("charset:")) {
