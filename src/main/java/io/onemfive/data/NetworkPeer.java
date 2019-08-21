@@ -356,9 +356,9 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
 
         if(getNetwork()!=null)
             sb.append("\n\tnetwork: "+getNetwork());
-        if(getIMSAddress()!=null)
+        if(getAddress()!=null)
             sb.append("\n\taddress: "+getAddress());
-        if(getIMSFingerprint()!=null)
+        if(getFingerprint()!=null)
             sb.append("\n\tfingerprint: "+getFingerprint());
 
         if(getIMSAddress()!=null)
