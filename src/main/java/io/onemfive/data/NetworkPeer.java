@@ -68,12 +68,7 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     }
 
     public void setDid(DID did) {
-        if(did != null) {
-            if (Network.IMS.name().equals(network) && did.getPeer(Network.I2P.name()) == null) {
-                did.addPeer(new NetworkPeer(Network.I2P.name()));
-            }
-            this.did = did;
-        }
+        this.did = did;
     }
 
     @Override
