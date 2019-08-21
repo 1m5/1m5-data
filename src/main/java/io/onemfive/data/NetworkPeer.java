@@ -321,8 +321,19 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
 
     @Override
     public void fromMap(Map<String, Object> m) {
-        if(m.get("network")!=null)
-            network = (String)m.get("network");
+        if(m.get("network")!=null) network = (String)m.get("network");
+        if(m.get("address")!=null) setAddress((String)m.get("address"));
+        if(m.get("fingerprint")!=null) setFingerprint((String)m.get("fingerprint"));
+        if(m.get("i2pAddress")!=null) setI2PAddress((String)m.get("i2pAddress"));
+        if(m.get("i2pFingerprint")!=null) setI2PFingerprint((String)m.get("i2pFingerprint"));
+        if(m.get("torAddress")!=null) setTorAddress((String)m.get("torAddress"));
+        if(m.get("torFingerprint")!=null) setTorFingerprint((String)m.get("torFingerprint"));
+        if(m.get("sdrAddress")!=null) setSDRAddress((String)m.get("sdrAddress"));
+        if(m.get("sdrFingerprint")!=null) setSDRFingerprint((String)m.get("sdrFingerprint"));
+        if(m.get("lifiAddress")!=null) setLiFiAddress((String)m.get("lifiAddress"));
+        if(m.get("lifiFingerprint")!=null) setLiFiFingerprint((String)m.get("lifiFingerprint"));
+        if(m.get("imsAddress")!=null) setIMSAddress((String)m.get("imsAddress"));
+        if(m.get("imsFingerprint")!=null) setIMSFingerprint((String)m.get("imsFingerprint"));
         if(m.get("did")!=null) {
             did = new DID();
             did.fromMap((Map<String,Object>)m.get("did"));
@@ -342,6 +353,13 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         StringBuffer sb = new StringBuffer();
 
         sb.append("{\n\tlocal: "+isLocal());
+
+        if(getNetwork()!=null)
+            sb.append("\n\tnetwork: "+getNetwork());
+        if(getIMSAddress()!=null)
+            sb.append("\n\taddress: "+getAddress());
+        if(getIMSFingerprint()!=null)
+            sb.append("\n\tfingerprint: "+getFingerprint());
 
         if(getIMSAddress()!=null)
             sb.append("\n\t1m5Address: "+getIMSAddress());
