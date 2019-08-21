@@ -20,7 +20,7 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
 
     public static String DEFAULT_ALIAS = "default";
 
-    private String username;
+    private String username = DEFAULT_ALIAS;
     private volatile String passphrase;
     private volatile String passphrase2;
     private Hash passphraseHash;
