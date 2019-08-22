@@ -1,5 +1,7 @@
 package io.onemfive.data;
 
+import io.onemfive.data.util.JSONParser;
+
 import java.util.*;
 
 /**
@@ -147,6 +149,13 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
 
     public Collection<NetworkPeer> availableNetworkPeers() {
         return peers.values();
+    }
+
+    public NetworkPeer getNetworkPeer(NetworkPeer.Network network) {
+        if(peers.containsKey(network.name())) {
+            return peers.get(network.name());
+        }
+        return null;
     }
 
     public NetworkPeer getPrioritizedPeer() {
@@ -337,6 +346,11 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
             clone.peers.put(network, (NetworkPeer)peers.get(network).clone());
         }
         return clone;
+    }
+
+    @Override
+    public String toString() {
+        return JSONParser.toString(toMap());
     }
 
 }
