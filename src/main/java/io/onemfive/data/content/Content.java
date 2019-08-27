@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public abstract class Content implements JSONSerializable, Serializable {
 
-    private static Logger LOG = Logger.getLogger(Content.class.getName());
+    private Logger LOG = Logger.getLogger(Content.class.getName());
 
     // Required
     protected String type;
@@ -90,22 +90,6 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(contentType!=null && contentType.contains("charset:")) {
             bodyEncoding = contentType.substring(contentType.indexOf("charset:")+1);
         }
-        String msg = "Content Instantiated : {";
-        if(name!=null)
-            msg += "\n\tName: "+name;
-        msg += "\n\tType: "+type;
-        msg += "\n\tContent Type: " + contentType;
-        if (this instanceof Text && body!=null)
-            msg += "\n\tBody: " + new String(body);
-        if(bodyEncoding!=null)
-            msg += "\n\tBody Encoding: " + bodyEncoding;
-        if(size > 0L)
-            msg += "\n\tSize: " + size;
-        if(generateFingerprint)
-            msg += "\n\tFingerprint: " + fingerprint.getHash();
-        if(generateHash && hash.getHash()!=null && hash.getHash().length() > 40)
-            msg += "\n\tHash: " + hash.getHash().substring(0, 40) + "...";
-        LOG.info(msg+"\n}");
     }
 
     public String getType() {
@@ -178,24 +162,12 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public String base64EncodeBody() {
         if(body==null) return null;
-        String encoded = null;
-        try {
-            encoded = Base64.getEncoder().encodeToString(body);
-        } catch (Exception e) {
-            LOG.warning(e.getLocalizedMessage());
-        }
-        return encoded;
+        return Base64.getEncoder().encodeToString(body);
     }
 
     public byte[] base64DecodeBody(String body) {
         if(body==null) return null;
-        byte[] decoded = null;
-        try {
-            decoded = Base64.getDecoder().decode(body);
-        } catch (Exception e) {
-            LOG.warning(e.getLocalizedMessage());
-        }
-        return decoded;
+        return Base64.getDecoder().decode(body);
     }
 
     public String getBodyEncoding() {
