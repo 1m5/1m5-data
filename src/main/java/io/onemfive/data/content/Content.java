@@ -65,6 +65,7 @@ public abstract class Content implements JSONSerializable, Serializable {
         else if(contentType.startsWith("audio/")) c = new Audio(body, contentType, name, generateHash, generateFingerprint);
         else if(contentType.startsWith("video/")) c = new Video(body, contentType, name, generateHash, generateFingerprint);
         else if(contentType.startsWith("application/json"))  c = new JSON(body, name, generateHash, generateFingerprint);
+        c.setCreatedAt(System.currentTimeMillis());
         return c;
     }
 
