@@ -434,6 +434,14 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.get("writeable")!=null) writeable = Boolean.parseBoolean((String)m.get("writeable"));
     }
 
+    public static Content newInstance(Map<String,Object> m) throws InstantiationException, ClassNotFoundException, IllegalAccessException {
+        if(m.get("type")==null) throw new InstantiationException("type required in supplied map.");
+        String type = (String)m.get("type");
+        Content content = (Content)Class.forName(type).newInstance();
+        content.fromMap(m);
+        return content;
+    }
+
     @Override
     public String toString() {
         return JSONParser.toString(toMap());
