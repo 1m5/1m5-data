@@ -43,6 +43,7 @@ public final class Envelope implements Persistable, Serializable {
     private Map<String, Object> headers;
     private Message message;
     private Sensitivity sensitivity = Sensitivity.HIGH; // Default to I2P
+    private RequestReport requestReport = new RequestReport();
 
     public enum Sensitivity { // with default sensors chosen
         NONE, // HTTP - MANCON 6
@@ -93,6 +94,7 @@ public final class Envelope implements Persistable, Serializable {
         e.setMultipart(envelope.getMultipart());
         e.setMessage(envelope.getMessage());
         e.setSensitivity(envelope.getSensitivity());
+        e.setRequestReport(envelope.getRequestReport());
         return e;
     }
 
@@ -246,5 +248,13 @@ public final class Envelope implements Persistable, Serializable {
 
     public void setSensitivity(Sensitivity sensitivity) {
         this.sensitivity = sensitivity;
+    }
+
+    public RequestReport getRequestReport() {
+        return requestReport;
+    }
+
+    public void setRequestReport(RequestReport requestReport) {
+        this.requestReport = requestReport;
     }
 }
