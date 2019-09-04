@@ -6,6 +6,7 @@ package io.onemfive.data.currency;
  * @author objectorange
  */
 public interface Coin {
+    int smallestUnitExponent();
     boolean limitedSupply();
     long maxSupply();
     /**
