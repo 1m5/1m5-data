@@ -26,6 +26,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     private Integer version = 0;
     private String name;
     private Long size = 0L;
+    protected String authorAlias;
     protected String authorAddress;
     protected byte[] body;
     private String bodyEncoding;
@@ -131,6 +132,14 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public void setSize(Long size) {
         this.size = size;
+    }
+
+    public String getAuthorAlias() {
+        return authorAlias;
+    }
+
+    public void setAuthorAlias(String authorAlias) {
+        this.authorAlias = authorAlias;
     }
 
     public String getAuthorAddress() {
@@ -377,6 +386,7 @@ public abstract class Content implements JSONSerializable, Serializable {
             }
             m.put("children", l);
         }
+        if(authorAlias != null) m.put("authorAlias", authorAlias);
         if(authorAddress != null) m.put("authorAddress", authorAddress);
         if(encrypted!=null) m.put("encrypted",encrypted.toString());
         if(encryptionAlgorithm!=null) m.put("encryptionAlgorithm",encryptionAlgorithm.getName());
@@ -422,6 +432,7 @@ public abstract class Content implements JSONSerializable, Serializable {
                 }
             }
         }
+        if(m.get("authorAlias")!=null) authorAlias = (String)m.get("authorAlias");
         if(m.get("authorAddress")!=null) authorAddress = (String)m.get("authorAddress");
         if(m.get("encrypted")!=null) encrypted = Boolean.parseBoolean((String)m.get("encrypted"));
         if(m.get("encryptionAlgorithm")!=null) encryptionAlgorithm = EncryptionAlgorithm.value((String)m.get("encryptionAlgorithm"));
