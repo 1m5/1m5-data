@@ -441,9 +441,7 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.get("encryptionPassphraseAlgorithm")!=null) encryptionPassphraseAlgorithm = EncryptionAlgorithm.value((String)m.get("encryptionPassphraseAlgorithm"));
         if(m.get("base64EncodedIV")!=null) base64EncodedIV = (String)m.get("base64EncodedIV");
         if(m.get("keywords")!=null) {
-            String keywordsStr = (String) m.get("keywords");
-            String[] keywordsArr = keywordsStr.split(",");
-            keywords = Arrays.asList(keywordsArr);
+          keywords = (List<String>)JSONParser.parse(m.get("keywords"));
         }
         if(m.get("readable")!=null) readable = Boolean.parseBoolean((String)m.get("readable"));
         if(m.get("writeable")!=null) writeable = Boolean.parseBoolean((String)m.get("writeable"));
