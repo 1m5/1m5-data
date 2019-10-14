@@ -45,6 +45,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         this(network, null, null);
     }
 
+    public NetworkPeer(String username, String passphrase) {
+        this(Network.IMS.name(), username, passphrase);
+    }
+
     public NetworkPeer(String network, String username, String passphrase) {
         this.network = network;
         did = new DID();
