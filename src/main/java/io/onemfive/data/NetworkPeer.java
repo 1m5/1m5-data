@@ -1,5 +1,7 @@
 package io.onemfive.data;
 
+import io.onemfive.data.util.JSONParser;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -105,7 +107,8 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
     public void setIMSAddress(String address) {
         if(Network.IMS.name().equals(network))
             setAddress(address);
-        did.getPeer(Network.IMS.name()).setAddress(address);
+        else
+            did.getPeer(Network.IMS.name()).setAddress(address);
     }
 
     public String getIMSFingerprint() {
@@ -335,7 +338,7 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         if(m.get("imsFingerprint")!=null) setIMSFingerprint((String)m.get("imsFingerprint"));
         if(m.get("did")!=null) {
             did = new DID();
-            did.fromMap((Map<String,Object>)m.get("did"));
+            did.fromMap((Map<String,Object>) JSONParser.parse((String)m.get("did")));
         }
     }
 
