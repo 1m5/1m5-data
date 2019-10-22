@@ -338,7 +338,10 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
         if(m.get("imsFingerprint")!=null) setIMSFingerprint((String)m.get("imsFingerprint"));
         if(m.get("did")!=null) {
             did = new DID();
-            did.fromMap((Map<String,Object>) JSONParser.parse((String)m.get("did")));
+            if(m.get("did") instanceof String)
+                did.fromMap((Map<String,Object>) JSONParser.parse((String)m.get("did")));
+            else
+                did.fromMap((Map<String,Object>)m.get("did"));
         }
     }
 
