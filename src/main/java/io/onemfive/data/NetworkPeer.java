@@ -191,25 +191,6 @@ public class NetworkPeer implements Addressable, JSONSerializable, PIIClearable 
             did.getPeer(Network.I2P.name()).setFingerprint(fingerprint);
     }
 
-    /**
-     * Checks the status of this peer instance and supplied peer instance
-     * @param peer the NetworkPeer to check against
-     * @return int
-     *      -2 if supplied NetworkPeer is not ready
-     *      -1 if this NetworkPeer is not ready
-     *       0 if not the same and ready
-     *       1 if they are the same and ready
-     */
-    public int getI2PStatus(NetworkPeer peer) {
-        int result;
-        if(peer.getI2PAddress() == null || peer.getI2PAddress().isEmpty()) result = -2;
-        else if(getI2PAddress() == null || getI2PAddress().isEmpty()) result =  -1;
-        else if(getI2PAddress().equals(peer.getI2PAddress())) result = 1;
-        else if(getAddress() != null && getAddress().equals(peer.getAddress())) result = 1;
-        else result = 0;
-        return result;
-    }
-
     public String getSDRAddress(){
         if(Network.SDR.name().equals(network))
             return getAddress();
