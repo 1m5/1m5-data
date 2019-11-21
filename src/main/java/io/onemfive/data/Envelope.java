@@ -43,15 +43,16 @@ public final class Envelope implements Persistable, Serializable {
     private Map<String, Object> headers;
     private Message message;
     private Sensitivity sensitivity = Sensitivity.HIGH; // Default to I2P
+    private RequestReport requestReport = new RequestReport();
 
     public enum Sensitivity { // with default sensors chosen
-        NONE, // HTTP
-        LOW, // HTTPS
-        MEDIUM, // Tor
-        HIGH, // I2P
-        VERYHIGH, // I2P Delayed
-        EXTREME, // 1DN
-        NEO // Intelligent Combination of Tor, I2P, and 1DN
+        NONE, // HTTP - MANCON 6
+        LOW, // HTTPS - MANCON 5
+        MEDIUM, // Tor - MANCON 4
+        HIGH, // I2P - MANCON 3
+        VERYHIGH, // I2P Delayed - MANCON 2
+        EXTREME, // 1DN - MANCON 1
+        NEO // Intelligent Combination of Tor, I2P, and 1DN - MANCON 0
     }
 
     public static Envelope commandFactory() {
@@ -93,6 +94,7 @@ public final class Envelope implements Persistable, Serializable {
         e.setMultipart(envelope.getMultipart());
         e.setMessage(envelope.getMessage());
         e.setSensitivity(envelope.getSensitivity());
+        e.setRequestReport(envelope.getRequestReport());
         return e;
     }
 
@@ -246,5 +248,13 @@ public final class Envelope implements Persistable, Serializable {
 
     public void setSensitivity(Sensitivity sensitivity) {
         this.sensitivity = sensitivity;
+    }
+
+    public RequestReport getRequestReport() {
+        return requestReport;
+    }
+
+    public void setRequestReport(RequestReport requestReport) {
+        this.requestReport = requestReport;
     }
 }

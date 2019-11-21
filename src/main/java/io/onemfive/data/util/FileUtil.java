@@ -3,9 +3,8 @@ package io.onemfive.data.util;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -382,6 +381,50 @@ public class FileUtil {
                 buf.append(lines.get(i)).append('\n');
             }
             return buf.toString();
+        } catch (IOException ioe) {
+            return null;
+        } finally {
+            if (in != null) try { in.close(); } catch (IOException ioe) {}
+        }
+    }
+
+    /**
+     * Read in the last few lines of a (newline delimited) textfile, or null if
+     * the file doesn't exist.
+     *
+     * Warning - this inefficiently allocates a StringBuilder of size maxNumLines*80,
+     *           so don't make it too big.
+     * Warning - converts \r\n to \n
+     *
+     * @param startAtBeginning if true, read the first maxNumLines, otherwise read
+     *                         the last maxNumLines
+     * @param maxNumLines max number of lines (or -1 for unlimited)
+     * @return string or null; does not throw IOException.
+     *
+     */
+    public static Map<String,String> textFileToMap(String filename, int maxNumLines, String delimiter, boolean startAtBeginning, boolean onClasspath) {
+        InputStream is = null;
+        BufferedReader in = null;
+        try {
+            if(onClasspath) {
+                is = FileUtil.class.getClassLoader().getResourceAsStream(filename);
+            } else {
+                is = new FileInputStream(filename);
+            }
+            in = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            Map<String,String> entries = new HashMap<>(maxNumLines > 0 ? maxNumLines : 64);
+            String entry;
+            while ( (entry = in.readLine()) != null) {
+                String[] nvp = entry.split(delimiter);
+                entries.put(nvp[0],nvp[1]);
+                if ( (maxNumLines > 0) && (entries.size() >= maxNumLines) ) {
+                    if (startAtBeginning)
+                        break;
+                    else
+                        entries.remove(0);
+                }
+            }
+            return entries;
         } catch (IOException ioe) {
             return null;
         } finally {

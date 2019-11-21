@@ -1,5 +1,7 @@
 package io.onemfive.data;
 
+import io.onemfive.data.util.JSONParser;
+
 import java.util.*;
 
 /**
@@ -20,7 +22,7 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
 
     public static String DEFAULT_ALIAS = "default";
 
-    private String username;
+    private String username = DEFAULT_ALIAS;
     private volatile String passphrase;
     private volatile String passphrase2;
     private Hash passphraseHash;
@@ -147,6 +149,33 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
 
     public Collection<NetworkPeer> availableNetworkPeers() {
         return peers.values();
+    }
+
+    public NetworkPeer getNetworkPeer(NetworkPeer.Network network) {
+        if(peers.containsKey(network.name())) {
+            return peers.get(network.name());
+        }
+        return null;
+    }
+
+    public NetworkPeer getPrioritizedPeer() {
+        return getPrioritizedPeer(NetworkPeer.Network.IMS.name());
+    }
+
+    public NetworkPeer getPrioritizedPeer(String highestPriorityNetwork) {
+        // Prioritization: highestPriorityNetwork, 1M5, I2P, SDR (Radio), LiFi
+        if(peers.get(highestPriorityNetwork)!=null)
+            return peers.get(highestPriorityNetwork);
+        else if(peers.get(NetworkPeer.Network.IMS.name())!=null)
+            return peers.get(NetworkPeer.Network.IMS.name());
+        else if(peers.get(NetworkPeer.Network.I2P.name())!=null)
+            return peers.get(NetworkPeer.Network.I2P.name());
+        else if(peers.get(NetworkPeer.Network.SDR.name())!=null)
+            return peers.get(NetworkPeer.Network.SDR.name());
+        else if(peers.get(NetworkPeer.Network.LIFI.name())!=null)
+            return peers.get(NetworkPeer.Network.LIFI.name());
+        else
+            return null;
     }
 
     @Override
@@ -317,6 +346,11 @@ public class DID implements Persistable, PIIClearable, JSONSerializable {
             clone.peers.put(network, (NetworkPeer)peers.get(network).clone());
         }
         return clone;
+    }
+
+    @Override
+    public String toString() {
+        return JSONParser.toString(toMap());
     }
 
 }

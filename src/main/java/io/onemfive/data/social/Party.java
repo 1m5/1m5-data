@@ -8,6 +8,7 @@ package io.onemfive.data.social;
 public abstract class Party {
 
     private Profile profile;
+    private String name;
 
     public Party(){}
 
@@ -17,5 +18,13 @@ public abstract class Party {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

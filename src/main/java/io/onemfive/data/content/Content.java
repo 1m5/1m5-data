@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public abstract class Content implements JSONSerializable, Serializable {
 
-    private static Logger LOG = Logger.getLogger(Content.class.getName());
+    private Logger LOG = Logger.getLogger(Content.class.getName());
 
     // Required
     protected String type;
@@ -26,6 +26,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     private Integer version = 0;
     private String name;
     private Long size = 0L;
+    protected String authorAlias;
     protected String authorAddress;
     protected byte[] body;
     private String bodyEncoding;
@@ -65,6 +66,7 @@ public abstract class Content implements JSONSerializable, Serializable {
         else if(contentType.startsWith("audio/")) c = new Audio(body, contentType, name, generateHash, generateFingerprint);
         else if(contentType.startsWith("video/")) c = new Video(body, contentType, name, generateHash, generateFingerprint);
         else if(contentType.startsWith("application/json"))  c = new JSON(body, name, generateHash, generateFingerprint);
+        c.setCreatedAt(System.currentTimeMillis());
         return c;
     }
 
@@ -73,7 +75,7 @@ public abstract class Content implements JSONSerializable, Serializable {
     }
 
     public Content(byte[] body) {
-        this.body = body;
+        setBody(body, false, false);
     }
 
     public Content(byte[] body, String contentType) {
@@ -82,30 +84,14 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public Content(byte[] body, String contentType, String name, boolean generateHash, boolean generateFingerprint) {
         type = getClass().getName();
-        setBody(body, generateHash, generateFingerprint);
-        if(body!=null)
-            size = (long)body.length;
+        if(body!=null) {
+            setBody(body, generateHash, generateFingerprint);
+        }
         this.contentType = contentType;
         this.name = name;
         if(contentType!=null && contentType.contains("charset:")) {
             bodyEncoding = contentType.substring(contentType.indexOf("charset:")+1);
         }
-        String msg = "Content Instantiated : {";
-        if(name!=null)
-            msg += "\n\tName: "+name;
-        msg += "\n\tType: "+type;
-        msg += "\n\tContent Type: " + contentType;
-        if (this instanceof Text && body!=null)
-            msg += "\n\tBody: " + new String(body);
-        if(bodyEncoding!=null)
-            msg += "\n\tBody Encoding: " + bodyEncoding;
-        if(size > 0L)
-            msg += "\n\tSize: " + size;
-        if(generateFingerprint)
-            msg += "\n\tFingerprint: " + fingerprint.getHash();
-        if(generateHash && hash.getHash()!=null && hash.getHash().length() > 40)
-            msg += "\n\tHash: " + hash.getHash().substring(0, 40) + "...";
-        LOG.info(msg+"\n}");
     }
 
     public String getType() {
@@ -148,6 +134,14 @@ public abstract class Content implements JSONSerializable, Serializable {
         this.size = size;
     }
 
+    public String getAuthorAlias() {
+        return authorAlias;
+    }
+
+    public void setAuthorAlias(String authorAlias) {
+        this.authorAlias = authorAlias;
+    }
+
     public String getAuthorAddress() {
         return authorAddress;
     }
@@ -162,6 +156,7 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public void setBody(byte[] body, boolean generateHash, boolean generateFingerprint) {
         this.body = body;
+        this.size = (long)body.length;
         try {
             if(generateHash) {
                 hash = HashUtil.generateHash(body, hashAlgorithm);
@@ -177,24 +172,12 @@ public abstract class Content implements JSONSerializable, Serializable {
 
     public String base64EncodeBody() {
         if(body==null) return null;
-        String encoded = null;
-        try {
-            encoded = Base64.getEncoder().encodeToString(body);
-        } catch (Exception e) {
-            LOG.warning(e.getLocalizedMessage());
-        }
-        return encoded;
+        return Base64.getEncoder().encodeToString(body);
     }
 
     public byte[] base64DecodeBody(String body) {
         if(body==null) return null;
-        byte[] decoded = null;
-        try {
-            decoded = Base64.getDecoder().decode(body);
-        } catch (Exception e) {
-            LOG.warning(e.getLocalizedMessage());
-        }
-        return decoded;
+        return Base64.getDecoder().decode(body);
     }
 
     public String getBodyEncoding() {
@@ -403,6 +386,7 @@ public abstract class Content implements JSONSerializable, Serializable {
             }
             m.put("children", l);
         }
+        if(authorAlias != null) m.put("authorAlias", authorAlias);
         if(authorAddress != null) m.put("authorAddress", authorAddress);
         if(encrypted!=null) m.put("encrypted",encrypted.toString());
         if(encryptionAlgorithm!=null) m.put("encryptionAlgorithm",encryptionAlgorithm.getName());
@@ -448,6 +432,7 @@ public abstract class Content implements JSONSerializable, Serializable {
                 }
             }
         }
+        if(m.get("authorAlias")!=null) authorAlias = (String)m.get("authorAlias");
         if(m.get("authorAddress")!=null) authorAddress = (String)m.get("authorAddress");
         if(m.get("encrypted")!=null) encrypted = Boolean.parseBoolean((String)m.get("encrypted"));
         if(m.get("encryptionAlgorithm")!=null) encryptionAlgorithm = EncryptionAlgorithm.value((String)m.get("encryptionAlgorithm"));
@@ -455,9 +440,19 @@ public abstract class Content implements JSONSerializable, Serializable {
         if(m.get("encryptionPassphraseEncrypted")!=null) encryptionPassphraseEncrypted = Boolean.parseBoolean((String)m.get("encryptionPassphraseEncrypted"));
         if(m.get("encryptionPassphraseAlgorithm")!=null) encryptionPassphraseAlgorithm = EncryptionAlgorithm.value((String)m.get("encryptionPassphraseAlgorithm"));
         if(m.get("base64EncodedIV")!=null) base64EncodedIV = (String)m.get("base64EncodedIV");
-        if(m.get("keywords")!=null) keywords = (List<String>)m.get("keywords");
+        if(m.get("keywords")!=null) {
+          keywords = (List<String>)JSONParser.parse(m.get("keywords"));
+        }
         if(m.get("readable")!=null) readable = Boolean.parseBoolean((String)m.get("readable"));
         if(m.get("writeable")!=null) writeable = Boolean.parseBoolean((String)m.get("writeable"));
+    }
+
+    public static Content newInstance(Map<String,Object> m) throws InstantiationException, ClassNotFoundException, IllegalAccessException {
+        if(m.get("type")==null) throw new InstantiationException("type required in supplied map.");
+        String type = (String)m.get("type");
+        Content content = (Content)Class.forName(type).newInstance();
+        content.fromMap(m);
+        return content;
     }
 
     @Override
