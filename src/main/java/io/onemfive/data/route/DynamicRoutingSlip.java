@@ -1,4 +1,10 @@
-package io.onemfive.data;
+package io.onemfive.data.route;
+
+import io.onemfive.data.util.DequeStack;
+import io.onemfive.data.util.Stack;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * TODO: Add Description
@@ -42,8 +48,29 @@ public final class DynamicRoutingSlip extends BaseRoute implements RoutingSlip {
     }
 
     public boolean addRoute(Route route) {
-        route.setId(getId());
-        this.routes.push(route);
+        route.setRouteId(getRouteId());
+        routes.push(route);
         return true;
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        Map<String,Object> m = super.toMap();
+        if(routes!=null) {
+            StringBuffer sb = new StringBuffer();
+            Iterator<Route> i = routes.getIterator();
+            Route r;
+            while(i.hasNext()) {
+                r = i.next();
+
+            }
+        }
+        return m;
+    }
+
+    @Override
+    public void fromMap(Map<String, Object> m) {
+        super.fromMap(m);
+
     }
 }

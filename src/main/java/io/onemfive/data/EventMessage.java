@@ -1,5 +1,6 @@
 package io.onemfive.data;
 
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -52,4 +53,13 @@ public final class EventMessage extends BaseMessage {
         return message;
     }
 
+    @Override
+    public Map<String, Object> toMap() {
+        return super.toMap();
+    }
+
+    @Override
+    public void fromMap(Map<String, Object> m) {
+        super.fromMap(m);
+    }
 }

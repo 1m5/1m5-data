@@ -1,4 +1,4 @@
-package io.onemfive.data;
+package io.onemfive.data.route;
 
 /**
  * TODO: Add Description

@@ -1,5 +1,7 @@
 package io.onemfive.data;
 
+import java.util.Map;
+
 /**
  * TODO: Add Description
  *
@@ -42,5 +44,15 @@ public class TextMessage extends BaseMessage {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        return super.toMap();
+    }
+
+    @Override
+    public void fromMap(Map<String, Object> m) {
+        super.fromMap(m);
     }
 }

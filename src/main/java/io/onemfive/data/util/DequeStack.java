@@ -1,7 +1,8 @@
-package io.onemfive.data;
+package io.onemfive.data.util;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -37,4 +38,8 @@ public class DequeStack<T> implements Stack<T> {
         return deque.size();
     }
 
+    @Override
+    public Iterator<T> getIterator() {
+        return deque.iterator();
+    }
 }

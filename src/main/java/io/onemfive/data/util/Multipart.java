@@ -1,10 +1,12 @@
 package io.onemfive.data.util;
 
+import io.onemfive.data.JSONSerializable;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class Multipart {
+public class Multipart implements JSONSerializable {
     private final String boundary;
     private static final String LINE_FEED = "\r\n";
     //    private HttpURLConnection httpConn;
@@ -137,4 +139,15 @@ public class Multipart {
         return b.toString();
     }
 
+    @Override
+    public Map<String, Object> toMap() {
+        Map<String,Object> m = new HashMap<>();
+
+        return m;
+    }
+
+    @Override
+    public void fromMap(Map<String, Object> m) {
+
+    }
 }

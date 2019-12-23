@@ -1,5 +1,7 @@
 package io.onemfive.data;
 
+import java.util.Map;
+
 /**
  * Provides a message indicating what command to run and the target to run it against.
  * Supplied target must implement Command
@@ -38,5 +40,15 @@ public final class CommandMessage extends BaseMessage {
 
     public void setTargetName(String targetName) {
         this.targetName = targetName;
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        return super.toMap();
+    }
+
+    @Override
+    public void fromMap(Map<String, Object> m) {
+        super.fromMap(m);
     }
 }

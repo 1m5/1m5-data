@@ -1,6 +1,7 @@
-package io.onemfive.data;
+package io.onemfive.data.util;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * TODO: Add Description
@@ -12,4 +13,5 @@ public interface Stack<T> extends Serializable {
     T pop();
     T peek();
     Integer numberRemainingRoutes();
+    Iterator<T> getIterator();
 }

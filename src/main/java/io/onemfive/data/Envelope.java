@@ -1,18 +1,23 @@
 package io.onemfive.data;
 
+import io.onemfive.data.route.DynamicRoutingSlip;
+import io.onemfive.data.route.Route;
 import io.onemfive.data.util.Multipart;
 import io.onemfive.data.util.RandomUtil;
 
-import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Wraps all data passed around in application to ensure a space for header type information.
  *
  * @author objectorange
  */
-public final class Envelope implements Persistable, Serializable {
+public final class Envelope implements Persistable, JSONSerializable {
+
+    private static final Logger LOG = Logger.getLogger(Envelope.class.getName());
 
     public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
 
@@ -43,7 +48,6 @@ public final class Envelope implements Persistable, Serializable {
     private Map<String, Object> headers;
     private Message message;
     private Sensitivity sensitivity = Sensitivity.HIGH; // Default to I2P
-    private RequestReport requestReport = new RequestReport();
 
     public enum Sensitivity { // with default sensors chosen
         NONE, // HTTP - MANCON 6
@@ -94,12 +98,13 @@ public final class Envelope implements Persistable, Serializable {
         e.setMultipart(envelope.getMultipart());
         e.setMessage(envelope.getMessage());
         e.setSensitivity(envelope.getSensitivity());
-        e.setRequestReport(envelope.getRequestReport());
         return e;
     }
 
+    public Envelope() {}
+
     public Envelope(Long id, Message message) {
-        this(id, message, new HashMap<String, Object>());
+        this(id, message, new HashMap<>());
     }
 
     public Envelope(Long id, Message message, Map<String,Object> headers) {
@@ -250,11 +255,69 @@ public final class Envelope implements Persistable, Serializable {
         this.sensitivity = sensitivity;
     }
 
-    public RequestReport getRequestReport() {
-        return requestReport;
+    @Override
+    public Map<String, Object> toMap() {
+        Map<String,Object> m = new HashMap<>();
+        if(id!=null) m.put("id", id);
+        if(external!=null) m.put("external",external);
+        if(dynamicRoutingSlip!=null) m.put("dynamicRoutingSlip", dynamicRoutingSlip.toMap());
+        if(route!=null) m.put("route", route.toMap());
+        if(did!=null) m.put("did", did.toMap());
+        if(client!=null) m.put("client", client);
+        if(replyToClient!=null) m.put("replyToClient",replyToClient);
+        if(clientReplyAction!=null) m.put("clientReplyAction",clientReplyAction);
+        if(url!=null) m.put("url", url.toString());
+        if(multipart!=null) m.put("multipart", multipart.toMap());
+        if(action!=null) m.put("action", action.name());
+        if(commandPath!=null) m.put("commandPath", commandPath);
+        if(headers!=null) m.put("headers", headers);
+        if(message!=null) m.put("message", message.toMap());
+        if(sensitivity!=null) m.put("sensitivity", sensitivity.name());
+        return m;
     }
 
-    public void setRequestReport(RequestReport requestReport) {
-        this.requestReport = requestReport;
+    @Override
+    public void fromMap(Map<String, Object> m) {
+        if(m.get("id")!=null) id = Long.parseLong((String)m.get("id"));
+        if(m.get("external")!=null) external = Boolean.parseBoolean((String)m.get("external"));
+        if(m.get(DynamicRoutingSlip.class.getSimpleName())!=null) {
+            dynamicRoutingSlip = new DynamicRoutingSlip();
+            dynamicRoutingSlip.fromMap((Map<String,Object>)m.get(DynamicRoutingSlip.class.getSimpleName()));
+        }
+        if(m.get("route")!=null) {
+            String type = (String)m.get("type");
+            if(type==null) {
+                LOG.warning("type must not be null. unable to reconstruct route.");
+            }
+            try {
+                route = (Route)Class.forName(type).getConstructor().newInstance();
+                route.fromMap((Map<String,Object>)m.get("route"));
+            } catch (InstantiationException e) {
+                LOG.warning(e.getLocalizedMessage());
+            } catch (IllegalAccessException e) {
+                LOG.warning(e.getLocalizedMessage());
+            } catch (InvocationTargetException e) {
+                LOG.warning(e.getLocalizedMessage());
+            } catch (NoSuchMethodException e) {
+                LOG.warning(e.getLocalizedMessage());
+            } catch (ClassNotFoundException e) {
+                LOG.warning(e.getLocalizedMessage());
+            }
+        }
+
+        private DID did = new DID();
+        private Long client = 0L;
+        private Boolean replyToClient = false;
+        private String clientReplyAction = null;
+        private URL url = null;
+        private Multipart multipart = null;
+
+        private Action action = null;
+        private String commandPath = null;
+
+        private Map<String, Object> headers;
+        private Message message;
+        private Sensitivity sensitivity = Sensitivity.HIGH; // Default to I2P
+        private RequestReport requestReport = new RequestReport();
     }
 }
